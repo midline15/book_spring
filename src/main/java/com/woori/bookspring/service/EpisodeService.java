@@ -1,9 +1,18 @@
 package com.woori.bookspring.service;
 
+import com.woori.bookspring.entity.ebook.Episode;
+import com.woori.bookspring.repository.EpisodeRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
+@Transactional
+@RequiredArgsConstructor
+@Service
 public class EpisodeService {
-    private EpisodeRepository episodeRepository;
+    private final EpisodeRepository episodeRepository;
 
     public void createEpisode(Episode episode) { //에피소드 생성
         episodeRepository.save(episode);
