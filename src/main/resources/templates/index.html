@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default_layout}">
+
+<!-- 사용자 CSS 추가 -->
+<th:block layout:fragment="css">
+    <style>
+        .carousel-inner > .item {
+            height: 350px;
+        }
+        .margin{
+            margin-bottom:30px;
+        }
+        .banner{
+            height: 300px;
+            position: absolute; top:0; left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .card-text{
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        a:hover{
+            text-decoration:none;
+        }
+        .center{
+            text-align:center;
+        }
+    </style>
+</th:block>
+
+<div layout:fragment="content">
+
+    <div id="carouselControls" class="carousel slide margin" data-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active item">
+                <img class="d-block w-100 banner" src="" alt="First slide">
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" name="searchQuery">
+    <div class="center">
+        <p class="h3 font-weight-bold"></p>
+    </div>
+
+    <div class="row">
+            <div class="col-md-4 margin">
+                <div class="card">
+                    <a class="text-dark">
+                        <img class="card-img-top"  height="400">
+                        <div class="card-body">
+                            <h4 class="card-title"></h4>
+                            <p class="card-text"></p>
+                            <h3 class="card-title text-danger"></h3>
+                        </div>
+                    </a>
+                </div>
+            </div>
+    </div>
+
+    <div>
+        <ul class="pagination justify-content-center">
+
+            <li class="page-item">
+                <a aria-label='Previous' class="page-link">
+                    <span aria-hidden='true'>Previous</span>
+                </a>
+            </li>
+
+            <li class="page-item">
+                <a th:inline="text" class="page-link"></a>
+            </li>
+
+            <li class="page-item">
+                <a aria-label='Next' class="page-link">
+                    <span aria-hidden='true'>Next</span>
+                </a>
+            </li>
+
+        </ul>
+    </div>
+
+</div>
