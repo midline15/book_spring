@@ -12,8 +12,8 @@ import java.util.List;
 public class BookService {
     private final BookRepository bookRepository;
 
-    public void createBook(Book book){
-        bookRepository.save(book);
+    public Book createBook(Book book){
+        return bookRepository.save(book);
     }
 
     public Book getBook(Long bookId){
