@@ -20,7 +20,7 @@ public class LikeEBook extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "likes_id")
-    private Inventory inventory;
+    private Like like;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ebook_id")
