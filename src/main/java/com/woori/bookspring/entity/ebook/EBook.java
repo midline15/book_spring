@@ -1,8 +1,9 @@
 package com.woori.bookspring.entity.ebook;
 
 import com.woori.bookspring.entity.Cover;
-import com.woori.bookspring.entity.User;
+import com.woori.bookspring.entity.user.User;
 import com.woori.bookspring.entity.base.BaseBook;
+import com.woori.bookspring.entity.user.Writer;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +23,7 @@ public class EBook extends BaseBook {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer")
-    private User writer;
+    private Writer writer;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cover_id")
