@@ -15,8 +15,8 @@ public class EBookService {
     //1234
     private final EBookRepository eBookRepository;
 
-    public void createEBook(EBook eBook) { //e북 생성
-        eBookRepository.save(eBook);
+    public EBook createEBook(EBook eBook) { //e북 생성
+        return eBookRepository.save(eBook);
     }
 
     public EBook getEBook(Long id) { //e북 조회, 검색
