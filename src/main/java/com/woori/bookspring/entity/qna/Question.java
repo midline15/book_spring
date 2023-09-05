@@ -1,6 +1,6 @@
 package com.woori.bookspring.entity.qna;
 
-import com.woori.bookspring.entity.User;
+import com.woori.bookspring.entity.user.User;
 import com.woori.bookspring.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

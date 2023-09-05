@@ -1,12 +1,14 @@
 package com.woori.bookspring.entity.base;
 
 import com.woori.bookspring.constant.Genre;
+import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 
 import java.util.List;
 
+@MappedSuperclass
 @Getter
-public class BaseBook {
+public class BaseBook extends BaseEntity{
 
     protected String title;
     protected List<Genre> genreList;

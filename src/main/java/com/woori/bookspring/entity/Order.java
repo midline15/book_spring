@@ -2,6 +2,7 @@ package com.woori.bookspring.entity;
 
 import com.woori.bookspring.constant.OrderStatus;
 import com.woori.bookspring.entity.base.BaseEntity;
+import com.woori.bookspring.entity.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

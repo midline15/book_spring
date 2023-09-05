@@ -1,6 +1,6 @@
 package com.woori.bookspring.service;
 
-import com.woori.bookspring.entity.User;
+import com.woori.bookspring.entity.user.User;
 import com.woori.bookspring.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +44,4 @@ public class UserService {
         return userRepository.findAll();
     }
 
-}
-//CRUD
 }
