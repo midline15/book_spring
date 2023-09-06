@@ -24,5 +24,5 @@ public class LikeEbook extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ebook_id")
-    private Ebook eBook;
+    private Ebook ebook;
 }

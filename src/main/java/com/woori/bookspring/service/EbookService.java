@@ -12,26 +12,26 @@ import java.util.List;
 @Transactional
 @Service
 public class EbookService {
-    //1234
-    private final EbookRepository eBookRepository;
 
-    public Ebook createEBook(Ebook eBook) { //e북 생성
-        return eBookRepository.save(eBook);
+    private final EbookRepository ebookRepository;
+
+    public Ebook createEbook(Ebook ebook) { //e북 생성
+        return ebookRepository.save(ebook);
     }
 
-    public Ebook getEBook(Long id) { //e북 조회, 검색
-        return eBookRepository.findById(id).get();
+    public Ebook getEbook(Long ebookId) { //e북 조회, 검색
+        return ebookRepository.findById(ebookId).get();
     }
 
-    public void deleteEBook(Long id) { //e북 삭제
-        eBookRepository.deleteById(id);
+    public void deleteEbook(Long ebookId) { //e북 삭제
+        ebookRepository.deleteById(ebookId);
     }
 
-    public void updateEBook(Ebook eBook) { //e북 수정
-        eBookRepository.save(eBook);
+    public void updateEbook(Ebook ebook) { //e북 수정
+        ebookRepository.save(ebook);
     }
 
-    public List<Ebook> getEBookList() { //e북 리스트,목록
-        return eBookRepository.findAll();
+    public List<Ebook> getEbookList() { //e북 리스트,목록
+        return ebookRepository.findAll();
     }
 }

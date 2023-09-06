@@ -1,5 +1,6 @@
 package com.woori.bookspring.config;
 
+import com.woori.bookspring.config.oauth.OAuth2UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final OAuth2UserServiceImpl oAuth2UserService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -27,6 +29,10 @@ public class SecurityConfig {
                 .logout(out -> out
                         .logoutSuccessUrl("/")
                         .logoutUrl("/logout"))
+                .oauth2Login(oauth2 -> oauth2
+                        .defaultSuccessUrl("/")
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(oAuth2UserService)))
                 .csrf(csrf -> csrf.disable());
         return http.build();
     }

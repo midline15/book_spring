@@ -23,6 +23,6 @@ public class Episode extends BaseBook {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "e_book_id")
-    private Ebook eBook;
+    @JoinColumn(name = "ebook_id")
+    private Ebook ebook;
 }

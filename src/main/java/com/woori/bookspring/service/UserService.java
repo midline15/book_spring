@@ -1,9 +1,11 @@
 package com.woori.bookspring.service;
 
+import com.woori.bookspring.dto.SignupForm;
 import com.woori.bookspring.entity.user.User;
 import com.woori.bookspring.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,12 +15,14 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     //회원가입
     @Transactional
-    public void createUser(User user) {
+    public void createUser(SignupForm dto) {
+        dto.setPassword(passwordEncoder.encode(dto.getPassword()));
+        User user = dto.toEntity();
         userRepository.save(user);
-
     }
 
     //회원정보

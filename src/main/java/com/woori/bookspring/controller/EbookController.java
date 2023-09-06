@@ -13,18 +13,18 @@ import java.util.List;
 @RequestMapping("ebook")
 @RequiredArgsConstructor
 public class EbookController {
-    private final EbookService eBookService;
+    private final EbookService ebookService;
 
     @GetMapping // e북 조회
-    public @ResponseBody List<Ebook> getEBookList(Model model) {
-        return eBookService.getEBookList();
+    public @ResponseBody List<Ebook> getEbookList(Model model) {
+        return ebookService.getEbookList();
     }
 
     @GetMapping("{id}") //e북 id 단건 조회
-    public @ResponseBody Long getEBook(@PathVariable Long id, Model model) {
-        Ebook ebook = eBookService.getEBook(id);
+    public String getEbook(@PathVariable Long id, Model model) {
+        Ebook ebook = ebookService.getEbook(id);
         model.addAttribute("ebook", ebook);
-        return ebook.getId();
+        return "ebook/ebook";
     }
 
     @GetMapping("new")
@@ -32,19 +32,19 @@ public class EbookController {
         return "ebook/ebookForm";
     }
     @PostMapping("new") //e북 생성
-    public @ResponseBody String newEBook(@RequestBody Ebook eBook, Model model) {
-        return eBookService.createEBook(eBook).getId().toString();
+    public @ResponseBody String newEbook(@RequestBody Ebook ebook, Model model) {
+        return ebookService.createEbook(ebook).getId().toString();
     }
 
     @DeleteMapping("{id}") //e북 삭제
-    public @ResponseBody String deleteEBook(@PathVariable Long id, Ebook eBook) {
-        eBookService.deleteEBook(id);
+    public @ResponseBody String deleteEbook(@PathVariable Long id) {
+        ebookService.deleteEbook(id);
         return "e북 삭제";
     }
 
     @PatchMapping("{id}") //e북 수정
-    public @ResponseBody String updateEBook(@PathVariable Long id, @RequestBody Ebook eBook) {
-        eBookService.updateEBook(eBook);
+    public @ResponseBody String updateEbook(@PathVariable Long id, @RequestBody Ebook Ebook) {
+        ebookService.updateEbook(Ebook);
         return "e북 수정";
     }
 }
