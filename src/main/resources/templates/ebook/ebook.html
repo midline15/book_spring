@@ -37,20 +37,20 @@
 
 <div layout:fragment="content" style="margin-left:25%;margin-right:25%">
 
-    <input type="hidden" id="itemId" th:value="${eBook.id}">
+    <input type="hidden" id="itemId" th:value="${ebook.id}">
 
     <div class="d-flex">
         <div class="repImgDiv">
-            <img src="https://dn-img-page.kakao.com/download/resource?kid=cg1WJ/hzhOdN0sDF/FBgiSIRkBwF3Kfs9wqocL1&amp;filename=th3" class="rounded repImg" th:alt="${eBook.title}">
+            <img src="https://dn-img-page.kakao.com/download/resource?kid=cg1WJ/hzhOdN0sDF/FBgiSIRkBwF3Kfs9wqocL1&amp;filename=th3" class="rounded repImg" th:alt="${ebook.title}">
         </div>
         <div class="wd50">
-            <div class="h4" th:text="${eBook.title}"></div>
+            <div class="h4" th:text="${ebook.title}"></div>
             <hr class="my-4">
 
             <div class="text-right">
                 <div class="input-group w-50">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" th:text="${eBook.intro}"></span>
+                        <span class="input-group-text" th:text="${ebook.intro}"></span>
                     </div>
                 </div>
                 <hr class="my-4">
