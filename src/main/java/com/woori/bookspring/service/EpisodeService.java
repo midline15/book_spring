@@ -2,21 +2,16 @@ package com.woori.bookspring.service;
 
 import com.woori.bookspring.entity.ebook.Episode;
 import com.woori.bookspring.repository.EpisodeRepository;
-<<<<<<< Updated upstream
 import lombok.RequiredArgsConstructor;
-=======
->>>>>>> Stashed changes
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-<<<<<<< Updated upstream
+
 @Transactional
 @RequiredArgsConstructor
 @Service
-=======
->>>>>>> Stashed changes
 public class EpisodeService {
     private final EpisodeRepository episodeRepository;
 
