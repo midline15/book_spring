@@ -3,14 +3,14 @@ package com.woori.bookspring.entity.ebook;
 import com.woori.bookspring.entity.base.BaseBook;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Entity
 public class Episode extends BaseBook {
 
@@ -23,6 +23,6 @@ public class Episode extends BaseBook {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ebook_id")
-    private EBook eBook;
+    @JoinColumn(name = "e_book_id")
+    private Ebook eBook;
 }

@@ -1,7 +1,7 @@
 package com.woori.bookspring.service;
 
-import com.woori.bookspring.entity.ebook.EBook;
-import com.woori.bookspring.repository.EBookRepository;
+import com.woori.bookspring.entity.ebook.Ebook;
+import com.woori.bookspring.repository.EbookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,15 +11,15 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class EBookService {
+public class EbookService {
     //1234
-    private final EBookRepository eBookRepository;
+    private final EbookRepository eBookRepository;
 
-    public EBook createEBook(EBook eBook) { //e북 생성
+    public Ebook createEBook(Ebook eBook) { //e북 생성
         return eBookRepository.save(eBook);
     }
 
-    public EBook getEBook(Long id) { //e북 조회, 검색
+    public Ebook getEBook(Long id) { //e북 조회, 검색
         return eBookRepository.findById(id).get();
     }
 
@@ -27,11 +27,11 @@ public class EBookService {
         eBookRepository.deleteById(id);
     }
 
-    public void updateEBook(EBook eBook) { //e북 수정
+    public void updateEBook(Ebook eBook) { //e북 수정
         eBookRepository.save(eBook);
     }
 
-    public List<EBook> getEBookList() { //e북 리스트,목록
+    public List<Ebook> getEBookList() { //e북 리스트,목록
         return eBookRepository.findAll();
     }
 }

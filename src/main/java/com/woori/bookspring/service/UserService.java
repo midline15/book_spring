@@ -22,13 +22,13 @@ public class UserService {
     }
 
     //회원정보
-    public User getUser(Long username) {
+    public User getUser(String username) {
         return userRepository.findById(username).get();
     }
 
     //회원삭제
     @Transactional
-    public void deleteUser(Long username) {
+    public void deleteUser(String username) {
         userRepository.deleteById(username);
     }
 
