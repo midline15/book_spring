@@ -16,27 +16,32 @@ public class BookController {
 
     private final BookService bookService;
 
+    @GetMapping // 리스트조회
+    public @ResponseBody List<Book> bookList(){
+        return bookService.bookList();
+    }
+
     @GetMapping("{id}") // 단건조회
     public @ResponseBody String getBook(@PathVariable Long id, Model model) {
         Book book = bookService.getBook(id);
         model.addAttribute("book", book);
         return book.getTitle();
     }
-    @GetMapping("/lists") // 리스트조회
-    public @ResponseBody List<Book> bookList(){
-        return bookService.bookList();
-    }
 
-    @PostMapping("/create") // newBook
+    @GetMapping("new")
+    public String newBook(){
+        return "book/bookForm";
+    }
+    @PostMapping("new") // newBook
     public @ResponseBody String createBook(@RequestBody Book newBook) {
         return bookService.createBook(newBook).getId().toString();
     }
-    @DeleteMapping("/{id}/delete") // 삭제
+    @DeleteMapping("{id}") // 삭제
     public @ResponseBody String deleteBook(@PathVariable Long id){
         bookService.deleteBook(id);
         return "삭제 완료";
     }
-    @PatchMapping("/{id}/update") // 수정
+    @PatchMapping("{id}") // 수정
     public @ResponseBody String updateBook(@PathVariable Long id, @RequestBody Book updateBook) {
         bookService.updateBook(updateBook);
         return "수정 완료";

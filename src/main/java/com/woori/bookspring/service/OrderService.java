@@ -31,7 +31,7 @@ public class OrderService {
     // bookRepository .. 필요한지?..
 
     @Transactional // order 목록 조회
-    public List<Order> getAllOrders(User user) {
+    public List<Order> getOrderList(User user) {
         return orderRepository.findByUser(user);
     }
 

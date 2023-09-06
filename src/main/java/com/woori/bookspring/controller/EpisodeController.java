@@ -1,7 +1,6 @@
 package com.woori.bookspring.controller;
 
 
-import com.woori.bookspring.entity.ebook.EBook;
 import com.woori.bookspring.entity.ebook.Episode;
 import com.woori.bookspring.service.EpisodeService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,7 @@ public class EpisodeController {
     private final EpisodeService episodeService;
 
     //에피소드 전체 조회
-    @GetMapping("lists")
+    @GetMapping
     public @ResponseBody  List<Episode> getEpisodeList() {
         return episodeService.getEpisodeList();
     }
@@ -33,21 +32,25 @@ public class EpisodeController {
         return episode.getTitle();
     }
 
+    @GetMapping("new")
+    public String createEpisode(){
+        return "ebook/episodeForm";
+    }
     //에피소드 생성
-    @PostMapping("/new")
+    @PostMapping("new")
     public @ResponseBody String createEpisode(@RequestBody Episode episode) {
         return episodeService.createEpisode(episode).getId().toString();
     }
 
     //에피소드 삭제
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("{id}")
     public @ResponseBody String deleteEpisode(@PathVariable Long id){
         episodeService.deleteEpisode(id);
         return "삭제 완료";
     }
 
     //에피소드 수정
-    @PatchMapping("/{id}/update")
+    @PatchMapping("{id}")
     private @ResponseBody String updateEpisode(@PathVariable Long id, @RequestBody Episode episode) {
         episodeService.updateEpisode(episode);
         return "수정완료";

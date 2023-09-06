@@ -29,13 +29,18 @@ public class CartService {
 
     // 조회
     @Transactional
-    public List<Cart> getCartList(){
-        return cartRepository.findAll();
+    public Cart getCart(User user) {
+        return cartRepository.findByUser(user);
     }
 
 
     @Transactional
-    public void createCart(User user){
+    public List<CartBook> getCartBookList(Cart cart) {
+        return cartBookRepository.findByCart(cart);
+    }
+
+    @Transactional
+    public void createCart(User user) {
         Cart cart = Cart.builder()
                 .user(user)
                 .build();
@@ -43,17 +48,17 @@ public class CartService {
     }
 
 
-
     // 추가
     @Transactional
-    public void addCart(Book book,int count, User user){
+    public void addCart(Book book, int count, User user) {
         Cart cart = cartRepository.findByUser(user);
         // 장바구니에 담을 상품 엔티티 조회
-        CartBook cartBook = CartBook.createCartBook(cart, book, count);
+        CartBook cartBook = CartBook.builder().book(book).count(count).cart(cart).build();
 
         cartBookRepository.save(cartBook); // 장바구니에 들어갈 상품 저장
 
     }
+
     // 상품정보의 x 버튼 클릭하면 장바구니에 넣어 놓은 상품을 삭제
     public void deleteCartBook(Long cartBookId) {
         CartBook cartBook = cartBookRepository.findById(cartBookId)
@@ -63,14 +68,14 @@ public class CartService {
 
 
     // 장바구니 상품의 수량 수정
-    public void updateCartBookCount(Long cartBookId, int count){
+    public void updateCartBookCount(Long cartBookId, int count) {
         CartBook cartBook = cartBookRepository.findById(cartBookId)
                 .orElseThrow(EntityNotFoundException::new);
 
         cartBook.updateCount(count);
     }
 
-    public void deleteAllCartBooks(Long cartId){
+    public void deleteAllCartBooks(Long cartId) {
         cartBookRepository.deleteByCartId(cartId);
     }
 }
