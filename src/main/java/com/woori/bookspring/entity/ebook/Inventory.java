@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,4 +25,12 @@ public class Inventory extends BaseEntity {
     @JoinColumn(name = "username")
     private User user;
 
+    @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<InventoryEbook> inventoryEbookList;
+
+    public static Inventory createInventory(User user){
+        return Inventory.builder()
+                .user(user)
+                .build();
+    }
 }

@@ -1,15 +1,18 @@
 package com.woori.bookspring.service;
 
 import com.woori.bookspring.dto.SignupForm;
+import com.woori.bookspring.dto.UserDto;
 import com.woori.bookspring.entity.user.User;
 import com.woori.bookspring.repository.UserRepository;
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -17,33 +20,26 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    //회원가입
-    @Transactional
     public void createUser(SignupForm dto) {
         dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         User user = dto.toEntity();
         userRepository.save(user);
     }
 
-    //회원정보
-    public User getUser(String username) {
-        return userRepository.findById(username).get();
+    @Transactional(readOnly = true)
+    public UserDto getUser(String username) {
+         return userRepository.findById(username).orElseThrow(EntityNotFoundException::new).of();
     }
 
-    //회원삭제
-    @Transactional
     public void deleteUser(String username) {
         userRepository.deleteById(username);
     }
 
-    //회원정보 수정
-    @Transactional
-    public void updateUser(User user) {
-        userRepository.save(user);
-
+    public void updateUser(UserDto userDto) {
+        userRepository.save(userDto.toEntity());
     }
 
-    //회원정보리스트
+    @Transactional(readOnly = true)
     public List<User> getUserList() {
         return userRepository.findAll();
     }

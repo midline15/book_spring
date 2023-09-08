@@ -2,6 +2,7 @@ package com.woori.bookspring.service;
 
 import com.woori.bookspring.entity.ebook.Ebook;
 import com.woori.bookspring.repository.EbookRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +20,10 @@ public class EbookService {
         return ebookRepository.save(ebook);
     }
 
+    @Transactional(readOnly = true)
     public Ebook getEbook(Long ebookId) { //e북 조회, 검색
-        return ebookRepository.findById(ebookId).get();
+        return ebookRepository.findById(ebookId).orElseThrow(EntityNotFoundException::new);
     }
-
     public void deleteEbook(Long ebookId) { //e북 삭제
         ebookRepository.deleteById(ebookId);
     }
@@ -31,6 +32,7 @@ public class EbookService {
         ebookRepository.save(ebook);
     }
 
+    @Transactional(readOnly = true)
     public List<Ebook> getEbookList() { //e북 리스트,목록
         return ebookRepository.findAll();
     }

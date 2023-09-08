@@ -1,5 +1,6 @@
 package com.woori.bookspring.entity;
 
+import com.woori.bookspring.dto.CartBookDto;
 import com.woori.bookspring.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,6 +27,14 @@ public class CartBook extends BaseEntity {
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
+    public static CartBook createCartBook(Book book, Cart cart, int count) {
+        return CartBook.builder()
+                .book(book)
+                .cart(cart)
+                .count(count)
+                .build();
+    }
+
 
     // 장바구니에 담을 수량 증가
     public void addCount(int count){
@@ -37,4 +46,13 @@ public class CartBook extends BaseEntity {
         this.count = count;
     }
 
+    public CartBookDto of() {
+        return CartBookDto.builder()
+                .id(id)
+                .bookId(book.getId())
+                .count(count)
+                .title(book.getTitle())
+                .price(book.getPrice())
+                .build();
+    }
 }

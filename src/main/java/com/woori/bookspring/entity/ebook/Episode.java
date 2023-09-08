@@ -1,5 +1,6 @@
 package com.woori.bookspring.entity.ebook;
 
+import com.woori.bookspring.dto.EpisodeFormDto;
 import com.woori.bookspring.entity.base.BaseBook;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,4 +26,12 @@ public class Episode extends BaseBook {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ebook_id")
     private Ebook ebook;
+
+    public static Episode createEpisode(EpisodeFormDto episodeFormDto, Ebook ebook) {
+        return Episode.builder()
+                .title(episodeFormDto.getTitle())
+                .content(episodeFormDto.getContent())
+                .ebook(ebook)
+                .build();
+    }
 }

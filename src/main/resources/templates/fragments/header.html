@@ -3,19 +3,64 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
 <!-- Header Fragment 선언부 -->
 <div th:fragment="header">
-    <header class="p-3 bg-dark text-white">
-        <div class="container">
-            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                    <li><a id="home" href="/" class="nav-link px-2 text-secondary">Home</a></li>
+    <style>
+        .dropdown:hover .dropdown-menu {
+            display: block;
+            margin-top: 0;
+        }
+    </style>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a id="home" href="/" class="nav-link px-2 text-secondary">Home</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Book
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="/book">전체보기</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle"role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Ebook
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="/ebook">전체보기</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            커뮤니티
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="/board">자유게시판</a></li>
+                            <li><a class="dropdown-item" href="/review">리뷰</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            고객센터
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="/notice">공지사항</a></li>
+                            <li><a class="dropdown-item" href="/event">이벤트</a></li>
+                            <li><a class="dropdown-item" href="/qna">Q&A</a></li>
+                        </ul>
+                    </li>
                 </ul>
                 <div class="text-end">
-                    <span class="text-white me-2"></span>
                     <div sec:authorize="isAnonymous()">
                         <a class="btn btn-outline-light me-2" href="/user/login">Login</a>
                         <a class="btn btn-outline-light me-2" href="/user/signup">Signup</a>
                     </div>
                     <div sec:authorize="isAuthenticated()">
+                        <span class="text-white me-2">아이디</span>
                         <a th:if="${#strings.equals(#authentication.principal.user.oauth,'WOORI')}"
                            class="btn btn-outline-light me-2" href="javascript:wooriLogout();">Logout</a>
                         <a th:if="${#strings.equals(#authentication.principal.user.oauth,'NAVER')}"
@@ -29,12 +74,10 @@
                         <a class="btn btn-outline-light me-2" href="/cart">장바구니</a>
                         <a class="btn btn-outline-light me-2" href="/order">주문내역</a>
                     </div>
-                    <a class="btn btn-outline-light me-2" href="/book">Book</a>
-                    <a class="btn btn-outline-light me-2" href="/ebook">Ebook</a>
                 </div>
             </div>
         </div>
-    </header>
+    </nav>
 
     <script>
         function wooriLogout() {
@@ -42,18 +85,21 @@
                 location.href = "/logout";
             }
         }
+
         function googleLogout() {
             if (confirm("정말 로그아웃 하시겠습니까?")) {
-                let win = window.open('https://accounts.google.com/logout',"popup", "width=400, height=300, menubar=1")
+                let win = window.open('https://accounts.google.com/logout', "popup", "width=400, height=300, menubar=1")
                 location.href = "/logout";
             }
         }
+
         function naverLogout() {
             if (confirm("정말 로그아웃 하시겠습니까?")) {
-                window.open('http://nid.naver.com/nidlogin.logout',"popup", "width=400, height=300, menubar=1")
+                window.open('http://nid.naver.com/nidlogin.logout', "popup", "width=400, height=300, menubar=1")
                 location.href = "/logout";
             }
         }
+
         function kakaoLogout() {
             if (confirm("정말 로그아웃 하시겠습니까?")) {
                 location.href = "/user/logout/kakao";

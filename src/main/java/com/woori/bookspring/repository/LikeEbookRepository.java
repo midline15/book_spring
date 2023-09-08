@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface LikeEbookRepository extends JpaRepository<LikeEbook, Long> {
-    List<LikeEbook> findByLike(Like like);
+    List<LikeEbook> findByLikeId(Long likeId);
 }

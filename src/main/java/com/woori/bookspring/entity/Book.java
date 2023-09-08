@@ -1,6 +1,7 @@
 package com.woori.bookspring.entity;
 
 import com.woori.bookspring.constant.SellStatus;
+import com.woori.bookspring.dto.BookDto;
 import com.woori.bookspring.entity.base.BaseBook;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -27,10 +28,23 @@ public class Book extends BaseBook {
 
     private LocalDate origDate; // 초판 발행일
 
+    private float avgScore;
+
     @Enumerated(EnumType.STRING)
     private SellStatus sellStatus;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cover_id")
     private Cover cover;
+
+    public BookDto of() {
+        return BookDto.builder()
+                .id(id)
+                .title(title)
+                .price(price)
+                .intro(intro)
+                .sellStatus(sellStatus)
+                .url(cover.getUrl())
+                .build();
+    }
 }
