@@ -1,5 +1,6 @@
 package com.woori.bookspring.entity.ebook;
 
+import com.woori.bookspring.dto.InventoryEbookDto;
 import com.woori.bookspring.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,4 +26,17 @@ public class InventoryEbook extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ebook_id")
     private Ebook ebook;
+
+    public static InventoryEbook createInventoryEbook(Inventory inventory, Ebook ebook){
+        return InventoryEbook.builder()
+                .inventory(inventory)
+                .ebook(ebook)
+                .build();
+    }
+
+    public InventoryEbookDto of() {
+        return InventoryEbookDto.builder()
+                .title(ebook.getTitle())
+                .build();
+    }
 }

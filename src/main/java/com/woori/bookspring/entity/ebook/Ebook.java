@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,4 +29,7 @@ public class Ebook extends BaseBook {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cover_id")
     private Cover cover;
+
+    @OneToMany(mappedBy = "ebook",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Episode> episodeList;
 }

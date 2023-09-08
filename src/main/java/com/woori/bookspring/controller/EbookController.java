@@ -16,8 +16,10 @@ public class EbookController {
     private final EbookService ebookService;
 
     @GetMapping // e북 조회
-    public @ResponseBody List<Ebook> getEbookList(Model model) {
-        return ebookService.getEbookList();
+    public String getEbookList(Model model) {
+        List<Ebook> ebookList = ebookService.getEbookList();
+        model.addAttribute("list", ebookList);
+        return "ebook/ebookList";
     }
 
     @GetMapping("{id}") //e북 id 단건 조회

@@ -1,6 +1,7 @@
 package com.woori.bookspring.entity.user;
 
 import com.woori.bookspring.constant.OAuthType;
+import com.woori.bookspring.dto.UserDto;
 import com.woori.bookspring.entity.base.BaseUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,4 +22,10 @@ public class User extends BaseUser {
 
     @Enumerated(EnumType.STRING)
     private OAuthType oauth;
+
+    public UserDto of() {
+        return UserDto.builder()
+                .username(username)
+                .build();
+    }
 }

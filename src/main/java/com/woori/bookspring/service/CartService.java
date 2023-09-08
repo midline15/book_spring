@@ -1,5 +1,7 @@
 package com.woori.bookspring.service;
 
+import com.woori.bookspring.dto.AddCartBookDto;
+import com.woori.bookspring.dto.CartBookDto;
 import com.woori.bookspring.entity.Book;
 import com.woori.bookspring.entity.Cart;
 import com.woori.bookspring.entity.CartBook;
@@ -9,73 +11,84 @@ import com.woori.bookspring.repository.CartBookRepository;
 import com.woori.bookspring.repository.CartRepository;
 import com.woori.bookspring.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class CartService {
     //CRUD
     private final CartRepository cartRepository;
-
     private final CartBookRepository cartBookRepository;
-
     private final BookRepository bookRepository;
-
     private final UserRepository userRepository;
+    private final OrderService orderService;
 
-    // 조회
-    @Transactional
-    public Cart getCart(User user) {
-        return cartRepository.findByUser(user);
+    public Cart getCart(String username) {
+        return cartRepository.findByUser_Username(username).orElseGet(() -> {
+            User user = userRepository.findById(username).orElseThrow(EntityNotFoundException::new);
+            return createCart(user);
+        });
     }
 
-
-    @Transactional
-    public List<CartBook> getCartBookList(Cart cart) {
-        return cartBookRepository.findByCart(cart);
+    public List<CartBookDto> getCartBookList(String username) {
+        return cartBookRepository.findByCart(getCart(username)).stream().map(CartBook::of).toList();
     }
 
-    @Transactional
-    public void createCart(User user) {
-        Cart cart = Cart.builder()
-                .user(user)
-                .build();
-        cartRepository.save(cart);
+    public Cart createCart(User user) {
+        return cartRepository.save(Cart.createCart(user));
     }
 
-
-    // 추가
-    @Transactional
-    public void addCart(Book book, int count, User user) {
-        Cart cart = cartRepository.findByUser(user);
-        // 장바구니에 담을 상품 엔티티 조회
-        CartBook cartBook = CartBook.builder().book(book).count(count).cart(cart).build();
-
-        cartBookRepository.save(cartBook); // 장바구니에 들어갈 상품 저장
-
+    public void addCart(CartBookDto dto, String username) {
+        Cart cart = getCart(username);
+        Book book = bookRepository.findById(dto.getBookId()).orElseThrow(EntityNotFoundException::new);
+        CartBook cartBook = CartBook.createCartBook(book, cart, dto.getCount());
+        cartBookRepository.save(cartBook);
     }
 
-    // 상품정보의 x 버튼 클릭하면 장바구니에 넣어 놓은 상품을 삭제
     public void deleteCartBook(Long cartBookId) {
-        CartBook cartBook = cartBookRepository.findById(cartBookId)
-                .orElseThrow(EntityNotFoundException::new);
+        CartBook cartBook = cartBookRepository.findById(cartBookId).orElseThrow(EntityNotFoundException::new);
         cartBookRepository.delete(cartBook);
     }
 
-
-    // 장바구니 상품의 수량 수정
     public void updateCartBookCount(Long cartBookId, int count) {
-        CartBook cartBook = cartBookRepository.findById(cartBookId)
-                .orElseThrow(EntityNotFoundException::new);
-
+        CartBook cartBook = cartBookRepository.findById(cartBookId).orElseThrow(EntityNotFoundException::new);
         cartBook.updateCount(count);
     }
 
     public void deleteAllCartBooks(Long cartId) {
         cartBookRepository.deleteByCartId(cartId);
+    }
+
+    /*public Long orderCartBook(List<CartOrderDto> cartOrderDtoList, String username) {
+        List<AddCartBookDto> addCartBookDtoList = new ArrayList<>();
+        for (CartOrderDto cartOrderDto : cartOrderDtoList) {
+            CartBook cartBook = cartBookRepository.findById(cartOrderDto.getCartBookId())
+                    .orElseThrow(EntityNotFoundException::new);
+
+            AddCartBookDto addCartBookDto = AddCartBookDto.builder()
+                    .bookId(cartBook.getBook().getId())
+                    .count(cartBook.getCount())
+                    .build();
+            addCartBookDtoList.add(addCartBookDto);
+        }
+
+        Long orderId = orderService.addOrders(addCartBookDtoList, username);
+
+        for (CartOrderDto cartOrderDto : cartOrderDtoList) {
+            CartBook cartBook = cartBookRepository.findById(cartOrderDto.getCartBookId())
+                    .orElseThrow(EntityNotFoundException::new);
+            cartBookRepository.delete(cartBook);
+        }
+
+        return orderId;
+    }*/
+    public void orderCartBook(List<CartBookDto> cartBookDtoList, String username) {
+        orderService.addOrders(cartBookDtoList, username);
+        cartBookDtoList.forEach(cartBookDto -> cartBookRepository.deleteById(cartBookDto.getId()));
     }
 }

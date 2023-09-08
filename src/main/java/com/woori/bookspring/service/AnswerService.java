@@ -2,35 +2,31 @@ package com.woori.bookspring.service;
 
 import com.woori.bookspring.entity.qna.Answer;
 import com.woori.bookspring.repository.AnswerRepository;
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class AnswerService {
 
     private final AnswerRepository answerRepository;
 
-    //답변 작성
-    @Transactional
     public void createAnswer(Answer answer) {
         answerRepository.save(answer);
     }
 
-    //답변 조회
+    @Transactional(readOnly = true)
     public void getAnswer(Long id) {
-        answerRepository.findById(id).get();
+        answerRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
-    //답변 수정
-    @Transactional
     public void updateAnswer(Answer answer) {
         answerRepository.save(answer);
     }
 
-    //답변 삭제
-    @Transactional
     public void deleteAnswer(Long id) {
         answerRepository.deleteById(id);
     }

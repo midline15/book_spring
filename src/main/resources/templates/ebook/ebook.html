@@ -60,7 +60,9 @@
                     <h3 name="totalPrice" id="totalPrice" class="font-weight-bold"></h3>
                 </div>
                 <div class="text-right">
-                    <button type="button" class="btn btn-light border border-primary btn-lg">좋아요</button>
+                    <form th:action="@{/like/ebook/{ebook-id}(ebook-id = ${ebook.id})}" method="post">
+                        <button type="submit" class="btn btn-light border border-primary btn-lg">좋아요</button>
+                    </form>
                     <button type="button" class="btn btn-primary btn-lg">이용권</button>
                 </div>
             </div>
@@ -68,187 +70,30 @@
     </div>
 
     <div data-t-obj="{&quot;click&quot;:{&quot;layer1&quot;:&quot;전체회차목록&quot;}}" class="min-h-360pxr">
-        <ul class="jsx-2531468679 jsx-376872051 flex" style="flex-direction: column; background-color: var(--bg-a-20);">
+        <ul class="jsx-2531468679 jsx-376872051 flex" style="flex-direction: column; background-color: var(--bg-a-20);" th:each="episode : ${ebook.episodeList}">
             <li class="jsx-2531468679 jsx-376872051 list-child-item">
                 <div>
-                    <div data-t-obj="{&quot;fromGraphql&quot;:null,&quot;click&quot;:null,&quot;eventMeta&quot;:{&quot;id&quot;:&quot;58627039&quot;,&quot;name&quot;:&quot;남궁세가 천재 외손자 1화&quot;,&quot;subcategory&quot;:&quot;무협&quot;,&quot;category&quot;:&quot;웹소설&quot;,&quot;series&quot;:null,&quot;provider&quot;:&quot;서비스&quot;,&quot;series_id&quot;:null,&quot;type&quot;:&quot;productId&quot;},&quot;viewimp_contents&quot;:null,&quot;customProps&quot;:null}"
-                         class="relative flex py-8pxr bg-bg-a-20 px-15pxr"><a class="flex flex-1"
-                                                                              href="/content/58620412/viewer/58627039">
+                    <div class="relative flex py-8pxr bg-bg-a-20 px-15pxr"><a class="flex flex-1" href="/content/58620412/viewer/58627039">
                         <div class="flex items-center">
-                            <div class="relative overflow-hidden mr-12pxr shrink-0 w-66pxr"
-                                 data-t-obj="{&quot;customProps&quot;:{&quot;event_episode_id&quot;:&quot;58627039&quot;}}"
-                                 style="border-radius: 8px;">
+                            <div class="relative overflow-hidden mr-12pxr shrink-0 w-66pxr" style="border-radius: 8px;">
                                 <div class="jsx-905614930 image-container relative h-full w-full">
                                     <div class="jsx-905614930 absolute top-0 left-0 h-full w-full select-none items-center justify-center bg-s-gray-20/15 object-cover hidden"></div>
-                                    <img src="https://dn-img-page.kakao.com/download/resource?kid=cg1WJ/hzhOdN0sDF/FBgiSIRkBwF3Kfs9wqocL1&amp;filename=th3"
-                                         alt="썸네일" loading="lazy"
-                                         class="jsx-905614930 absolute top-0 left-0 h-full w-full select-none object-cover visible">
                                 </div>
                                 <div class="absolute top-0 left-0 h-full w-full border-[0.5px] border-solid border-sp-thumb-line"
                                      style="border-radius: 8px;"></div>
                             </div>
                             <div class="flex flex-col">
                                 <div class="mb-4pxr flex items-center"><span
-                                        class="font-medium2 break-all text-el-60 line-clamp-2">남궁세가 천재 외손자 1화</span>
+                                        class="font-medium2 break-all text-el-60 line-clamp-2" th:text="${episode.title}"></span>
                                 </div>
                                 <div class="text-ellipsis line-clamp-1 font-small2 text-el-60"><span
-                                        class="break-all align-middle">2022.01.12</span></div>
-                                <span class="font-small2 text-ellipsis break-all text-el-40 line-clamp-1 mt-4pxr">무료</span>
+                                        class="break-all align-middle" th:text="${episode.regTime}">2022.01.12</span></div>
                             </div>
                         </div>
                     </a></div>
                 </div>
             </li>
-            <li class="jsx-2531468679 jsx-376872051 list-child-item">
-                <div>
-                    <div data-t-obj="{&quot;fromGraphql&quot;:null,&quot;click&quot;:null,&quot;eventMeta&quot;:{&quot;id&quot;:&quot;58627041&quot;,&quot;name&quot;:&quot;남궁세가 천재 외손자 2화&quot;,&quot;subcategory&quot;:&quot;무협&quot;,&quot;category&quot;:&quot;웹소설&quot;,&quot;series&quot;:null,&quot;provider&quot;:&quot;서비스&quot;,&quot;series_id&quot;:null,&quot;type&quot;:&quot;productId&quot;},&quot;viewimp_contents&quot;:null,&quot;customProps&quot;:null}"
-                         class="relative flex py-8pxr bg-bg-a-20 px-15pxr"><a class="flex flex-1"
-                                                                              href="/content/58620412/viewer/58627041">
-                        <div class="flex items-center">
-                            <div class="relative overflow-hidden mr-12pxr shrink-0 w-66pxr"
-                                 data-t-obj="{&quot;customProps&quot;:{&quot;event_episode_id&quot;:&quot;58627041&quot;}}"
-                                 style="border-radius: 8px;">
-                                <div class="jsx-905614930 image-container relative h-full w-full">
-                                    <div class="jsx-905614930 absolute top-0 left-0 h-full w-full select-none items-center justify-center bg-s-gray-20/15 object-cover hidden"></div>
-                                    <img src="https://dn-img-page.kakao.com/download/resource?kid=cg1WJ/hzhOdN0sDF/FBgiSIRkBwF3Kfs9wqocL1&amp;filename=th3"
-                                         alt="썸네일" loading="lazy"
-                                         class="jsx-905614930 absolute top-0 left-0 h-full w-full select-none object-cover visible">
-                                </div>
-                                <div class="absolute top-0 left-0 h-full w-full border-[0.5px] border-solid border-sp-thumb-line"
-                                     style="border-radius: 8px;"></div>
-                            </div>
-                            <div class="flex flex-col">
-                                <div class="mb-4pxr flex items-center"><span
-                                        class="font-medium2 break-all text-el-60 line-clamp-2">남궁세가 천재 외손자 2화</span>
-                                </div>
-                                <div class="text-ellipsis line-clamp-1 font-small2 text-el-60"><span
-                                        class="break-all align-middle">2022.01.12</span></div>
-                                <span class="font-small2 text-ellipsis break-all text-el-40 line-clamp-1 mt-4pxr">무료</span>
-                            </div>
-                        </div>
-                    </a></div>
-                </div>
-            </li>
-            <li class="jsx-2531468679 jsx-376872051 list-child-item">
-                <div>
-                    <div data-t-obj="{&quot;fromGraphql&quot;:null,&quot;click&quot;:null,&quot;eventMeta&quot;:{&quot;id&quot;:&quot;58627043&quot;,&quot;name&quot;:&quot;남궁세가 천재 외손자 3화&quot;,&quot;subcategory&quot;:&quot;무협&quot;,&quot;category&quot;:&quot;웹소설&quot;,&quot;series&quot;:null,&quot;provider&quot;:&quot;서비스&quot;,&quot;series_id&quot;:null,&quot;type&quot;:&quot;productId&quot;},&quot;viewimp_contents&quot;:null,&quot;customProps&quot;:null}"
-                         class="relative flex py-8pxr bg-bg-a-20 px-15pxr"><a class="flex flex-1"
-                                                                              href="/content/58620412/viewer/58627043">
-                        <div class="flex items-center">
-                            <div class="relative overflow-hidden mr-12pxr shrink-0 w-66pxr"
-                                 data-t-obj="{&quot;customProps&quot;:{&quot;event_episode_id&quot;:&quot;58627043&quot;}}"
-                                 style="border-radius: 8px;">
-                                <div class="jsx-905614930 image-container relative h-full w-full">
-                                    <div class="jsx-905614930 absolute top-0 left-0 h-full w-full select-none items-center justify-center bg-s-gray-20/15 object-cover hidden"></div>
-                                    <img src="https://dn-img-page.kakao.com/download/resource?kid=cg1WJ/hzhOdN0sDF/FBgiSIRkBwF3Kfs9wqocL1&amp;filename=th3"
-                                         alt="썸네일" loading="lazy"
-                                         class="jsx-905614930 absolute top-0 left-0 h-full w-full select-none object-cover visible">
-                                </div>
-                                <div class="absolute top-0 left-0 h-full w-full border-[0.5px] border-solid border-sp-thumb-line"
-                                     style="border-radius: 8px;"></div>
-                            </div>
-                            <div class="flex flex-col">
-                                <div class="mb-4pxr flex items-center"><span
-                                        class="font-medium2 break-all text-el-60 line-clamp-2">남궁세가 천재 외손자 3화</span>
-                                </div>
-                                <div class="text-ellipsis line-clamp-1 font-small2 text-el-60"><span
-                                        class="break-all align-middle">2022.01.12</span></div>
-                                <span class="font-small2 text-ellipsis break-all text-el-40 line-clamp-1 mt-4pxr">무료</span>
-                            </div>
-                        </div>
-                    </a></div>
-                </div>
-            </li>
-            <li class="jsx-2531468679 jsx-376872051 list-child-item">
-                <div>
-                    <div data-t-obj="{&quot;fromGraphql&quot;:null,&quot;click&quot;:null,&quot;eventMeta&quot;:{&quot;id&quot;:&quot;58627045&quot;,&quot;name&quot;:&quot;남궁세가 천재 외손자 4화&quot;,&quot;subcategory&quot;:&quot;무협&quot;,&quot;category&quot;:&quot;웹소설&quot;,&quot;series&quot;:null,&quot;provider&quot;:&quot;서비스&quot;,&quot;series_id&quot;:null,&quot;type&quot;:&quot;productId&quot;},&quot;viewimp_contents&quot;:null,&quot;customProps&quot;:null}"
-                         class="relative flex py-8pxr bg-bg-a-20 px-15pxr"><a class="flex flex-1"
-                                                                              href="/content/58620412/viewer/58627045">
-                        <div class="flex items-center">
-                            <div class="relative overflow-hidden mr-12pxr shrink-0 w-66pxr"
-                                 data-t-obj="{&quot;customProps&quot;:{&quot;event_episode_id&quot;:&quot;58627045&quot;}}"
-                                 style="border-radius: 8px;">
-                                <div class="jsx-905614930 image-container relative h-full w-full">
-                                    <div class="jsx-905614930 absolute top-0 left-0 h-full w-full select-none items-center justify-center bg-s-gray-20/15 object-cover hidden"></div>
-                                    <img src="https://dn-img-page.kakao.com/download/resource?kid=cg1WJ/hzhOdN0sDF/FBgiSIRkBwF3Kfs9wqocL1&amp;filename=th3"
-                                         alt="썸네일" loading="lazy"
-                                         class="jsx-905614930 absolute top-0 left-0 h-full w-full select-none object-cover visible">
-                                </div>
-                                <div class="absolute top-0 left-0 h-full w-full border-[0.5px] border-solid border-sp-thumb-line"
-                                     style="border-radius: 8px;"></div>
-                            </div>
-                            <div class="flex flex-col">
-                                <div class="mb-4pxr flex items-center"><span
-                                        class="font-medium2 break-all text-el-60 line-clamp-2">남궁세가 천재 외손자 4화</span>
-                                </div>
-                                <div class="text-ellipsis line-clamp-1 font-small2 text-el-60"><span
-                                        class="break-all align-middle">2022.01.12</span></div>
-                                <span class="font-small2 text-ellipsis break-all text-el-40 line-clamp-1 mt-4pxr">무료</span>
-                            </div>
-                        </div>
-                    </a></div>
-                </div>
-            </li>
-            <li class="jsx-2531468679 jsx-376872051 list-child-item">
-                <div>
-                    <div data-t-obj="{&quot;fromGraphql&quot;:null,&quot;click&quot;:null,&quot;eventMeta&quot;:{&quot;id&quot;:&quot;58627047&quot;,&quot;name&quot;:&quot;남궁세가 천재 외손자 5화&quot;,&quot;subcategory&quot;:&quot;무협&quot;,&quot;category&quot;:&quot;웹소설&quot;,&quot;series&quot;:null,&quot;provider&quot;:&quot;서비스&quot;,&quot;series_id&quot;:null,&quot;type&quot;:&quot;productId&quot;},&quot;viewimp_contents&quot;:null,&quot;customProps&quot;:null}"
-                         class="relative flex py-8pxr bg-bg-a-20 px-15pxr"><a class="flex flex-1"
-                                                                              href="/content/58620412/viewer/58627047">
-                        <div class="flex items-center">
-                            <div class="relative overflow-hidden mr-12pxr shrink-0 w-66pxr"
-                                 data-t-obj="{&quot;customProps&quot;:{&quot;event_episode_id&quot;:&quot;58627047&quot;}}"
-                                 style="border-radius: 8px;">
-                                <div class="jsx-905614930 image-container relative h-full w-full">
-                                    <div class="jsx-905614930 absolute top-0 left-0 h-full w-full select-none items-center justify-center bg-s-gray-20/15 object-cover hidden"></div>
-                                    <img src="https://dn-img-page.kakao.com/download/resource?kid=cg1WJ/hzhOdN0sDF/FBgiSIRkBwF3Kfs9wqocL1&amp;filename=th3"
-                                         alt="썸네일" loading="lazy"
-                                         class="jsx-905614930 absolute top-0 left-0 h-full w-full select-none object-cover visible">
-                                </div>
-                                <div class="absolute top-0 left-0 h-full w-full border-[0.5px] border-solid border-sp-thumb-line"
-                                     style="border-radius: 8px;"></div>
-                            </div>
-                            <div class="flex flex-col">
-                                <div class="mb-4pxr flex items-center"><span
-                                        class="font-medium2 break-all text-el-60 line-clamp-2">남궁세가 천재 외손자 5화</span>
-                                </div>
-                                <div class="text-ellipsis line-clamp-1 font-small2 text-el-60"><span
-                                        class="break-all align-middle">2022.01.12</span></div>
-                                <span class="font-small2 text-ellipsis break-all text-el-40 line-clamp-1 mt-4pxr">무료</span>
-                            </div>
-                        </div>
-                    </a></div>
-                </div>
-            </li>
-            <li class="jsx-2531468679 jsx-376872051 list-child-item">
-                <div>
-                    <div data-t-obj="{&quot;fromGraphql&quot;:null,&quot;click&quot;:null,&quot;eventMeta&quot;:{&quot;id&quot;:null,&quot;name&quot;:&quot;남궁세가 천재 외손자 6화&quot;,&quot;subcategory&quot;:&quot;무협&quot;,&quot;category&quot;:&quot;웹소설&quot;,&quot;series&quot;:null,&quot;provider&quot;:&quot;서비스&quot;,&quot;series_id&quot;:null,&quot;type&quot;:null},&quot;viewimp_contents&quot;:null,&quot;customProps&quot;:null}"
-                         class="relative flex py-8pxr bg-bg-a-20 px-15pxr"><a class="flex flex-1"
-                                                                              href="/content/58620412/viewer/58627049">
-                        <div class="flex items-center">
-                            <div class="relative overflow-hidden mr-12pxr shrink-0 w-66pxr"
-                                 data-t-obj="{&quot;customProps&quot;:{&quot;event_episode_id&quot;:&quot;58627049&quot;}}"
-                                 style="border-radius: 8px;">
-                                <div class="jsx-905614930 image-container relative h-full w-full">
-                                    <div class="jsx-905614930 absolute top-0 left-0 h-full w-full select-none items-center justify-center bg-s-gray-20/15 object-cover hidden"></div>
-                                    <img src="https://dn-img-page.kakao.com/download/resource?kid=cg1WJ/hzhOdN0sDF/FBgiSIRkBwF3Kfs9wqocL1&amp;filename=th3"
-                                         alt="썸네일" loading="lazy"
-                                         class="jsx-905614930 absolute top-0 left-0 h-full w-full select-none object-cover visible">
-                                </div>
-                                <div class="absolute top-0 left-0 h-full w-full border-[0.5px] border-solid border-sp-thumb-line"
-                                     style="border-radius: 8px;"></div>
-                            </div>
-                            <div class="flex flex-col">
-                                <div class="mb-4pxr flex items-center"><span
-                                        class="font-medium2 break-all text-el-60 line-clamp-2">남궁세가 천재 외손자 6화</span>
-                                </div>
-                                <div class="text-ellipsis line-clamp-1 font-small2 text-el-60"><span
-                                        class="break-all align-middle">2022.01.12</span></div>
-                                <span class="font-small2 text-ellipsis break-all text-el-40 line-clamp-1 mt-4pxr">기다무 이용 가능</span>
-                            </div>
-                        </div>
-                    </a></div>
-                </div>
-            </li>
+
         </ul>
     </div>
 </html>

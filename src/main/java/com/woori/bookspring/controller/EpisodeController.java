@@ -1,13 +1,16 @@
 package com.woori.bookspring.controller;
 
 
+import com.woori.bookspring.dto.EpisodeFormDto;
 import com.woori.bookspring.entity.ebook.Episode;
+import com.woori.bookspring.entity.user.Writer;
 import com.woori.bookspring.service.EpisodeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -16,13 +19,6 @@ import java.util.List;
 public class EpisodeController {
 
     private final EpisodeService episodeService;
-
-    //에피소드 전체 조회
-    @GetMapping
-    public @ResponseBody  List<Episode> getEpisodeList() {
-        return episodeService.getEpisodeList();
-    }
-
 
     //에피소드 단건 조회
     @GetMapping("{id}")
@@ -38,8 +34,9 @@ public class EpisodeController {
     }
     //에피소드 생성
     @PostMapping("new")
-    public @ResponseBody String createEpisode(@RequestBody Episode episode) {
-        return episodeService.createEpisode(episode).getId().toString();
+    public String createEpisode(@RequestBody EpisodeFormDto episodeFormDto, Long ebookId) {
+        episodeService.createEpisode(episodeFormDto, ebookId);
+        return "redirect:/writer/ebook/"+ebookId;
     }
 
     //에피소드 삭제

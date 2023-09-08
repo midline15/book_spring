@@ -1,5 +1,6 @@
 package com.woori.bookspring.entity.ebook;
 
+import com.woori.bookspring.dto.LikeDto;
 import com.woori.bookspring.entity.user.User;
 import com.woori.bookspring.entity.base.BaseEntity;
 import jakarta.persistence.*;
@@ -24,4 +25,16 @@ public class Like extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "username")
     private User user;
+
+    public static Like createLike(User user) {
+        return Like.builder()
+                .user(user)
+                .build();
+    }
+
+    public LikeDto of() {
+        return LikeDto.builder()
+                .id(id)
+                .build();
+    }
 }

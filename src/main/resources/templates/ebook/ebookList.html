@@ -37,7 +37,7 @@
         <th:block th:each="ebook : ${list}">
             <div class="col-md-4 margin">
                 <div class="card">
-                    <a class="text-dark">
+                    <a class="text-dark" th:href="@{/ebook/{ebook-id}(ebook-id=${ebook.id})}">
                         <img class="card-img-top" height="400" alt="책 이미지">
                         <div class="card-body">
                             <h4 class="card-title" th:text="${ebook.title}"></h4>
