@@ -9,6 +9,8 @@ import com.woori.bookspring.repository.EbookRepository;
 import com.woori.bookspring.repository.InventoryEbookRepository;
 import com.woori.bookspring.repository.InventoryRepository;
 import com.woori.bookspring.repository.UserRepository;
+import com.woori.bookspring.repository.InventoryEbookRepository;
+import com.woori.bookspring.repository.InventoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,7 @@ public class InventoryService {
     private final InventoryEbookRepository inventoryEbookRepository;
     private final EbookRepository ebookRepository;
     private final UserRepository userRepository;
+  
     public Inventory getInventory(String username) {
         return inventoryRepository.findByUser_Username(username).orElseGet(() -> {
             User user = userRepository.findById(username).get();
@@ -41,4 +44,27 @@ public class InventoryService {
 
         return inventoryEbookRepository.findByInventory(getInventory(username)).stream().map(InventoryEbook::of).toList();
     }
+
+    public Inventory createInventory(User user) {
+        Inventory inventory = Inventory.builder()
+                .user(user)
+                .build();
+        return inventoryRepository.save(inventory);
+    }
+
+    //조회
+    public List<Inventory> getInventoryList() {
+        return inventoryRepository.findAll();
+    }
+
+    //단건 조회
+    public Long getInventoryId(Long id) {
+        return inventoryRepository.findById(id).get().getId();
+    }
+
+    // 삭제
+    public void deleteInventory(Long id) {
+        inventoryRepository.deleteById(id);
+    }
+
 }

@@ -46,5 +46,22 @@ public class LikeService {
     public void addLikeEbook(Long ebookId, String username) {
         Ebook ebook = ebookRepository.findById(ebookId).orElseThrow(EntityNotFoundException::new);
         likeEbookRepository.save(LikeEbook.createLikeEbook(ebook,getLike(username)));
+
+    public Like getLike(User user) {
+        return likeRepository.findByUser(user);
+    }
+
+    public List<LikeEbook> getLikeEbookList(Like like) {
+        return likeEbookRepository.findByLike(like);
+    }
+
+    //조아요(찜) 수정
+    public void updateLike(Like like) {
+        likeRepository.save(like);
+    }
+
+    //조아요(찜) 삭제
+    public void deleteLike(Long id) {
+        likeRepository.deleteById(id);
     }
 }
