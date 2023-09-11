@@ -1,7 +1,6 @@
 package com.woori.bookspring.service;
 
 import com.woori.bookspring.dto.EbookDto;
-import com.woori.bookspring.dto.LikeDto;
 import com.woori.bookspring.entity.ebook.Ebook;
 import com.woori.bookspring.entity.ebook.Like;
 import com.woori.bookspring.entity.ebook.LikeEbook;
@@ -27,32 +26,25 @@ public class LikeService {
     private final EbookRepository ebookRepository;
     private final UserRepository userRepository;
 
-    public Like createLike(User user){
+    public Like createLike(User user) {
         return likeRepository.save(Like.createLike(user));
     }
 
-    public Like getLike(String username){
+    public Like getLike(String username) {
         return likeRepository.findByUser_Username(username).orElseGet(() -> {
             User user = userRepository.findById(username).orElseThrow(EntityNotFoundException::new);
             return createLike(user);
         });
     }
 
-    public List<EbookDto> getLikeEbookList(String username){
+    public List<EbookDto> getLikeEbookList(String username) {
         List<LikeEbook> likeEbookList = likeEbookRepository.findByLikeId(getLike(username).getId());
         return likeEbookList.stream().map(LikeEbook::of).toList();
     }
 
     public void addLikeEbook(Long ebookId, String username) {
         Ebook ebook = ebookRepository.findById(ebookId).orElseThrow(EntityNotFoundException::new);
-        likeEbookRepository.save(LikeEbook.createLikeEbook(ebook,getLike(username)));
-
-    public Like getLike(User user) {
-        return likeRepository.findByUser(user);
-    }
-
-    public List<LikeEbook> getLikeEbookList(Like like) {
-        return likeEbookRepository.findByLike(like);
+        likeEbookRepository.save(LikeEbook.createLikeEbook(ebook, getLike(username)));
     }
 
     //조아요(찜) 수정

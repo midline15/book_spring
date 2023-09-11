@@ -1,11 +1,8 @@
 package com.woori.bookspring.controller;
 
 import com.woori.bookspring.dto.EbookDto;
-import com.woori.bookspring.dto.LikeDto;
-import com.woori.bookspring.dto.UserDto;
 import com.woori.bookspring.entity.ebook.Like;
 import com.woori.bookspring.service.LikeService;
-import com.woori.bookspring.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
