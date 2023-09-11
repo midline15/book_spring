@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-@Getter @Setter
+@Getter
 public class BaseEntity {
 
     @CreatedBy

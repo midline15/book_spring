@@ -24,7 +24,7 @@ public class BookService {
     private final CoverRepository coverRepository;
 
     public void createBook(BookFormDto bookFormDto, MultipartFile imgFile) throws Exception {
-        Cover cover = coverService.saveBookCover(imgFile);
+        Cover cover = coverService.saveCover(imgFile);
         Book book = bookFormDto.toEntity(cover);
         bookRepository.save(book);
     }

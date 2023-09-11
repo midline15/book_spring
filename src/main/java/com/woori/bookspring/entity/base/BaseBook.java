@@ -14,7 +14,7 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BaseBook extends BaseEntity{
+public class BaseBook extends BaseEntity {
 
     protected String title;
     protected List<Genre> genreList;

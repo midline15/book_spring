@@ -27,23 +27,23 @@ public class CartService {
     private final UserRepository userRepository;
     private final OrderService orderService;
 
-    public Cart getCart(String username) {
-        return cartRepository.findByUser_Username(username).orElseGet(() -> {
-            User user = userRepository.findById(username).orElseThrow(EntityNotFoundException::new);
+    public Cart getCart(String email) {
+        return cartRepository.findByUser_Email(email).orElseGet(() -> {
+            User user = userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
             return createCart(user);
         });
     }
 
-    public List<CartBookDto> getCartBookList(String username) {
-        return cartBookRepository.findByCart(getCart(username)).stream().map(CartBook::of).toList();
+    public List<CartBookDto> getCartBookList(String email) {
+        return cartBookRepository.findByCart(getCart(email)).stream().map(CartBook::of).toList();
     }
 
     public Cart createCart(User user) {
         return cartRepository.save(Cart.createCart(user));
     }
 
-    public void addCart(CartBookDto dto, String username) {
-        Cart cart = getCart(username);
+    public void addCart(CartBookDto dto, String email) {
+        Cart cart = getCart(email);
         Book book = bookRepository.findById(dto.getBookId()).orElseThrow(EntityNotFoundException::new);
         CartBook cartBook = CartBook.createCartBook(book, cart, dto.getCount());
         cartBookRepository.save(cartBook);
@@ -64,8 +64,8 @@ public class CartService {
     }
 
 
-    public void orderCartBook(List<CartBookDto> cartBookDtoList, String username) {
-        orderService.addOrders(cartBookDtoList, username);
+    public void orderCartBook(List<CartBookDto> cartBookDtoList, String email) {
+        orderService.addOrders(cartBookDtoList, email);
         cartBookDtoList.forEach(cartBookDto -> cartBookRepository.deleteById(cartBookDto.getId()));
     }
 }
