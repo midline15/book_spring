@@ -20,6 +20,8 @@ public class User extends BaseUser {
     @Id
     private String username; // email
 
+    private int ticket;
+
     @Enumerated(EnumType.STRING)
     private OAuthType oauth;
 

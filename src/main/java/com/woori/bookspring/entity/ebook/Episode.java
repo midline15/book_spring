@@ -1,5 +1,6 @@
 package com.woori.bookspring.entity.ebook;
 
+import com.woori.bookspring.constant.PermitStatus;
 import com.woori.bookspring.dto.EpisodeFormDto;
 import com.woori.bookspring.entity.base.BaseBook;
 import jakarta.persistence.*;
@@ -22,6 +23,9 @@ public class Episode extends BaseBook {
     private String title;
 
     private String content;
+
+    @Enumerated(EnumType.STRING)
+    private PermitStatus permitStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ebook_id")
