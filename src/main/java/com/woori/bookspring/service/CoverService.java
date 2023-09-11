@@ -17,7 +17,6 @@ public class CoverService {
 
     @Value("C:/shop/book")
     private String imgLocation;
-
     private final BookRepository bookRepository;
     private final CoverRepository coverRepository;
     private final FileService fileService;
@@ -34,4 +33,5 @@ public class CoverService {
         Cover cover = new Cover().updateCover(origName, name, url);
         return coverRepository.save(cover);
     }
+
 }

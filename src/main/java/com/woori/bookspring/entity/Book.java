@@ -4,8 +4,6 @@ import com.woori.bookspring.constant.SellStatus;
 import com.woori.bookspring.dto.BookDto;
 import com.woori.bookspring.entity.base.BaseBook;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -29,6 +27,8 @@ public class Book extends BaseBook {
     private LocalDate origDate; // 초판 발행일
 
     private float avgScore;
+
+    private String intro; // 책 소개
 
     @Enumerated(EnumType.STRING)
     private SellStatus sellStatus;

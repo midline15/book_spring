@@ -28,6 +28,7 @@
         .center{
             text-align:center;
         }
+
     </style>
 </th:block>
 
@@ -38,38 +39,40 @@
             <div class="col-md-4 margin">
                 <div class="card">
                     <a class="text-dark">
-                        <img class="card-img-top" height="400" alt="책 이미지">
-                        <div class="card-body">
-                            <a th:href="@{/book/{book-id}(book-id = ${book.id})}" class="card-title" th:text="${book.title}"></a>
-                            <p class="card-text" th:text="${book.intro}"></p>
-                            <h3 class="card-title text-danger"></h3>
-                        </div>
-                    </a>
+                        <img th:src="${book.url}" class="rounded repImg" th:alt="${book.title}" style="max-width: 100%; height: auto;">
                 </div>
+                <div class="card-body">
+                    <a th:href="@{/book/{book-id}(book-id = ${book.id})}" class="card-title"
+                       th:text="${book.title}"></a>
+                    <p class="card-text" th:text="${book.intro}"></p>
+                    <h3 class="card-title text-danger"></h3>
+                </div>
+                </a>
             </div>
-        </th:block>
     </div>
+    </th:block>
+</div>
 
-    <div>
-        <ul class="pagination justify-content-center">
+<div>
+    <ul class="pagination justify-content-center">
 
-            <li class="page-item">
-                <a aria-label='Previous' class="page-link">
-                    <span aria-hidden='true'>Previous</span>
-                </a>
-            </li>
+        <li class="page-item">
+            <a aria-label='Previous' class="page-link">
+                <span aria-hidden='true'>Previous</span>
+            </a>
+        </li>
 
-            <li class="page-item">
-                <a th:inline="text" class="page-link"></a>
-            </li>
+        <li class="page-item">
+            <a th:inline="text" class="page-link"></a>
+        </li>
 
-            <li class="page-item">
-                <a aria-label='Next' class="page-link">
-                    <span aria-hidden='true'>Next</span>
-                </a>
-            </li>
+        <li class="page-item">
+            <a aria-label='Next' class="page-link">
+                <span aria-hidden='true'>Next</span>
+            </a>
+        </li>
 
-        </ul>
-    </div>
+    </ul>
+</div>
 
 </div>

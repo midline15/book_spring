@@ -32,6 +32,7 @@
             });
         }
 
+
     </script>
 
 </th:block>
@@ -48,6 +49,7 @@
         .fieldError {
             color: #bd2130;
         }
+
     </style>
 </th:block>
 
@@ -62,7 +64,7 @@
         <input type="hidden" name="id">
 
         <div class="form-group">
-            <select  class="custom-select" name="sellStatus">
+            <select class="custom-select" name="sellStatus">
                 <option value="SALE">판매중</option>
                 <option value="SOLD_OUT">품절</option>
             </select>
@@ -86,7 +88,7 @@
             <div class="input-group-prepend">
                 <span class="input-group-text">재고</span>
             </div>
-            <input type="number"class="form-control" placeholder="상품의 재고를 입력해주세요" name="stockNumber">
+            <input type="number" class="form-control" placeholder="상품의 재고를 입력해주세요" name="stockNumber">
         </div>
 
         <div class="input-group">
@@ -110,14 +112,14 @@
             <input type="date" class="form-control" placeholder="발행일을 입력해주세요" name="origDate"></input>
         </div>
 
-            <div class="form-group">
-                <div class="custom-file img-div">
-                    <input type="file" class="custom-file-input" name="imgFile">
-                    <label class="custom-file-label" text="상품이미지"></label>
-                </div>
+        <div class="form-group">
+            <div class="custom-file img-div">
+                <input type="file" class="custom-file-input" name="imgFile">
+                <label class="custom-file-label" text="상품이미지"></label>
             </div>
+        </div>
 
-            <button th:formaction="@{/book/new}" type="submit" class="btn btn-primary">저장</button>
+        <button th:formaction="@{/book/new}" type="submit" class="btn btn-primary">저장</button>
 
     </form>
 
