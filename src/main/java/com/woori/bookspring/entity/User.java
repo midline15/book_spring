@@ -1,4 +1,4 @@
-package com.woori.bookspring.entity.user;
+package com.woori.bookspring.entity;
 
 import com.woori.bookspring.constant.OAuthType;
 import com.woori.bookspring.dto.UserDto;

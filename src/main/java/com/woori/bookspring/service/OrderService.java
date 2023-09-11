@@ -6,7 +6,7 @@ import com.woori.bookspring.dto.OrderDto;
 import com.woori.bookspring.entity.Book;
 import com.woori.bookspring.entity.Order;
 import com.woori.bookspring.entity.OrderBook;
-import com.woori.bookspring.entity.user.User;
+import com.woori.bookspring.entity.User;
 import com.woori.bookspring.repository.BookRepository;
 import com.woori.bookspring.repository.OrderBookRepository;
 import com.woori.bookspring.repository.OrderRepository;
@@ -48,24 +48,6 @@ public class OrderService {
         createOrderBook(orderBookDto, book, order);
     }
 
-    //장바구니에서 주문
-    /*public Long addOrders(List<AddCartBookDto> addCartBookDtoList, String username) {
-        User user = userRepository.findById(username).get();
-        Order order = Order.createOrder(user);
-        orderRepository.save(order);
-
-        for (AddCartBookDto addCartBookDto : addCartBookDtoList) {
-            Book book = bookRepository.findById(addCartBookDto.getBookId())
-                    .orElseThrow(EntityNotFoundException::new);
-
-            OrderBookDto orderBookDto = OrderBookDto.createOrderBookDto(book, addCartBookDto);
-
-            OrderBook orderBook = OrderBook.createOrderBook(orderBookDto, book, order);
-            orderBookRepository.save(orderBook);
-        }
-
-        return order.getId();
-    }*/
     public void addOrders(List<CartBookDto> cartBookDtoList, String username) {
         Order order = createOrder(username);
         cartBookDtoList.forEach(cartBookDto -> {

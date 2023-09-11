@@ -1,6 +1,6 @@
 package com.woori.bookspring.dto;
 
-import com.woori.bookspring.entity.user.User;
+import com.woori.bookspring.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

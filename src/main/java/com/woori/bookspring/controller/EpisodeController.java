@@ -3,15 +3,11 @@ package com.woori.bookspring.controller;
 
 import com.woori.bookspring.dto.EpisodeFormDto;
 import com.woori.bookspring.entity.ebook.Episode;
-import com.woori.bookspring.entity.user.Writer;
 import com.woori.bookspring.service.EpisodeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
-import java.util.List;
 
 @Controller
 @RequestMapping("episode")

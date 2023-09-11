@@ -1,7 +1,7 @@
 package com.woori.bookspring.dto;
 
 import com.woori.bookspring.constant.OAuthType;
-import com.woori.bookspring.entity.user.User;
+import com.woori.bookspring.entity.User;
 import lombok.Builder;
 import lombok.Data;
 
