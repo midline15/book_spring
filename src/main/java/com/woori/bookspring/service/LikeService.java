@@ -4,7 +4,7 @@ import com.woori.bookspring.dto.EbookDto;
 import com.woori.bookspring.entity.ebook.Ebook;
 import com.woori.bookspring.entity.ebook.Like;
 import com.woori.bookspring.entity.ebook.LikeEbook;
-import com.woori.bookspring.entity.user.User;
+import com.woori.bookspring.entity.User;
 import com.woori.bookspring.repository.EbookRepository;
 import com.woori.bookspring.repository.LikeEbookRepository;
 import com.woori.bookspring.repository.LikeRepository;

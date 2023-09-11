@@ -1,6 +1,6 @@
 package com.woori.bookspring.config.auth;
 
-import com.woori.bookspring.entity.user.User;
+import com.woori.bookspring.entity.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

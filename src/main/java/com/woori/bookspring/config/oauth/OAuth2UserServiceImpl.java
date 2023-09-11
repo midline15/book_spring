@@ -1,7 +1,7 @@
 package com.woori.bookspring.config.oauth;
 
 import com.woori.bookspring.config.auth.UserDetailsImpl;
-import com.woori.bookspring.entity.user.User;
+import com.woori.bookspring.entity.User;
 import com.woori.bookspring.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

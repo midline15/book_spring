@@ -3,12 +3,10 @@ package com.woori.bookspring.entity;
 import com.woori.bookspring.constant.OrderStatus;
 import com.woori.bookspring.dto.OrderDto;
 import com.woori.bookspring.entity.base.BaseEntity;
-import com.woori.bookspring.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

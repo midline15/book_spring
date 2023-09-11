@@ -28,8 +28,6 @@ public class Book extends BaseBook {
 
     private float avgScore;
 
-    private String intro; // 책 소개
-
     @Enumerated(EnumType.STRING)
     private SellStatus sellStatus;
 

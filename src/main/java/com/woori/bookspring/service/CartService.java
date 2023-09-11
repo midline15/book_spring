@@ -1,11 +1,10 @@
 package com.woori.bookspring.service;
 
-import com.woori.bookspring.dto.AddCartBookDto;
 import com.woori.bookspring.dto.CartBookDto;
 import com.woori.bookspring.entity.Book;
 import com.woori.bookspring.entity.Cart;
 import com.woori.bookspring.entity.CartBook;
-import com.woori.bookspring.entity.user.User;
+import com.woori.bookspring.entity.User;
 import com.woori.bookspring.repository.BookRepository;
 import com.woori.bookspring.repository.CartBookRepository;
 import com.woori.bookspring.repository.CartRepository;
@@ -21,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class CartService {
-    //CRUD
+
     private final CartRepository cartRepository;
     private final CartBookRepository cartBookRepository;
     private final BookRepository bookRepository;
@@ -64,29 +63,7 @@ public class CartService {
         cartBookRepository.deleteByCartId(cartId);
     }
 
-    /*public Long orderCartBook(List<CartOrderDto> cartOrderDtoList, String username) {
-        List<AddCartBookDto> addCartBookDtoList = new ArrayList<>();
-        for (CartOrderDto cartOrderDto : cartOrderDtoList) {
-            CartBook cartBook = cartBookRepository.findById(cartOrderDto.getCartBookId())
-                    .orElseThrow(EntityNotFoundException::new);
 
-            AddCartBookDto addCartBookDto = AddCartBookDto.builder()
-                    .bookId(cartBook.getBook().getId())
-                    .count(cartBook.getCount())
-                    .build();
-            addCartBookDtoList.add(addCartBookDto);
-        }
-
-        Long orderId = orderService.addOrders(addCartBookDtoList, username);
-
-        for (CartOrderDto cartOrderDto : cartOrderDtoList) {
-            CartBook cartBook = cartBookRepository.findById(cartOrderDto.getCartBookId())
-                    .orElseThrow(EntityNotFoundException::new);
-            cartBookRepository.delete(cartBook);
-        }
-
-        return orderId;
-    }*/
     public void orderCartBook(List<CartBookDto> cartBookDtoList, String username) {
         orderService.addOrders(cartBookDtoList, username);
         cartBookDtoList.forEach(cartBookDto -> cartBookRepository.deleteById(cartBookDto.getId()));

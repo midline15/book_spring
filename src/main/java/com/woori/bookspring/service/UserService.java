@@ -2,7 +2,7 @@ package com.woori.bookspring.service;
 
 import com.woori.bookspring.dto.SignupForm;
 import com.woori.bookspring.dto.UserDto;
-import com.woori.bookspring.entity.user.User;
+import com.woori.bookspring.entity.User;
 import com.woori.bookspring.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
