@@ -21,7 +21,7 @@ public class EpisodeUser {
     private Episode episode;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "username")
+    @JoinColumn(name = "user_id")
     private User user;
 
 }

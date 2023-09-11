@@ -30,9 +30,9 @@ public class OAuth2UserServiceImpl extends DefaultOAuth2UserService {
     }
 
     private User save(OAuthAttribute attributes){
-        User user = userRepository.findById(attributes.getUsername())
+        User user = userRepository.findByEmail(attributes.getUsername())
                 .orElse(User.builder()
-                        .username(attributes.getUsername())
+                        .email(attributes.getUsername())
                         .password(passwordEncoder.encode(attributes.getPassword()))
                         .oauth(attributes.getOauth())
                         .build()

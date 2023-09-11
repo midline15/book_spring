@@ -15,20 +15,20 @@ import org.thymeleaf.util.StringUtils;
 @RequiredArgsConstructor
 public class CoverService {
 
-    @Value("C:/shop/book")
+    @Value("C:/shop/cover")
     private String imgLocation;
     private final BookRepository bookRepository;
     private final CoverRepository coverRepository;
     private final FileService fileService;
 
-    public Cover saveBookCover(MultipartFile imgFile) throws Exception{
+    public Cover saveCover(MultipartFile imgFile) throws Exception{
         String origName = imgFile.getOriginalFilename();
         String name = "";
         String url = "";
 
         if(!StringUtils.isEmpty(origName)){
             name = fileService.uploadFile(imgLocation, origName, imgFile.getBytes());
-            url = "/images/book/" + name;
+            url = "/images/cover/" + name;
         }
         Cover cover = new Cover().updateCover(origName, name, url);
         return coverRepository.save(cover);

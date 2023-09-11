@@ -29,12 +29,12 @@ public class OrderService {
     public final BookRepository bookRepository;
 
     @Transactional(readOnly = true) // 주문 내역 조회
-    public List<OrderDto> getOrderList(String username) {
-        return orderRepository.findByUser_Username(username).stream().map(Order::of).toList();
+    public List<OrderDto> getOrderList(String email) {
+        return orderRepository.findByUser_Email(email).stream().map(Order::of).toList();
     }
 
-    public Order createOrder(String username){
-        User user = userRepository.findById(username).orElseThrow(EntityNotFoundException::new);
+    public Order createOrder(String email){
+        User user = userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
         return orderRepository.save(Order.createOrder(user));
     }
     public void createOrderBook(OrderBookDto orderBookDto, Book book, Order order){
@@ -42,14 +42,14 @@ public class OrderService {
         orderBookRepository.save(orderBook);
     }
     // 단건 주문
-    public void addOrder(OrderBookDto orderBookDto, String username){
-        Order order = createOrder(username);
+    public void addOrder(OrderBookDto orderBookDto, String email){
+        Order order = createOrder(email);
         Book book = bookRepository.findById(orderBookDto.getBookId()).orElseThrow(EntityNotFoundException::new);
         createOrderBook(orderBookDto, book, order);
     }
 
-    public void addOrders(List<CartBookDto> cartBookDtoList, String username) {
-        Order order = createOrder(username);
+    public void addOrders(List<CartBookDto> cartBookDtoList, String email) {
+        Order order = createOrder(email);
         cartBookDtoList.forEach(cartBookDto -> {
             Book book = bookRepository.findById(cartBookDto.getBookId()).orElseThrow(EntityNotFoundException::new);
             createOrderBook(cartBookDto.toOrderBook(), book, order);

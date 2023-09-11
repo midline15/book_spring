@@ -27,12 +27,12 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserDto getUser(String username) {
-         return userRepository.findById(username).orElseThrow(EntityNotFoundException::new).of();
+    public UserDto getUser(String email) {
+         return userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new).of();
     }
 
-    public void deleteUser(String username) {
-        userRepository.deleteById(username);
+    public void deleteUser(String email) {
+        userRepository.deleteByEmail(email);
     }
 
     public void updateUser(UserDto userDto) {

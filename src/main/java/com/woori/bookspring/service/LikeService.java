@@ -30,21 +30,21 @@ public class LikeService {
         return likeRepository.save(Like.createLike(user));
     }
 
-    public Like getLike(String username) {
-        return likeRepository.findByUser_Username(username).orElseGet(() -> {
-            User user = userRepository.findById(username).orElseThrow(EntityNotFoundException::new);
+    public Like getLike(String email) {
+        return likeRepository.findByUser_Email(email).orElseGet(() -> {
+            User user = userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
             return createLike(user);
         });
     }
 
-    public List<EbookDto> getLikeEbookList(String username) {
-        List<LikeEbook> likeEbookList = likeEbookRepository.findByLikeId(getLike(username).getId());
+    public List<EbookDto> getLikeEbookList(String email) {
+        List<LikeEbook> likeEbookList = likeEbookRepository.findByLikeId(getLike(email).getId());
         return likeEbookList.stream().map(LikeEbook::of).toList();
     }
 
-    public void addLikeEbook(Long ebookId, String username) {
+    public void addLikeEbook(Long ebookId, String email) {
         Ebook ebook = ebookRepository.findById(ebookId).orElseThrow(EntityNotFoundException::new);
-        likeEbookRepository.save(LikeEbook.createLikeEbook(ebook, getLike(username)));
+        likeEbookRepository.save(LikeEbook.createLikeEbook(ebook, getLike(email)));
     }
 
     //조아요(찜) 수정

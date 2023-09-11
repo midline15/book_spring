@@ -23,7 +23,7 @@ public class BookComment extends BaseEntity {
     private int score; // 별점
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "username")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -8,18 +8,18 @@ import lombok.Data;
 @Data
 @Builder
 public class SignupForm {
-    private String username;
+    private String email;
     private String password;
-    private String realName;
+    private String name;
     private String address;
     private String birth;
     private String phone;
 
     public User toEntity(){
         return User.builder()
-                .username(username)
+                .email(email)
                 .password(password)
-                .realName(realName)
+                .name(name)
                 .address(address)
                 .birth(birth)
                 .phone(phone)

@@ -22,7 +22,7 @@ public class Like extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "username")
+    @JoinColumn(name = "user_id")
     private User user;
 
     public static Like createLike(User user) {

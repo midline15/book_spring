@@ -11,10 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDto {
-    private String username;
+    private String email;
 
     public User toEntity() {
         return User.builder()
+                .email(email)
                 .build();
     }
 }

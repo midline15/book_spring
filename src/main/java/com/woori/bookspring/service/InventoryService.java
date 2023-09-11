@@ -25,22 +25,22 @@ public class InventoryService {
     private final EbookRepository ebookRepository;
     private final UserRepository userRepository;
   
-    public Inventory getInventory(String username) {
-        return inventoryRepository.findByUser_Username(username).orElseGet(() -> {
-            User user = userRepository.findById(username).get();
+    public Inventory getInventory(String email) {
+        return inventoryRepository.findByUser_Email(email).orElseGet(() -> {
+            User user = userRepository.findByEmail(email).get();
             return inventoryRepository.save(Inventory.createInventory(user));
         });
     }
 
-    public InventoryEbook createInventoryEbook(Long ebookId,String username){
+    public InventoryEbook createInventoryEbook(Long ebookId,String email){
         Ebook ebook = ebookRepository.findById(ebookId).get();
-        Inventory inventory = getInventory(username);
+        Inventory inventory = getInventory(email);
         return inventoryEbookRepository.save(InventoryEbook.createInventoryEbook(inventory,ebook));
     }
 
-    public List<InventoryEbookDto> getInventoryEbookList(String username) {
+    public List<InventoryEbookDto> getInventoryEbookList(String email) {
 
-        return inventoryEbookRepository.findByInventory(getInventory(username)).stream().map(InventoryEbook::of).toList();
+        return inventoryEbookRepository.findByInventory(getInventory(email)).stream().map(InventoryEbook::of).toList();
     }
 
     public Inventory createInventory(User user) {

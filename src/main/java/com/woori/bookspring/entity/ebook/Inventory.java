@@ -22,7 +22,7 @@ public class Inventory extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "username")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true)
