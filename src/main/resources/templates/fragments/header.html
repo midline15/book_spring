@@ -69,6 +69,7 @@
                            class="btn btn-outline-light me-2" href="javascript:googleLogout();">Logout</a>
                         <a th:if="${#strings.equals(#authentication.principal.user.oauth,'KAKAO')}"
                            class="btn btn-outline-light me-2" href="javascript:kakaoLogout();">Logout</a>
+                        <a class="btn btn-outline-light me-2" th:href="@{/user/{user-id}(user-id = ${#authentication.principal.user.id})}">마이페이지</a>
                         <a class="btn btn-outline-light me-2" href="/like">좋아요</a>
                         <a class="btn btn-outline-light me-2" href="/inven">보관함</a>
                         <a class="btn btn-outline-light me-2" href="/cart">장바구니</a>

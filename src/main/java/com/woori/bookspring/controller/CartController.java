@@ -39,7 +39,7 @@ public class CartController {
     }
 
     @PostMapping("order")
-    public @ResponseBody ResponseEntity<?> orderCartBook(@RequestBody CartOrderDto cartOrderDto, Principal principal) {
+    public ResponseEntity<?> orderCartBook(@RequestBody CartOrderDto cartOrderDto, Principal principal) {
 
         List<CartBookDto> cartBookDtoList = cartOrderDto.getCartBookDtoList();
 
