@@ -30,14 +30,14 @@ public class EbookController {
         return "ebook/ebookList";
     }
 
-    @GetMapping("/ebook/{id}") //e북 id 단건 조회
-    public String getEbook(@PathVariable Long id, Model model) {
-        EbookFormDto ebook = ebookService.getEbook(id);
+    @GetMapping("/ebook/{ebook-id}") //e북 id 단건 조회
+    public String getEbook(@PathVariable("ebook-id") Long ebookId, Model model) {
+        EbookFormDto ebook = ebookService.getEbook(ebookId);
         model.addAttribute("ebook", ebook);
         return "ebook/ebook";
     }
 
-    @GetMapping("/admin/ebook/new") //생성 1
+    @GetMapping("/admin/ebook") //생성 1
     public String ebookFrom(Model model) {
         model.addAttribute("ebook", new EbookFormDto());
         return "ebook/ebookForm";
@@ -57,24 +57,24 @@ public class EbookController {
         return "redirect:/";
     }
 
-    @DeleteMapping("/admin/ebook/{id}") //e북 삭제
-    public @ResponseBody String deleteEbook(@PathVariable Long id) {
-        ebookService.deleteEbook(id);
+    @DeleteMapping("/admin/ebook/{ebook-id}") //e북 삭제
+    public @ResponseBody String deleteEbook(@PathVariable("ebook-id") Long ebookId) {
+        ebookService.deleteEbook(ebookId);
         return "e북 삭제";
     }
 
-    @GetMapping("/admin/ebook/{id}") // 수정 1
-    public String updateEbook(@PathVariable Long id, Model model) {
-        EbookFormDto ebookFormDto = ebookService.getEbook(id);
+    @GetMapping("/admin/ebook/{ebook-id}") // 수정 1
+    public String updateEbook(@PathVariable("ebook-id") Long ebookId, Model model) {
+        EbookFormDto ebookFormDto = ebookService.getEbook(ebookId);
         model.addAttribute("ebook", ebookFormDto);
         return "ebook/ebookForm";
     }
 
-    @PatchMapping("/admin/ebook/{id}") //e북 수정 2
-    public ResponseEntity updateEbook(@PathVariable Long id, @RequestBody EbookFormDto updatedEbook, @RequestParam("imgFile") MultipartFile imgFile, Model model) {
+    @PatchMapping("/admin/ebook/{ebook-id}") //e북 수정 2
+    public ResponseEntity updateEbook(@PathVariable("ebook-id") Long ebookId, @RequestBody EbookFormDto updatedEbook, @RequestParam("imgFile") MultipartFile imgFile, Model model) {
 
         try {
-            ebookService.updateEbook(id, updatedEbook, imgFile);
+            ebookService.updateEbook(ebookId, updatedEbook, imgFile);
         } catch (Exception e) {
             model.addAttribute("errorMessage", "상품 수정 중 에러가 발생 하였습니다.");
             return new ResponseEntity<>("수정 실패", HttpStatus.BAD_REQUEST);

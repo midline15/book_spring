@@ -21,13 +21,13 @@ public class EpisodeController {
 
     //에피소드 단건 조회
     @GetMapping("/ebook/{ebook-id}/episode/{episode-id}")
-    public @ResponseBody String getEpisode(@PathVariable Long id, Model model) {
-        Episode episode = episodeService.getEpisode(id);
+    public @ResponseBody String getEpisode(@PathVariable("episode-id") Long epsodeId, Model model) {
+        Episode episode = episodeService.getEpisode(epsodeId);
         model.addAttribute("episode", episode);
         return episode.getTitle();
     }
     //에피소드 생성 1
-    @GetMapping(" /writer/episode")
+    @GetMapping("/writer/episode")
     public String episodeForm(Model model) {
         model.addAttribute("episode", new EpisodeFormDto());
         return "ebook/episodeForm";
@@ -51,14 +51,14 @@ public class EpisodeController {
 
     //에피소드 삭제
     @DeleteMapping(" /writer/episode/{episode-id}")
-    public @ResponseBody String deleteEpisode(@PathVariable Long id) {
-        episodeService.deleteEpisode(id);
+    public @ResponseBody String deleteEpisode(@PathVariable("episode-id") Long episodeId) {
+        episodeService.deleteEpisode(episodeId);
         return "해당 에피소드 삭제 완료";
     }
 
     @GetMapping(" /writer/episode/{episode-id}")
-    public String updateEpisode(@PathVariable Long id, Model model) {
-        Episode episode = episodeService.getEpisode(id);
+    public String updateEpisode(@PathVariable("episode-id") Long episodeId, Model model) {
+        Episode episode = episodeService.getEpisode(episodeId);
         model.addAttribute("episode", episode);
         return  "ebook/episodeForm";
     }
@@ -66,7 +66,7 @@ public class EpisodeController {
 
     //에피소드 수정
     @PatchMapping(" /writer/episode/{episode-id}")
-    private ResponseEntity updateEpisode(@PathVariable Long id, @RequestBody Episode episode, Model model) {
+    private ResponseEntity updateEpisode(@PathVariable("episode-id") Long episodeId, @RequestBody Episode episode, Model model) {
 
         try {
             episodeService.updateEpisode(episode);
