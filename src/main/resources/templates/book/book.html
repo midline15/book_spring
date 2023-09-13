@@ -7,52 +7,52 @@
 <!-- 사용자 스크립트 추가 -->
 <th:block layout:fragment="script">
     <script th:inline="javascript">
-        $(document).ready(function(){
+        $(document).ready(function () {
 
             calculateTotalPrice();
 
-            $("#count").change( function(){
+            $("#count").change(function () {
                 calculateTotalPrice();
             });
         });
 
-        function calculateTotalPrice(){
+        function calculateTotalPrice() {
             var count = $("#count").val();
             var price = $("#price").val();
-            var totalPrice = price*count;
+            var totalPrice = price * count;
             $("#totalPrice").html(totalPrice + '원');
             $("input[name=totalPrice]").val(totalPrice);
         }
 
-        function order(){
+        function order() {
             var token = $z("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
 
             var url = "/order";
             var paramData = {
-                itemId : $("#itemId").val(),
-                count : $("#count").val()
+                itemId: $("#itemId").val(),
+                count: $("#count").val()
             };
 
             var param = JSON.stringify(paramData);
 
             $.ajax({
-                url      : url,
-                type     : "POST",
-                contentType : "application/json",
-                data     : param,
-                dataType : "json",
-                cache   : false,
-                success  : function(result, status){
+                url: url,
+                type: "POST",
+                contentType: "application/json",
+                data: param,
+                dataType: "json",
+                cache: false,
+                success: function (result, status) {
                     alert("주문이 완료 되었습니다.");
-                    location.href='/';
+                    location.href = '/';
                 },
-                error : function(jqXHR, status, error){
+                error: function (jqXHR, status, error) {
 
-                    if(jqXHR.status == '401'){
+                    if (jqXHR.status == '401') {
                         alert('로그인 후 이용해주세요');
-                        location.href='/members/login';
-                    } else{
+                        location.href = '/members/login';
+                    } else {
                         alert(jqXHR.responseText);
                     }
 
@@ -60,16 +60,16 @@
             });
         }
 
-        function addCart(){
+        function addCart() {
             let paramData = {
-                bookId : $("#bookId").val(),
-                count : $("#count").val()
+                bookId: $("#bookId").val(),
+                count: $("#count").val()
             };
 
 
             $.ajax({
                 type: "POST",
-                url: "/cart/"+paramData.bookId,
+                url: "/cart/" + paramData.bookId,
                 data: JSON.stringify(paramData),
                 contentType: "application/json; charset=utf-8",
             }).done(function (response) {
@@ -147,7 +147,7 @@
             <hr class="my-4">
 
             <form th:action="@{/order/{book-id}(book-id = ${book.id})}" method="post">
-              <input type="hidden" th:value="${book.id}" name="bookId">
+                <input type="hidden" th:value="${book.id}" name="bookId">
                 <div class="text-right">
                     <div class="h4 text-danger text-left">
                         <input type="hidden" th:value="${book.price}" id="price" name="price">
@@ -165,10 +165,12 @@
                 <div class="text-right mgt-50">
                     <h5>결제 금액</h5>
                     <h3 id="totalPrice" class="font-weight-bold"></h3>
-                    <input type="hidden" name="totalPrice" >
+                    <input type="hidden" name="totalPrice">
                 </div>
                 <div th:if="${book.sellStatus == T(com.woori.bookspring.constant.SellStatus).SALE}" class="text-right">
-                    <button type="button" class="btn btn-light border border-primary btn-lg" onclick="addCart()">장바구니 담기</button>
+                    <button type="button" class="btn btn-light border border-primary btn-lg" onclick="addCart()">장바구니
+                        담기
+                    </button>
                     <button type="submit" class="btn btn-primary btn-lg">주문하기</button>
                 </div>
                 <div th:unless="${book.sellStatus == T(com.woori.bookspring.constant.SellStatus).SALE}"

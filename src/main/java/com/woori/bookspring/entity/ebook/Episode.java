@@ -2,7 +2,7 @@ package com.woori.bookspring.entity.ebook;
 
 import com.woori.bookspring.constant.PermitStatus;
 import com.woori.bookspring.dto.EpisodeFormDto;
-import com.woori.bookspring.entity.base.BaseBook;
+import com.woori.bookspring.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 @Entity
-public class Episode extends BaseBook {
+public class Episode extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
