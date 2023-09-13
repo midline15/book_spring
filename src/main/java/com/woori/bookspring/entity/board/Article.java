@@ -1,5 +1,6 @@
 package com.woori.bookspring.entity.board;
 
+import com.woori.bookspring.constant.ArticleType;
 import com.woori.bookspring.dto.ArticleDto;
 import com.woori.bookspring.entity.User;
 import com.woori.bookspring.entity.base.BaseEntity;
@@ -23,6 +24,9 @@ public class Article extends BaseEntity {
     private String title;
 
     private String content;
+
+    @Enumerated(EnumType.STRING)
+    private ArticleType articleType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

@@ -32,6 +32,7 @@ public class UserService {
          return userRepository.findById(userId).orElseThrow(EntityNotFoundException::new).of();
     }
 
+
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
     }
