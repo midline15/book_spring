@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Transactional
@@ -23,7 +24,10 @@ public class BookService {
     private final CoverService coverService;
     private final CoverRepository coverRepository;
 
-    public void createBook(BookFormDto bookFormDto, MultipartFile imgFile) throws Exception {
+    public void createBook(BookFormDto bookFormDto, MultipartFile imgFile)
+            throws Exception {
+
+        // 책 등록
         Cover cover = coverService.saveCover(imgFile);
         Book book = bookFormDto.toEntity(cover);
         bookRepository.save(book);
@@ -40,11 +44,23 @@ public class BookService {
     }
 
     public void deleteBook(Long bookId) {
-        bookRepository.findById(bookId);
+        bookRepository.deleteById(bookId);
+
     }
 
     @Transactional(readOnly = true)
-    public List<BookDto> getBookList() {
-        return bookRepository.findAll().stream().map(Book::of).toList();
+    public List<BookDto> getBookList(String type, String keyword) {
+        List<Book> bookList = new ArrayList<>();
+        if ("title".equals(type)) {
+            bookList = bookRepository.findByTitleContaining(keyword);
+        } else if ("publisher".equals(type)) {
+            bookList = bookRepository.findByPublisherContaining(keyword);
+        } else {
+            bookList = bookRepository.findAll();
+        }
+
+        return bookList.stream().map(Book::of).toList();
     }
+
+
 }

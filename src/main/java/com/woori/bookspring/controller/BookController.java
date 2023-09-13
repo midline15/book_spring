@@ -2,14 +2,19 @@ package com.woori.bookspring.controller;
 
 import com.woori.bookspring.dto.BookDto;
 import com.woori.bookspring.dto.BookFormDto;
+import com.woori.bookspring.dto.SearchParam;
 import com.woori.bookspring.entity.Book;
+import com.woori.bookspring.repository.BookRepository;
 import com.woori.bookspring.service.BookService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -18,11 +23,23 @@ import java.util.List;
 public class BookController {
 
     private final BookService bookService;
+    private final BookRepository bookRepository;
 
     @GetMapping // 리스트조회
-    public String bookList(Model model){
-        List<BookDto> bookList = bookService.getBookList();
+    public String bookList(Model model, @RequestParam(value = "searchType", required = false) String searchType,
+                           @RequestParam(value = "searchValue", required = false) String searchValue){
+
+        SearchParam searchParam = new SearchParam();
+        searchParam.setSearchType(searchType);
+        searchParam.setSearchValue(searchValue);
+
+        // 도서목록조회
+        List<BookDto> bookList = bookService.getBookList(searchType,searchValue);
+
+
         model.addAttribute("list",bookList);
+
+        model.addAttribute("param", searchParam);
         return "book/bookList";
     }
 
@@ -48,10 +65,11 @@ public class BookController {
         }
         return "redirect:/";
     }
-    @DeleteMapping("{id}") // 삭제
-    public @ResponseBody String deleteBook(@PathVariable Long id){
+    @DeleteMapping("{book-id}") // 삭제
+    public @ResponseBody ResponseEntity deleteBook
+            (@PathVariable("book-id") Long id){
         bookService.deleteBook(id);
-        return "삭제 완료";
+        return new ResponseEntity<Long>(id, HttpStatus.OK);
     }
     @PatchMapping("{id}") // 수정
     public @ResponseBody String updateBook(@PathVariable Long id, @RequestBody Book updateBook) {
