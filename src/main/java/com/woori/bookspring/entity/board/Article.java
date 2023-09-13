@@ -1,5 +1,6 @@
 package com.woori.bookspring.entity.board;
 
+import com.woori.bookspring.dto.ArticleDto;
 import com.woori.bookspring.entity.User;
 import com.woori.bookspring.entity.base.BaseEntity;
 import jakarta.persistence.*;
@@ -26,4 +27,14 @@ public class Article extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public ArticleDto of() {
+        return ArticleDto.builder()
+                .id(id)
+                .title(title)
+                .content(content)
+                .regTime(getRegTime())
+                .createdBy(getCreatedBy())
+                .build();
+    }
 }
