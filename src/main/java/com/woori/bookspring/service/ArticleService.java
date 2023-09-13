@@ -1,5 +1,6 @@
 package com.woori.bookspring.service;
 
+import com.woori.bookspring.constant.ArticleType;
 import com.woori.bookspring.dto.ArticleDto;
 import com.woori.bookspring.dto.ArticleFormDto;
 import com.woori.bookspring.entity.User;
@@ -20,10 +21,11 @@ import java.util.List;
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
-    public void createArticle(ArticleFormDto articleFormDto, User user){
-        Article article = articleFormDto.toEntity();
+    public void createArticle(ArticleFormDto articleFormDto, String email){
+        User user = userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+        Article article = articleFormDto.toEntity(user);
         articleRepository.save(article);
     }
 
@@ -34,9 +36,10 @@ public class ArticleService {
     }
 
     @Transactional(readOnly = true)
-    public List<ArticleDto> getArticleList() {
-        return articleRepository.findAll().stream().map(Article::of).toList();
+    public List<ArticleDto> getArticleList(ArticleType articleType) {
+        return articleRepository.findByArticleType(articleType).stream().map(Article::of).toList();
     }
+
 
     @Transactional
     public void updateArticle(Article article) {
