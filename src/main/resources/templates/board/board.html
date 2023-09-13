@@ -57,10 +57,10 @@
             <tbody>
             <tr th:each="article : ${list}">
                 <td class="title"><a th:text="${article.title}"
-                                     th:href="@{/articles/{id} (id = ${article.articleId})}"></a></td>
-                <td class="user-id" th:text="${article.user.getUserId()}"></td>
+                                     th:href="@{/article/01/{article-id} (article-id = ${article.id})}"></a></td>
+                <td class="user-id" th:text="${article.createdBy}"></td>
                 <td class="created-at">
-                    <time th:text="${article.createdAt}"></time>
+                    <time th:text="${article.regTime}"></time>
                 </td>
             </tr>
             </tbody>
@@ -69,36 +69,9 @@
 
     <div class="row" sec:authorize="isAuthenticated()">
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-            <a class="btn btn-primary me-md-2" role="button" id="write-article" href="/articles/create">글쓰기</a>
+            <a class="btn btn-primary me-md-2" role="button" id="write-article" href="/article/01/new">글쓰기</a>
         </div>
     </div>
-    <nav aria-label="Page navigation example ">
-        <ul class="pagination">
-            <li class="page-item">
-                <a class="page-link" th:href="@{?page=1 (searchType = ${searchType}, searchValue = ${searchValue})}" aria-label="Previous">
-                    <span aria-hidden="true">처음</span>
-                </a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" th:href="@{?(searchType = ${searchType}, searchValue = ${searchValue}, page = ${paging.startNumber-1})}" th:classappend="${paging.startNumber == 1}?disabled">
-                    <span aria-hidden="true">이전</span>
-                </a>
-            </li>
-            <li class="page-item"
-                th:each="pageButton : ${bar}">
-                <a class="page-link" th:href="@{?(searchType = ${searchType}, searchValue = ${searchValue}, page = ${pageButton})}" th:text="${pageButton}" th:classappend="${paging.currentPage == pageButton}?active"></a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" th:href="@{?(searchType = ${searchType}, searchValue = ${searchValue}, page = ${paging.endNumber+1})}" th:classappend="${paging.endNumber == list.totalPages}?disabled">
-                    <span aria-hidden="true">다음</span>
-                </a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" th:href="@{?(searchType = ${searchType}, searchValue = ${searchValue}, page = ${list.totalPages})}" aria-label="Previous">
-                    <span aria-hidden="true">끝</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+
 </main>
 </html>
