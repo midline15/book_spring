@@ -3,6 +3,7 @@ package com.woori.bookspring.service;
 import com.woori.bookspring.entity.Cover;
 import com.woori.bookspring.repository.BookRepository;
 import com.woori.bookspring.repository.CoverRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -34,4 +35,20 @@ public class CoverService {
         return coverRepository.save(cover);
     }
 
+    public Cover updateCover(Long coverId, MultipartFile imgFile) throws Exception{
+
+        if (!imgFile.isEmpty()) {
+            Cover findCover = coverRepository.findById(coverId)
+                    .orElseThrow(EntityNotFoundException::new);
+            //기존 이미지 삭제 파일
+            if (!StringUtils.isEmpty(findCover.getName())) {
+                fileService.deleteFile(imgLocation + "/" + findCover.getName());
+            }
+            String origName = imgFile.getOriginalFilename();
+            String name = fileService.uploadFile(imgLocation, origName, imgFile.getBytes());
+            String url = "/images/cover/" + name;
+            return findCover.updateCover(origName, name, url);
+        }
+        return null;
+    }
 }

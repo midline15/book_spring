@@ -2,98 +2,107 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/user_layout}">
-<!-- 사용자 CSS 추가 -->
-<th:block layout:fragment="css">
-    <style>
-        .mgb-15 {
-            margin-bottom: 15px;
-        }
+<meta charset="UTF-8">
+<th:block layout:fragment="script">
 
-        .mgt-30 {
-            margin-top: 30px;
-        }
+    <th:block layout:fragment="css">
+        <style>
+            .mgb-15 {
+                margin-bottom: 15px;
+            }
 
-        .mgt-50 {
-            margin-top: 50px;
-        }
+            .mgt-30 {
+                margin-top: 30px;
+            }
 
-        .repImgDiv {
-            margin-right: 15px;
-            height: auto;
-            width: 50%;
-        }
+            .mgt-50 {
+                margin-top: 50px;
+            }
 
-        .repImg {
-            width: 100%;
-            height: 400px;
-        }
+            .repImgDiv {
+                margin-right: 15px;
+                height: auto;
+                width: 50%;
+            }
 
-        .wd50 {
-            height: auto;
-            width: 50%;
-        }
-    </style>
-</th:block>
+            .repImg {
+                width: 100%;
+                height: 400px;
+            }
 
-<div layout:fragment="content" style="margin-left:25%;margin-right:25%">
+            .wd50 {
+                height: auto;
+                width: 50%;
+            }
 
-    <input type="hidden" id="itemId" th:value="${ebook.id}">
+        </style>
+    </th:block>
 
-    <div class="d-flex">
-        <div class="repImgDiv">
-            <img src="https://dn-img-page.kakao.com/download/resource?kid=cg1WJ/hzhOdN0sDF/FBgiSIRkBwF3Kfs9wqocL1&amp;filename=th3" class="rounded repImg" th:alt="${ebook.title}">
-        </div>
-        <div class="wd50">
-            <div class="h4" th:text="${ebook.title}"></div>
-            <hr class="my-4">
+    <div layout:fragment="content" style="margin-left:25%;margin-right:25%">
 
-            <div class="text-right">
-                <div class="input-group w-50">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" th:text="${ebook.intro}"></span>
-                    </div>
-                </div>
+        <input type="hidden" id="itemId" th:value="${ebook.id}">
+
+        <div class="d-flex">
+            <div class="repImgDiv">
+                <img th:src="${ebook.cover}" class="rounded repImg" th:alt="${ebook.title}">
+            </div>
+            <div class="wd50">
+                <div class="h4" th:text="${ebook.title}"></div>
                 <hr class="my-4">
 
-                <div class="text-right mgt-50">
-                    <h5>결제 금액</h5>
-                    <h3 name="totalPrice" id="totalPrice" class="font-weight-bold"></h3>
-                </div>
                 <div class="text-right">
-                    <form th:action="@{/like/ebook/{ebook-id}(ebook-id = ${ebook.id})}" method="post">
-                        <button type="submit" class="btn btn-light border border-primary btn-lg">좋아요</button>
-                    </form>
-                    <button type="button" class="btn btn-primary btn-lg">이용권</button>
+                    <div class="input-group w-50">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" th:text="${ebook.intro}"></span>
+                        </div>
+                    </div>
+                    <hr class="my-4">
+
+                    <div class="text-right mgt-50">
+                        <h5>결제 금액</h5>
+                        <h3 name="totalPrice" id="totalPrice" class="font-weight-bold"></h3>
+                    </div>
+                    <div class="text-right">
+                        <form th:action="@{/like/ebook/{ebook-id}(ebook-id = ${ebook.id})}" method="post">
+                            <button type="submit" class="btn btn-light border border-primary btn-lg">좋아요</button>
+                        </form>
+                        <button type="button" class="btn btn-primary btn-lg">이용권</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div data-t-obj="{&quot;click&quot;:{&quot;layer1&quot;:&quot;전체회차목록&quot;}}" class="min-h-360pxr">
-        <ul class="jsx-2531468679 jsx-376872051 flex" style="flex-direction: column; background-color: var(--bg-a-20);" th:each="episode : ${ebook.episodeList}">
-            <li class="jsx-2531468679 jsx-376872051 list-child-item">
-                <div>
-                    <div class="relative flex py-8pxr bg-bg-a-20 px-15pxr"><a class="flex flex-1" href="/content/58620412/viewer/58627039">
-                        <div class="flex items-center">
-                            <div class="relative overflow-hidden mr-12pxr shrink-0 w-66pxr" style="border-radius: 8px;">
-                                <div class="jsx-905614930 image-container relative h-full w-full">
-                                    <div class="jsx-905614930 absolute top-0 left-0 h-full w-full select-none items-center justify-center bg-s-gray-20/15 object-cover hidden"></div>
+        <div data-t-obj="{&quot;click&quot;:{&quot;layer1&quot;:&quot;전체회차목록&quot;}}" class="min-h-360pxr">
+            <ul class="jsx-2531468679 jsx-376872051 flex"
+                style="flex-direction: column; background-color: var(--bg-a-20);"
+                th:each="episode : ${ebook.episodeList}">
+                <li class="jsx-2531468679 jsx-376872051 list-child-item">
+                    <div>
+                        <div class="relative flex py-8pxr bg-bg-a-20 px-15pxr"><a class="flex flex-1"
+                                                                                  href="/content/58620412/viewer/58627039">
+                            <div class="flex items-center">
+                                <div class="relative overflow-hidden mr-12pxr shrink-0 w-66pxr"
+                                     style="border-radius: 8px;">
+                                    <div class="jsx-905614930 image-container relative h-full w-full">
+                                        <div class="jsx-905614930 absolute top-0 left-0 h-full w-full select-none items-center justify-center bg-s-gray-20/15 object-cover hidden"></div>
+                                    </div>
+                                    <div class="absolute top-0 left-0 h-full w-full border-[0.5px] border-solid border-sp-thumb-line"
+                                         style="border-radius: 8px;"></div>
                                 </div>
-                                <div class="absolute top-0 left-0 h-full w-full border-[0.5px] border-solid border-sp-thumb-line"
-                                     style="border-radius: 8px;"></div>
-                            </div>
-                            <div class="flex flex-col">
-                                <div class="mb-4pxr flex items-center"><span
-                                        class="font-medium2 break-all text-el-60 line-clamp-2" th:text="${episode.title}"></span>
+                                <div class="flex flex-col">
+                                    <div class="mb-4pxr flex items-center"><span
+                                            class="font-medium2 break-all text-el-60 line-clamp-2"
+                                            th:text="${episode.title}"></span>
+                                    </div>
+                                    <div class="text-ellipsis line-clamp-1 font-small2 text-el-60"><span
+                                            class="break-all align-middle"
+                                            th:text="${episode.regTime}">2022.01.12</span>
+                                    </div>
                                 </div>
-                                <div class="text-ellipsis line-clamp-1 font-small2 text-el-60"><span
-                                        class="break-all align-middle" th:text="${episode.regTime}">2022.01.12</span></div>
                             </div>
-                        </div>
-                    </a></div>
-                </div>
-            </li>
+                        </a></div>
+                    </div>
+                </li>
 
-        </ul>
-    </div>
+            </ul>
+        </div>
 </html>
