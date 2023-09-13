@@ -4,12 +4,12 @@
 <th:block th:fragment="sidebar">
 
     <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px; height: 100%;">
-        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+        <div class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
             <svg class="bi pe-none me-2" width="40" height="32">
                 <use xlink:href="#bootstrap"></use>
             </svg>
             <span class="fs-4">마이페이지</span>
-        </a>
+        </div>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
@@ -17,39 +17,39 @@
                     <svg class="bi pe-none me-2" width="16" height="16">
                         <use xlink:href="#home"></use>
                     </svg>
-                    Home
+                    회원정보
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link text-white">
+                <a href="/cart" class="nav-link text-white">
                     <svg class="bi pe-none me-2" width="16" height="16">
                         <use xlink:href="#speedometer2"></use>
                     </svg>
-                    Dashboard
+                    장바구니
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link text-white">
+                <a href="/order" class="nav-link text-white">
                     <svg class="bi pe-none me-2" width="16" height="16">
                         <use xlink:href="#table"></use>
                     </svg>
-                    Orders
+                    주문내역
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link text-white">
+                <a href="/inven" class="nav-link text-white">
                     <svg class="bi pe-none me-2" width="16" height="16">
                         <use xlink:href="#grid"></use>
                     </svg>
-                    Products
+                    보관함
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link text-white">
+                <a th:href="@{/user/{user-id}/article (user-id = ${#authentication.principal.user.id})}" class="nav-link text-white">
                     <svg class="bi pe-none me-2" width="16" height="16">
                         <use xlink:href="#people-circle"></use>
                     </svg>
-                    Customers
+                    내 글 관리
                 </a>
             </li>
         </ul>
