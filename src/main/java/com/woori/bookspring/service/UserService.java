@@ -2,6 +2,7 @@ package com.woori.bookspring.service;
 
 import com.woori.bookspring.dto.SignupForm;
 import com.woori.bookspring.dto.UserDto;
+import com.woori.bookspring.dto.UserUpdateDto;
 import com.woori.bookspring.entity.User;
 import com.woori.bookspring.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,16 +28,17 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserDto getUser(String email) {
-         return userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new).of();
+    public UserUpdateDto getUser(Long userId) {
+         return userRepository.findById(userId).orElseThrow(EntityNotFoundException::new).of();
     }
 
-    public void deleteUser(String email) {
-        userRepository.deleteByEmail(email);
+    public void deleteUser(Long userId) {
+        userRepository.deleteById(userId);
     }
 
-    public void updateUser(UserDto userDto) {
-        userRepository.save(userDto.toEntity());
+    public void updateUser(UserUpdateDto userUpdateDto) {
+        User findUser = userRepository.findById(userUpdateDto.getId()).orElseThrow(EntityNotFoundException::new);
+        findUser.updateUser(userUpdateDto);
     }
 
     @Transactional(readOnly = true)

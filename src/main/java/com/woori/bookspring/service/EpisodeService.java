@@ -19,7 +19,7 @@ public class EpisodeService {
     private final EpisodeRepository episodeRepository;
     private final EbookRepository ebookRepository;
 
-    public void createEpisode(EpisodeFormDto episodeFormDto, Long ebookId) { //에피소드 생성
+    public void createEpisode(EpisodeFormDto episodeFormDto, Long ebookId){ //에피소드 생성
         Ebook ebook = ebookRepository.findById(ebookId).get();
         episodeRepository.save(Episode.createEpisode(episodeFormDto, ebook));
     }
@@ -34,11 +34,14 @@ public class EpisodeService {
     }
 
     public void updateEpisode(Episode episode) { //e북 수정
-         episodeRepository.save(episode);
+        episodeRepository.save(episode);
     }
 
     @Transactional(readOnly = true)
     public List<Episode> getEpisodeList() { //e북 리스트,목록
         return episodeRepository.findAll();
     }
+
+//    public void createEpisode(Episode episode) {
+//    }
 }

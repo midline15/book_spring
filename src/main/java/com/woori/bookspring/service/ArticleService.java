@@ -1,12 +1,17 @@
 package com.woori.bookspring.service;
 
+import com.woori.bookspring.dto.ArticleDto;
+import com.woori.bookspring.dto.ArticleFormDto;
+import com.woori.bookspring.entity.User;
 import com.woori.bookspring.entity.board.Article;
 import com.woori.bookspring.repository.ArticleRepository;
+import com.woori.bookspring.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.List;
 
 @Transactional
@@ -15,19 +20,22 @@ import java.util.List;
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
+    private final UserService userService;
 
-    public void createArticle(Article article) {
+    public void createArticle(ArticleFormDto articleFormDto, User user){
+        Article article = articleFormDto.toEntity();
         articleRepository.save(article);
     }
 
     @Transactional(readOnly = true)
-    public void getArticle(Long id) {
-        articleRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    public ArticleDto getArticle(Long articleId) {
+        Article article = articleRepository.findById(articleId).orElseThrow(EntityNotFoundException::new);
+        return article.of();
     }
 
     @Transactional(readOnly = true)
-    public List<Article> getArticleList(){
-        return articleRepository.findAll();
+    public List<ArticleDto> getArticleList() {
+        return articleRepository.findAll().stream().map(Article::of).toList();
     }
 
     @Transactional

@@ -14,8 +14,11 @@
         }
         .banner{
             position: absolute; top:0; left: 0;
-            width: 100%;
-            height: 100%;
+            width: 60%;
+            height: 70%;
+            display: flex; /* Flexbox를 사용하여 내용을 가운데 정렬 */
+            justify-content: center; /* 수평 가운데 정렬 */
+            align-items: center; /* 수직 가운데 정렬 */
         }
         .card-text{
             text-overflow: ellipsis;
@@ -36,7 +39,7 @@
     <div id="carouselControls" class="carousel slide margin" data-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active item">
-                <img class="d-block w-100 banner" src="https://i.namu.wiki/i/9OGCUyoMlW-79j0ngpSMubfdLWKwvOqzUKhz6uUCLdIE4ogqcHh529jGoioJ3FJEprNYd6iimQsrCXQs7VUpYGivu1zr3z1R-89JB7PB0k9EzkbrT7URyX4obBfD7XHKZ0FwVLDEM6t1OKjlCF8fGw.webp" alt="First slide">
+                <img class="d-block w-60 h-70 banner" src="/img/1234.jpg" alt="First slide">
             </div>
         </div>
     </div>
@@ -46,20 +49,84 @@
         <p class="h3 font-weight-bold"></p>
     </div>
 
-    <div class="row">
-            <div class="col-md-4 margin">
-                <div class="card">
-                    <a class="text-dark">
-                        <img class="card-img-top"  height="400">
-                        <div class="card-body">
-                            <h4 class="card-title"></h4>
-                            <p class="card-text"></p>
-                            <h3 class="card-title text-danger"></h3>
-                        </div>
-                    </a>
-                </div>
+    <div class="row"><p class="rem">Book Top 3</p>
+        <div class="col-md-4 margin">
+            <div class="card">
+                <a class="text-dark">
+                    <img class="card-img-top" src="/img/1.png" height="400">
+                    <div class="card-body">
+                        <h4 class="card-title"></h4>
+                        <p class="card-text"></p>
+                        <h3 class="card-title text-danger"></h3>
+                    </div>
+                </a>
             </div>
+        </div>
+        <div class="col-md-4 margin">
+            <div class="card">
+                <a class="text-dark">
+                    <img class="card-img-top" src="/img/2.png" height="400">
+                    <div class="card-body">
+                        <h4 class="card-title"></h4>
+                        <p class="card-text"></p>
+                        <h3 class="card-title text-danger"></h3>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4 margin">
+            <div class="card">
+                <a class="text-dark">
+                    <img class="card-img-top" src="/img/3.png" height="400">
+                    <div class="card-body">
+                        <h4 class="card-title"></h4>
+                        <p class="card-text"></p>
+                        <h3 class="card-title text-danger"></h3>
+                    </div>
+                </a>
+            </div>
+        </div>
     </div>
+
+    <div class="row"><p class="rem">EBook Top 3</p>
+        <div class="col-md-4 margin">
+            <div class="card">
+                <a class="text-dark">
+                    <img class="card-img-top" src="/img/1.png" height="400">
+                    <div class="card-body">
+                        <h4 class="card-title"></h4>
+                        <p class="card-text"></p>
+                        <h3 class="card-title text-danger"></h3>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4 margin">
+            <div class="card">
+                <a class="text-dark">
+                    <img class="card-img-top" src="/img/2.png" height="400">
+                    <div class="card-body">
+                        <h4 class="card-title"></h4>
+                        <p class="card-text"></p>
+                        <h3 class="card-title text-danger"></h3>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4 margin">
+            <div class="card">
+                <a class="text-dark">
+                    <img class="card-img-top" src="/img/3.png" height="400">
+                    <div class="card-body">
+                        <h4 class="card-title"></h4>
+                        <p class="card-text"></p>
+                        <h3 class="card-title text-danger"></h3>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
 
     <div>
         <ul class="pagination justify-content-center">

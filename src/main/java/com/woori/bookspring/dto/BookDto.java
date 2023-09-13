@@ -9,10 +9,10 @@ import lombok.Data;
 @Builder
 public class BookDto {
 
-    private Long id;
-    private int price;
-    private String intro;
-    private String title;
-    private SellStatus sellStatus;
-    private String url;
+    private Long id; //아이디
+    private int price;  //가격
+    private String intro;  //소개
+    private String title;  //제목
+    private SellStatus sellStatus;  // 재고
+    private String url; // 유알엘
 }
