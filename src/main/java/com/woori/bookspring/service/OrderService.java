@@ -59,4 +59,9 @@ public class OrderService {
     public void deleteOrder(Long orderId){
         orderRepository.deleteById(orderId);
     }
+
+    public void cancelOrder(Long orderId) {
+        Order findOrder = orderRepository.findById(orderId).orElseThrow(EntityNotFoundException::new);
+        findOrder.cancel();
+    }
 }

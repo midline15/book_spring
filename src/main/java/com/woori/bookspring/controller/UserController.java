@@ -1,15 +1,17 @@
 package com.woori.bookspring.controller;
 
 import com.woori.bookspring.dto.SignupForm;
+import com.woori.bookspring.dto.UserUpdateDto;
 import com.woori.bookspring.repository.UserRepository;
 import com.woori.bookspring.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("user")
 @RequiredArgsConstructor
@@ -47,7 +49,22 @@ public class UserController {
     }
 
     @GetMapping("{user-id}")
-    public String getUser(){
+    public String getUser(@PathVariable("user-id") Long userId, Model model){
+        UserUpdateDto userUpdateDto = userService.getUser(userId);
+        model.addAttribute("user",userUpdateDto);
         return "user/user";
     }
+
+    @PatchMapping("{user-id}")
+    public ResponseEntity<?> updateUser(@RequestBody UserUpdateDto userUpdateDto){
+        userService.updateUser(userUpdateDto);
+        return new ResponseEntity<>("수정 완료", HttpStatus.OK);
+    }
+
+    @DeleteMapping("{user-id}")
+    public ResponseEntity<?> deleteUser(@PathVariable("user-id") Long userId){
+        userService.deleteUser(userId);
+        return new ResponseEntity<>("회원탈퇴 완료", HttpStatus.OK);
+    }
+
 }

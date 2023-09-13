@@ -65,4 +65,8 @@ public class Order extends BaseEntity {
         orderBookList.add(orderBook);
         orderBook.setOrder(this);
     }
+
+    public void cancel() {
+        orderStatus = OrderStatus.CANCEL;
+    }
 }
