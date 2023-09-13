@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+      xmlns:layout="http://www.ultra.net.nz/thymeleaf/layout">
+<link href="/css/sidebars.css" rel="stylesheet">
 <th:block th:replace="~{fragments/head::head}"></th:block>
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
@@ -68,15 +69,23 @@
     </symbol>
 </svg>
 <div th:replace="~{fragments/header::header}"></div>
-
-<div id="wrapper">
-    <div id="content-wrapper" class="d-flex flex-column">
-        <div id="content">
-            <th:block layout:fragment="content"></th:block>
-        </div>
-    </div>
+<style>
+    .sidebar-skeleton {
+        position: fixed;
+        left: 0;
+        height: 100vh;
+        bottom: 0;
+        width: 272px;
+        z-index: -10000;
+    }
+</style>
+<div class="sidebar-skeleton">
+    <main class="d-flex flex-nowrap">
+        <div th:replace="~{fragments/sidebar::sidebar}"></div>
+        <div class="d-flex flex-column flex-shrink-0 p-3" layout:fragment="content"></div>
+    </main>
 </div>
 <div th:replace="~{fragments/footer::footer}"></div>
-<th:block layout:fragment="script"></th:block>
+<div layout:fragment="script"></div>
 </body>
 </html>

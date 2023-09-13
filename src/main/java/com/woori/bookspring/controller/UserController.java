@@ -39,10 +39,15 @@ public class UserController {
         return "user/login";
     }
 
-    @GetMapping("/logout/kakao")
+    @GetMapping("logout/kakao")
     public String kakao(HttpSession session) {
         session.invalidate();
 
         return "redirect:https://kauth.kakao.com/oauth/logout?client_id="+clientId+"&logout_redirect_uri="+logoutUri;
+    }
+
+    @GetMapping("{user-id}")
+    public String getUser(){
+        return "user/user";
     }
 }
