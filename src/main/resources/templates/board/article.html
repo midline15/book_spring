@@ -21,19 +21,58 @@
         </article>
     </div>
     <div class="row g-5" id="article-buttons">
-        <form id="delete-article-form" th:action="@{/article/01/{id} (id = ${article.id})}">
+        <form id="delete-article-form" th:action="@{/article/01/{article-id} (article-id = ${article.id})}" >
             <div class="pb-5 d-grid gap-2 d-md-block"
                  th:if="${#authorization.expression('isAuthenticated()')} and ${article.createdBy} == ${#authentication.name}">
                 <article>
                     <input type="hidden" id="article-id" th:value="${article.id}">
                     <a class="btn btn-success me-md-2" role="button" id="update-article"
-                       th:href="@{/article/01/{id}/form (id = ${article.id})}">수정</a>
+                       th:href="@{/article/01/{article-id}/form (article-id = ${article.id})}">수정</a>
                     <button type="button" id="delete-btn" class="btn btn-danger me-md-2">
                         삭제
                     </button>
                 </article>
             </div>
         </form>
+    </div>
+
+    <div class="row g-5">
+        <section>
+            <form class="row g-3 comment-form" th:action="@{/article/01/{article-id}/articleComment (article-id=${article.id})}" method="POST">
+                <div class="col-md-9 col-lg-8">
+                    <label for="comment-textbox" hidden>댓글</label>
+                    <textarea class="form-control comment-textbox" id="comment-textbox" placeholder="댓글 쓰기.." rows="3"
+                              required ></textarea>
+                </div>
+                <div class="col-md-3 col-lg-4">
+                    <label for="comment-submit" hidden th:href="@{/article/01/{article-id}/articleComment (article-id = ${article.id})}">댓글 쓰기</label>
+                    <button class="btn btn-primary" id="comment-submit" type="submit">쓰기</button>
+                </div>
+            </form>
+            <ul id="article-comments" class="row col-md-10 col-lg-8 pt-3">
+                <li class="parent-comment" th:each="comment : ${dto.articleCommentList}" th:object="${comment}">
+                    <form class="comment-delete-form"
+                          th:action="@{/articles/{id}/articleComments/{article-comment-id}/delete(id=${dto.id},
+                article-comment-id=*{id})}" method="POST">
+                        <div class="row">
+                            <div class="col-md-10 col-lg-9">
+                                <strong th:text="*{userAccount.userId}">Mini</strong>
+                                <small>
+                                    <time th:text="${#temporals.format(createdAt,'yyyy-MM-dd hh:mm:ss')}">2023-01-01
+                                    </time>
+                                </small>
+                                <p class="mb-1" th:text="*{content}">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>
+                                    Lorem ipsum dolor sit amet
+                                </p>
+                            </div>
+                            <div class="col-2 mb-3 align-self-center"
+                                 th:if="${#authorization.expression('isAuthenticated()')} and
+                                                *{userAccount.userId} == ${#authentication.name}">
+                                <button type="submit" class="btn btn-outline-danger">삭제</button>
+                            </div>
+                        </div>
+        </section>
     </div>
     <script src="/js/article.js"></script>
 </main>
