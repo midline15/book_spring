@@ -13,7 +13,7 @@
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-                <a href="#" class="nav-link active" aria-current="page">
+                <a th:href="@{/user/{user-id}(user-id = ${#authentication.principal.user.id})}" class="nav-link active" aria-current="page">
                     <svg class="bi pe-none me-2" width="16" height="16">
                         <use xlink:href="#home"></use>
                     </svg>
@@ -45,12 +45,19 @@
                 </a>
             </li>
             <li>
-                <a th:href="@{/user/{user-id}/article (user-id = ${#authentication.principal.user.id})}" class="nav-link text-white">
-                    <svg class="bi pe-none me-2" width="16" height="16">
-                        <use xlink:href="#people-circle"></use>
-                    </svg>
+                <button th:href="@{/user/{user-id}/article (user-id = ${#authentication.principal.user.id})}" class="btn btn-toggle d-inline-flex align-items-center rounded border-0" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
                     내 글 관리
-                </a>
+                </button>
+                <div class="collapse show" id="home-collapse" style="">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a th:href="@{/user/{user-id}/article?articleType=ARTICLE (user-id = ${#authentication.principal.user.id})}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">게시글</a></li>
+                        <li><a th:href="@{/user/{user-id}/article?articleType=REVIEW (user-id = ${#authentication.principal.user.id})}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">리뷰</a></li>
+                        <li><a th:href="@{/user/{user-id}/article?articleType=QUESTION (user-id = ${#authentication.principal.user.id})}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">질문</a></li>
+                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">댓글</a></li>
+                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">book댓글</a></li>
+                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">episode댓글</a></li>
+                    </ul>
+                </div>
             </li>
         </ul>
         <hr>

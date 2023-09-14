@@ -13,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("user")
 @RequiredArgsConstructor
 @Controller
 public class UserController {
@@ -25,43 +24,43 @@ public class UserController {
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String clientId;
 
-    @GetMapping("signup")
+    @GetMapping("user/signup")
     public String signup() {
         return "user/signup";
     }
 
-    @PostMapping("signup")
+    @PostMapping("user/signup")
     public String signup(SignupForm dto){
         userService.createUser(dto);
         return "redirect:/";
     }
 
-    @GetMapping("login")
+    @GetMapping("user/login")
     public String login(){
         return "user/login";
     }
 
-    @GetMapping("logout/kakao")
+    @GetMapping("user/logout/kakao")
     public String kakao(HttpSession session) {
         session.invalidate();
 
         return "redirect:https://kauth.kakao.com/oauth/logout?client_id="+clientId+"&logout_redirect_uri="+logoutUri;
     }
 
-    @GetMapping("{user-id}")
+    @GetMapping("user/{user-id}")
     public String getUser(@PathVariable("user-id") Long userId, Model model){
         UserUpdateDto userUpdateDto = userService.getUser(userId);
         model.addAttribute("user",userUpdateDto);
         return "user/user";
     }
 
-    @PatchMapping("{user-id}")
+    @PatchMapping("user/{user-id}")
     public ResponseEntity<?> updateUser(@RequestBody UserUpdateDto userUpdateDto){
         userService.updateUser(userUpdateDto);
         return new ResponseEntity<>("수정 완료", HttpStatus.OK);
     }
 
-    @DeleteMapping("{user-id}")
+    @DeleteMapping("user/{user-id}")
     public ResponseEntity<?> deleteUser(@PathVariable("user-id") Long userId){
         userService.deleteUser(userId);
         return new ResponseEntity<>("회원탈퇴 완료", HttpStatus.OK);

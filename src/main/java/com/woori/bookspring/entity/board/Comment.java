@@ -1,5 +1,6 @@
 package com.woori.bookspring.entity.board;
 
+import com.woori.bookspring.dto.CommentDto;
 import com.woori.bookspring.entity.User;
 import com.woori.bookspring.entity.base.BaseEntity;
 import jakarta.persistence.*;
@@ -28,4 +29,15 @@ public class Comment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
     private Article article;
+
+    public CommentDto of() {
+        return CommentDto.builder()
+                .id(id)
+                .email(user.getEmail())
+                .regTime(getRegTime()).build();
+    }
+
+    public void updateComment(CommentDto commentDto) {
+        content = commentDto.getContent();
+    }
 }
