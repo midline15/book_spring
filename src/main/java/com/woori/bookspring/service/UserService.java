@@ -33,7 +33,7 @@ public class UserService {
     }
 
 
-    public void deleteUser(Long userId) {
+    public void disableUser(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
         user.changeUserStatus(UserStatus.DISABLE);
     }

@@ -23,21 +23,11 @@ public class CommentService {
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
 
-    public void createComment(Long articleId, CommentDto commentDto) {
+    public void createComment(Long articleId, CommentDto commentDto, String email) {
         Article article = articleRepository.findById(articleId).orElseThrow(EntityNotFoundException::new);
-        User user = userRepository.findByEmail(commentDto.getEmail()).orElseThrow(EntityNotFoundException::new);
+        User user = userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
 
         commentRepository.save(commentDto.toEntity(article, user));
-    }
-
-    @Transactional(readOnly = true)
-    public void getComment(Long id) {
-        commentRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Comment> getCommentList(){
-        return commentRepository.findAll();
     }
 
     public void updateComment(CommentDto commentDto) {
@@ -49,6 +39,7 @@ public class CommentService {
         commentRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public List<CommentDto> getCommentList(Long userId) {
         return commentRepository.findByUserId(userId).stream().map(Comment::of).toList();
     }

@@ -4,14 +4,12 @@ import com.woori.bookspring.dto.BookCommentDto;
 import com.woori.bookspring.dto.BookDto;
 import com.woori.bookspring.dto.BookFormDto;
 import com.woori.bookspring.dto.SearchParam;
-import com.woori.bookspring.entity.Book;
 import com.woori.bookspring.repository.BookRepository;
+import com.woori.bookspring.service.BookCommentService;
 import com.woori.bookspring.service.BookService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +24,7 @@ import java.util.List;
 public class BookController {
 
     private final BookService bookService;
-    private final BookRepository bookRepository;
+    private final BookCommentService bookCommentService;
 
     @GetMapping // 리스트조회
     public String bookList(Model model, @RequestParam(value = "searchType", required = false) String searchType,
@@ -65,12 +63,12 @@ public class BookController {
             bookService.createBook(bookFormDto, imgFile);
         } catch (Exception e){
             model.addAttribute("errorMessage", "상품 등록 중 에러가 발생하였습니다.");
-            return "bookForm";
+            return "book/bookForm";
         }
         return "redirect:/book";
     }
     @DeleteMapping("{book-id}") // 삭제
-    public @ResponseBody ResponseEntity deleteBook
+    public @ResponseBody ResponseEntity<?> deleteBook
             (@PathVariable("book-id") Long id){
         bookService.deleteBook(id);
         return new ResponseEntity<Long>(id, HttpStatus.OK);
@@ -78,13 +76,9 @@ public class BookController {
 
 
     @PostMapping("{book-id}/bookComment")
-    private @ResponseBody ResponseEntity<String> createBookComment(BookCommentDto bookCommentDto, Principal principal){
-        try {
-            bookService.createBookComment(bookCommentDto, principal.getName());
-            return new ResponseEntity<>("댓글이 성공적으로 작성되었습니다.", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("댓글 작성 중 오류가 발생했습니다.", HttpStatus.BAD_REQUEST);
-        }
+    private String createBookComment(BookCommentDto bookCommentDto, Principal principal){
+        bookCommentService.createBookComment(bookCommentDto, principal.getName());
+        return "redirect:/book/{book-id}";
     }
 
 

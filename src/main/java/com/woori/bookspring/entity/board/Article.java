@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -35,21 +37,27 @@ public class Article extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> commentList;
+
     public ArticleDto of() {
         return ArticleDto.builder()
                 .id(id)
                 .title(title)
                 .content(content)
+                .commentDtoList(commentList.stream().map(Comment::of).toList())
                 .regTime(getRegTime())
                 .createdBy(getCreatedBy())
                 .build();
     }
 
-<<<<<<< Updated upstream
     public void updateArticle(HelpFormDto dto) {
         title = dto.getTitle();
         content = dto.getContent();
     }
-=======
->>>>>>> Stashed changes
+
+    public void updateArticle(ArticleDto articleDto) {
+        title = articleDto.getTitle();
+        content = articleDto.getContent();
+    }
 }

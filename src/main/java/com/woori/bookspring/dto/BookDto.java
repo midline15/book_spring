@@ -5,6 +5,8 @@ import com.woori.bookspring.entity.Cover;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Builder
 public class BookDto {
@@ -15,4 +17,6 @@ public class BookDto {
     private String title;  //제목
     private SellStatus sellStatus;  // 재고
     private String url; // 유알엘
+    private float avgScore;
+    private List<BookCommentDto> bookCommentDtoList;
 }

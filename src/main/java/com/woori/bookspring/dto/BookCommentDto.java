@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,7 +20,11 @@ public class BookCommentDto {
 
     private int score; // 별점
 
-    private Long userId; // 사용자 ID
+    private String email; // 사용자 ID
 
     private Long bookId; // 책 ID
+
+    private String bookTitle;
+
+    private LocalDateTime regTime;
 }

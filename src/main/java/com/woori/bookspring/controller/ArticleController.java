@@ -7,7 +7,10 @@ import com.woori.bookspring.dto.CommentDto;
 import com.woori.bookspring.entity.board.Article;
 import com.woori.bookspring.entity.board.Comment;
 import com.woori.bookspring.service.ArticleService;
+import com.woori.bookspring.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +24,7 @@ import java.util.List;
 public class ArticleController {
 
     private final ArticleService articleService;
+    private final CommentService commentService;
 
     @GetMapping("01") //자유게시판
     public String getArticleList(Model model) {
@@ -38,7 +42,7 @@ public class ArticleController {
     @PostMapping("01") //글쓰기
     public String createArticle(ArticleFormDto dto, Principal principal) {
         articleService.createArticle(dto, principal.getName()); //principal.getName => email
-        return "redirect:/article/01";
+        return "redirect:/article/01"+dto.getId();
 
     }
 
@@ -63,18 +67,30 @@ public class ArticleController {
         return "board/articleUpdateForm";
     }
 
-    @PostMapping("01/{article-id}") // 수정
+    @PatchMapping("01/{article-id}") // 수정
     public @ResponseBody String updateArticle(@PathVariable("article-id") Long articleId, ArticleDto articleDto) {
         articleService.updateArticle(articleDto, articleId);
-        return "redirect:/article/01";
+        return "redirect:/article/01/{article-id}";
     }
 
-    @PostMapping("01/{article-id}/articleComment") //댓글 달기
+    @PostMapping("01/{article-id}/comment") //댓글 달기
     public String createArticleComment(@PathVariable("article-id") Long articleId,
                                        CommentDto commentDto,
                                        Principal principal) {
-        articleService.createArticleComment(articleId, commentDto, principal);
-        return "redirect:/article/01";
+        commentService.createComment(articleId, commentDto, principal.getName());
+        return "redirect:/article/01/{article-id}";
+    }
+
+    @PatchMapping("01/{article-id}/comment/{comment-id}")
+    public ResponseEntity<?> updateComment(@RequestBody CommentDto commentDto){
+        commentService.updateComment(commentDto);
+        return new ResponseEntity<>("수정 완료", HttpStatus.OK);
+    }
+
+    @DeleteMapping("01/{article-id}/comment/{comment-id}")
+    public ResponseEntity<?> deleteComment(@PathVariable("comment-id") Long commentId){
+        commentService.deleteComment(commentId);
+        return new ResponseEntity<>("댓글 삭제", HttpStatus.OK);
     }
 
     @GetMapping("02") //리뷰게시판
@@ -90,4 +106,6 @@ public class ArticleController {
         return "redirect:/article/02";
 
     }
+
+
 }
