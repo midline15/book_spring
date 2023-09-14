@@ -1,5 +1,6 @@
 package com.woori.bookspring.service;
 
+import com.woori.bookspring.dto.EpisodeCommentDto;
 import com.woori.bookspring.entity.ebook.EpisodeComment;
 import com.woori.bookspring.repository.EpisodeCommentRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -32,5 +33,9 @@ public class EpisodeCommentService {
     @Transactional(readOnly = true)
     public List<EpisodeComment> getEpisodeCommentList() { //e북 댓글 조회
         return episodeCommentRepository.findAll();
+    }
+
+    public List<EpisodeCommentDto> getEpisodeCommentList(Long userId) {
+        return episodeCommentRepository.findByUserId(userId).stream().map(EpisodeComment::of).toList();
     }
 }

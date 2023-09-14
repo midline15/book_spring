@@ -1,5 +1,6 @@
 package com.woori.bookspring.entity;
 
+import com.woori.bookspring.dto.BookCommentDto;
 import com.woori.bookspring.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,4 +30,14 @@ public class BookComment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     private Book book;
+
+    public BookCommentDto of() {
+        return BookCommentDto.builder()
+                .id(id)
+                .email(user.getEmail())
+                .bookTitle(book.getTitle())
+                .regTime(getRegTime())
+                .score(score)
+                .build();
+    }
 }

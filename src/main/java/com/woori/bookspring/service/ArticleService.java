@@ -3,6 +3,7 @@ package com.woori.bookspring.service;
 import com.woori.bookspring.constant.ArticleType;
 import com.woori.bookspring.dto.ArticleDto;
 import com.woori.bookspring.dto.ArticleFormDto;
+import com.woori.bookspring.dto.HelpFormDto;
 import com.woori.bookspring.entity.User;
 import com.woori.bookspring.entity.board.Article;
 import com.woori.bookspring.repository.ArticleRepository;
@@ -40,14 +41,27 @@ public class ArticleService {
         return articleRepository.findByArticleType(articleType).stream().map(Article::of).toList();
     }
 
-
-    @Transactional
-    public void updateArticle(Article article) {
-        articleRepository.save(article);
+    @Transactional(readOnly = true)
+    public List<ArticleDto> getArticleList(Long userId, ArticleType articleType){
+        return articleRepository.findByUserIdAndArticleType(userId, articleType).stream().map(Article::of).toList();
     }
 
-    @Transactional
+
+    public void updateArticle(HelpFormDto helpFormDto) {
+        Article article = articleRepository.findById(helpFormDto.getId()).orElseThrow(EntityNotFoundException::new);
+        article.updateArticle(helpFormDto);
+    }
+
     public void deleteArticle(Long id) {
         articleRepository.deleteById(id);
+    }
+
+    public void createHelpArticle(HelpFormDto dto, String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+        dto.toEntity(user);
+    }
+
+    public void updateArticle(Article article) {
+
     }
 }

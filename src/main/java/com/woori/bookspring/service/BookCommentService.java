@@ -1,5 +1,7 @@
 package com.woori.bookspring.service;
 
+import com.woori.bookspring.dto.BookCommentDto;
+import com.woori.bookspring.dto.CommentDto;
 import com.woori.bookspring.entity.BookComment;
 import com.woori.bookspring.repository.BookCommentRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -36,5 +38,11 @@ public class BookCommentService {
     @Transactional(readOnly = true)
     public List<BookComment> getBookCommentList(){
         return bookCommentRepository.findAll();
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<BookCommentDto> getBookCommentList(Long userId) {
+        return bookCommentRepository.findByUserId(userId).stream().map(BookComment::of).toList();
     }
 }
