@@ -13,6 +13,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.List;
 
@@ -50,12 +51,14 @@ public class CartService {
     }
 
     public void deleteCartBook(Long cartBookId) {
-        CartBook cartBook = cartBookRepository.findById(cartBookId).orElseThrow(EntityNotFoundException::new);
+        CartBook cartBook = cartBookRepository.findById(cartBookId)
+                .orElseThrow(EntityNotFoundException::new);
         cartBookRepository.delete(cartBook);
     }
 
     public void updateCartBookCount(Long cartBookId, int count) {
-        CartBook cartBook = cartBookRepository.findById(cartBookId).orElseThrow(EntityNotFoundException::new);
+        CartBook cartBook = cartBookRepository.findById(cartBookId)
+                .orElseThrow(EntityNotFoundException::new);
         cartBook.updateCount(count);
     }
 
@@ -67,5 +70,19 @@ public class CartService {
     public void orderCartBook(List<CartBookDto> cartBookDtoList, String email) {
         orderService.addOrders(cartBookDtoList, email);
         cartBookDtoList.forEach(cartBookDto -> cartBookRepository.deleteById(cartBookDto.getId()));
+    }
+
+    @Transactional
+    public boolean validateCartBook(Long cartBookId, String email) {
+        User user = userRepository.findByEmail(email).get();
+        CartBook cartBook = cartBookRepository.findById(cartBookId)
+                .orElseThrow(EntityNotFoundException::new);
+        User savedUser = cartBook.getCart().getUser();
+
+        if (!StringUtils.equals(user.getEmail(),
+                savedUser.getEmail())){
+            return false;
+        }
+        return true;
     }
 }
