@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -21,24 +22,23 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EbookController {
     private final EbookService ebookService;
-    private EbookRepository ebookRepository;
 
     @GetMapping("/ebook") // e북 조회
     public String getEbookList(Model model) {
-        List<Ebook> ebookList = ebookService.getEbookList();
+        List<EbookFormDto> ebookList = ebookService.getEbookList();
         model.addAttribute("list", ebookList);
         return "ebook/ebookList";
     }
 
     @GetMapping("/ebook/{ebook-id}") //e북 id 단건 조회
-    public String getEbook(@PathVariable("ebook-id") Long ebookId, Model model) {
-        EbookFormDto ebook = ebookService.getEbook(ebookId);
+    public String getEbook(@PathVariable("ebook-id") Long ebookId, Model model, Principal principal) {
+        EbookFormDto ebook = ebookService.getEbook(ebookId, principal.getName());
         model.addAttribute("ebook", ebook);
         return "ebook/ebook";
     }
 
     @GetMapping("/admin/ebook") //생성 1
-    public String ebookFrom(Model model) {
+    public String ebookForm(Model model) {
         model.addAttribute("ebook", new EbookFormDto());
         return "ebook/ebookForm";
     }
@@ -64,8 +64,8 @@ public class EbookController {
     }
 
     @GetMapping("/admin/ebook/{ebook-id}") // 수정 1
-    public String updateEbook(@PathVariable("ebook-id") Long ebookId, Model model) {
-        EbookFormDto ebookFormDto = ebookService.getEbook(ebookId);
+    public String updateEbook(@PathVariable("ebook-id") Long ebookId, Model model, Principal principal) {
+        EbookFormDto ebookFormDto = ebookService.getEbook(ebookId, principal.getName());
         model.addAttribute("ebook", ebookFormDto);
         return "ebook/ebookForm";
     }

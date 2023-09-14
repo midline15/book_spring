@@ -55,6 +55,7 @@ public class BookController {
     public String newBook(){
         return "book/bookForm";
     }
+
     @PostMapping("new") // newBook
     public String createBook(Model model, BookFormDto bookFormDto, @RequestParam("imgFile") MultipartFile imgFile) {
         try {

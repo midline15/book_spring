@@ -1,6 +1,6 @@
 package com.woori.bookspring.entity.ebook;
 
-import com.woori.bookspring.dto.InventoryEbookDto;
+import com.woori.bookspring.dto.EbookFormDto;
 import com.woori.bookspring.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,9 +34,13 @@ public class InventoryEbook extends BaseEntity {
                 .build();
     }
 
-    public InventoryEbookDto of() {
-        return InventoryEbookDto.builder()
+    public EbookFormDto of() {
+        return EbookFormDto.builder()
+                .id(ebook.getId())
+                .inventoryEbookId(id)
                 .title(ebook.getTitle())
+                .intro(ebook.getIntro())
+                .url(ebook.getCover().getUrl())
                 .build();
     }
 }

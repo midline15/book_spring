@@ -1,6 +1,7 @@
 package com.woori.bookspring.service;
 
 import com.woori.bookspring.dto.EbookDto;
+import com.woori.bookspring.dto.EbookFormDto;
 import com.woori.bookspring.entity.ebook.Ebook;
 import com.woori.bookspring.entity.ebook.Like;
 import com.woori.bookspring.entity.ebook.LikeEbook;
@@ -37,9 +38,8 @@ public class LikeService {
         });
     }
 
-    public List<EbookDto> getLikeEbookList(String email) {
-        List<LikeEbook> likeEbookList = likeEbookRepository.findByLikeId(getLike(email).getId());
-        return likeEbookList.stream().map(LikeEbook::of).toList();
+    public List<EbookFormDto> getLikeEbookList(String email) {
+        return likeEbookRepository.findByLikes(getLike(email)).stream().map(LikeEbook::of).toList();
     }
 
     public void addLikeEbook(Long ebookId, String email) {
@@ -47,13 +47,7 @@ public class LikeService {
         likeEbookRepository.save(LikeEbook.createLikeEbook(ebook, getLike(email)));
     }
 
-    //조아요(찜) 수정
-    public void updateLike(Like like) {
-        likeRepository.save(like);
-    }
-
-    //조아요(찜) 삭제
-    public void deleteLike(Long id) {
-        likeRepository.deleteById(id);
+    public void deleteLikeEbook(Long likeEbookId) {
+        likeEbookRepository.deleteById(likeEbookId);
     }
 }

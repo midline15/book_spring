@@ -1,5 +1,6 @@
 package com.woori.bookspring.service;
 
+import com.woori.bookspring.dto.EbookFormDto;
 import com.woori.bookspring.dto.InventoryEbookDto;
 import com.woori.bookspring.entity.ebook.Ebook;
 import com.woori.bookspring.entity.ebook.Inventory;
@@ -9,6 +10,7 @@ import com.woori.bookspring.repository.EbookRepository;
 import com.woori.bookspring.repository.InventoryEbookRepository;
 import com.woori.bookspring.repository.InventoryRepository;
 import com.woori.bookspring.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,18 +29,21 @@ public class InventoryService {
   
     public Inventory getInventory(String email) {
         return inventoryRepository.findByUser_Email(email).orElseGet(() -> {
-            User user = userRepository.findByEmail(email).get();
+            User user = userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
             return inventoryRepository.save(Inventory.createInventory(user));
         });
     }
 
-    public InventoryEbook createInventoryEbook(Long ebookId,String email){
-        Ebook ebook = ebookRepository.findById(ebookId).get();
+    public EbookFormDto createInventoryEbook(Long ebookId,String email){
+        Ebook ebook = ebookRepository.findById(ebookId).orElseThrow(EntityNotFoundException::new);
         Inventory inventory = getInventory(email);
-        return inventoryEbookRepository.save(InventoryEbook.createInventoryEbook(inventory,ebook));
+        return inventoryEbookRepository.findByInventoryAndEbook(inventory, ebook).orElseGet(() ->
+            inventoryEbookRepository.save(InventoryEbook.createInventoryEbook(inventory,ebook))
+        ).of();
+
     }
 
-    public List<InventoryEbookDto> getInventoryEbookList(String email) {
+    public List<EbookFormDto> getInventoryEbookList(String email) {
 
         return inventoryEbookRepository.findByInventory(getInventory(email)).stream().map(InventoryEbook::of).toList();
     }
@@ -60,9 +65,7 @@ public class InventoryService {
         return inventoryRepository.findById(id).get().getId();
     }
 
-    // 삭제
-    public void deleteInventory(Long id) {
-        inventoryRepository.deleteById(id);
+    public void deleteInventoryEbook(Long inventoryEbookId) {
+        inventoryEbookRepository.deleteById(inventoryEbookId);
     }
-
 }

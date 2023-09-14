@@ -1,5 +1,6 @@
 package com.woori.bookspring.service;
 
+import com.woori.bookspring.dto.EbookFormDto;
 import com.woori.bookspring.entity.ebook.InventoryEbook;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,8 +18,8 @@ class InventoryServiceTest {
     @Test
     @DisplayName("인벤토리에 이북 추가")
     public void createInventoryEbookTest(){
-        InventoryEbook inventoryEbook = inventoryService.createInventoryEbook(Long.valueOf(1), "test@test");
-        System.out.println(inventoryEbook.getEbook().getTitle());
+        EbookFormDto inventoryEbook = inventoryService.createInventoryEbook(Long.valueOf(1), "test@test");
+        System.out.println(inventoryEbook.getTitle());
     }
 
 }

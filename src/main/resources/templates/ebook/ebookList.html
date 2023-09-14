@@ -115,7 +115,7 @@
                 <div class="card">
                     <input type="hidden" th:id="'ebook_' + ${ebook.id}" th:value="${ebook.id}">
                     <a class="text-dark">
-                        <img th:src="${ebook.cover.url}" class="rounded repImg" th:alt="${ebook.title}"
+                        <img th:src="${ebook.url}" class="rounded repImg" th:alt="${ebook.title}"
                              style="max-width: 100%; height: auto;">
 
                         <div class="card-body">
@@ -160,6 +160,6 @@
 
         </ul>
     </div>
-    <a href="/admin/ebook/new" class="btn btn-outline-secondary"> EBook 등 록</a>
+    <a href="/admin/ebook" class="btn btn-outline-secondary"> EBook 등 록</a>
 </div>
 </html>

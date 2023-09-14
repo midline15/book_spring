@@ -24,10 +24,10 @@ public class BookService {
     private final CoverService coverService;
     private final CoverRepository coverRepository;
 
+    //책등록
     public void createBook(BookFormDto bookFormDto, MultipartFile imgFile)
             throws Exception {
 
-        // 책 등록
         Cover cover = coverService.saveCover(imgFile);
         Book book = bookFormDto.toEntity(cover);
         bookRepository.save(book);

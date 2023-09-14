@@ -1,6 +1,6 @@
 package com.woori.bookspring.entity.ebook;
 
-import com.woori.bookspring.dto.EbookDto;
+import com.woori.bookspring.dto.EbookFormDto;
 import com.woori.bookspring.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,7 +21,7 @@ public class LikeEbook extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "likes_id")
-    private Like like;
+    private Like likes;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ebook_id")
@@ -30,14 +30,17 @@ public class LikeEbook extends BaseEntity {
     public static LikeEbook createLikeEbook(Ebook ebook, Like like){
         return LikeEbook.builder()
                 .ebook(ebook)
-                .like(like)
+                .likes(like)
                 .build();
     }
 
-    public EbookDto of() {
-        return EbookDto.builder()
-                .ebookId(ebook.getId())
+    public EbookFormDto of() {
+        return EbookFormDto.builder()
+                .id(ebook.getId())
+                .likeEbookId(id)
                 .title(ebook.getTitle())
+                .intro(ebook.getIntro())
+                .url(ebook.getCover().getUrl())
                 .build();
     }
 }
