@@ -1,5 +1,6 @@
 package com.woori.bookspring.dto;
 
+<<<<<<< Updated upstream
 import com.woori.bookspring.entity.User;
 import com.woori.bookspring.entity.board.Article;
 import com.woori.bookspring.entity.board.Comment;
@@ -28,4 +29,14 @@ public class CommentDto {
                 .user(user)
                 .build();
     }
+=======
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class CommentDto {
+
+    private String content;
+>>>>>>> Stashed changes
 }

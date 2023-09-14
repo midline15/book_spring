@@ -9,9 +9,11 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
@@ -43,8 +45,11 @@ public class Article extends BaseEntity {
                 .build();
     }
 
+<<<<<<< Updated upstream
     public void updateArticle(HelpFormDto dto) {
         title = dto.getTitle();
         content = dto.getContent();
     }
+=======
+>>>>>>> Stashed changes
 }
