@@ -41,4 +41,14 @@ public class BookComment extends BaseEntity {
                 .book(book)
                 .build();
     }
+  
+    public BookCommentDto of() {
+        return BookCommentDto.builder()
+                .id(id)
+                .email(user.getEmail())
+                .bookTitle(book.getTitle())
+                .regTime(getRegTime())
+                .score(score)
+                .build();
+    }
 }

@@ -10,9 +10,13 @@
     <script th:inline="javascript">
 
         $(document).ready(function () {
+            // 체크박스 상태 변경 시
             $("input[name=cartChkBox]").change(function () {
                 calculateOrderTotalPrice();
             });
+
+            // 페이지 로딩 시 초기 계산
+            calculateOrderTotalPrice();
         });
 
         function getOrderTotalPrice(){
@@ -41,6 +45,7 @@
             $("#orderTotalPrice").html(orderTotalPrice.toFixed(0) + '원');
         }
 
+        // 나머지 함수들은 동일하게 유지
         function changeCount(obj) {
             var count = parseInt(obj.value);
             var cartBookId = obj.id.split('_')[1];
@@ -57,7 +62,7 @@
             } else {
                 $("input[name=cartChkBox]").prop("checked", false);
             }
-            getOrderTotalPrice();
+            // getOrderTotalPrice(); // 이 함수는 더 이상 필요하지 않습니다.
         }
 
         function updateCartBookCount(cartBookId, count) {

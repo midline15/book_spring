@@ -1,5 +1,6 @@
 package com.woori.bookspring.entity.ebook;
 
+import com.woori.bookspring.dto.EpisodeCommentDto;
 import com.woori.bookspring.entity.User;
 import com.woori.bookspring.entity.base.BaseEntity;
 import jakarta.persistence.*;
@@ -30,4 +31,15 @@ public class EpisodeComment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "episode_id")
     private Episode episode;
+
+    public EpisodeCommentDto of() {
+        return EpisodeCommentDto.builder()
+                .id(id)
+                .episodeTitle(episode.getTitle())
+                .ebookTitle(episode.getEbook().getTitle())
+                .email(user.getEmail())
+                .regTime(getRegTime())
+                .score(score)
+                .build();
+    }
 }

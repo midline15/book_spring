@@ -1,6 +1,7 @@
 package com.woori.bookspring.dto;
 
 import com.woori.bookspring.constant.OAuthType;
+import com.woori.bookspring.constant.Role;
 import com.woori.bookspring.entity.User;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +24,6 @@ public class SignupForm {
                 .address(address)
                 .birth(birth)
                 .phone(phone)
-                .oauth(OAuthType.WOORI)
                 .build();
     }
 }

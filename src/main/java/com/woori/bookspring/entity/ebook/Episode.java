@@ -2,12 +2,16 @@ package com.woori.bookspring.entity.ebook;
 
 import com.woori.bookspring.constant.PermitStatus;
 import com.woori.bookspring.dto.EpisodeFormDto;
+import com.woori.bookspring.entity.EpisodeUser;
+import com.woori.bookspring.entity.User;
 import com.woori.bookspring.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -31,11 +35,29 @@ public class Episode extends BaseEntity {
     @JoinColumn(name = "ebook_id")
     private Ebook ebook;
 
+    @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EpisodeUser> episodeUserList;
+
     public static Episode createEpisode(EpisodeFormDto episodeFormDto, Ebook ebook) {
         return Episode.builder()
                 .title(episodeFormDto.getTitle())
                 .content(episodeFormDto.getContent())
                 .ebook(ebook)
                 .build();
+    }
+
+    public EpisodeFormDto of() {
+        return EpisodeFormDto.builder()
+                .id(id)
+                .ebookId(ebook.getId())
+                .title(title)
+                .content(content)
+                .regTime(getRegTime())
+                .build();
+    }
+
+    public void updateEpisode(EpisodeFormDto episodeFormDto) {
+        title = episodeFormDto.getTitle();
+        content = episodeFormDto.getContent();
     }
 }

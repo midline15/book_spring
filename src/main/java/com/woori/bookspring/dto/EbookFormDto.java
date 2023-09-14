@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -20,6 +22,9 @@ public class EbookFormDto {
     private Long coverId;
     private String url;
     private Cover cover;
+    private List<EpisodeFormDto> episodeList;
+    private Long inventoryEbookId;
+    private Long likeEbookId;
 
 
     public Ebook toEntity(Cover cover){

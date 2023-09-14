@@ -1,8 +1,8 @@
 package com.woori.bookspring.service;
 
-import com.woori.bookspring.dto.SignupForm;
-import com.woori.bookspring.dto.UserDto;
-import com.woori.bookspring.dto.UserUpdateDto;
+import com.woori.bookspring.constant.Role;
+import com.woori.bookspring.constant.UserStatus;
+import com.woori.bookspring.dto.*;
 import com.woori.bookspring.entity.User;
 import com.woori.bookspring.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -29,12 +29,13 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserUpdateDto getUser(Long userId) {
-         return userRepository.findById(userId).orElseThrow(EntityNotFoundException::new).of();
+        return userRepository.findById(userId).orElseThrow(EntityNotFoundException::new).of();
     }
 
 
     public void deleteUser(Long userId) {
-        userRepository.deleteById(userId);
+        User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
+        user.changeUserStatus(UserStatus.DISABLE);
     }
 
     public void updateUser(UserUpdateDto userUpdateDto) {
@@ -43,8 +44,22 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<User> getUserList() {
-        return userRepository.findAll();
+    public List<User> getUserList(Role role) {
+        return userRepository.findByRole(role);
     }
 
+    public void changeUserStatus(Long userId, UserStatus userStatus) {
+        User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
+        user.changeUserStatus(userStatus);
+    }
+
+    public void createWriter(WriterDto writerDto) {
+        writerDto.setPassword(passwordEncoder.encode(writerDto.getPassword()));
+        userRepository.save(writerDto.toEntity());
+    }
+
+    public void createAdmin(AdminDto adminDto) {
+        adminDto.setPassword(passwordEncoder.encode(adminDto.getPassword()));
+        userRepository.save(adminDto.toEntity());
+    }
 }

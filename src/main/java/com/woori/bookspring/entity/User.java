@@ -2,6 +2,7 @@ package com.woori.bookspring.entity;
 
 import com.woori.bookspring.constant.OAuthType;
 import com.woori.bookspring.constant.Role;
+import com.woori.bookspring.constant.UserStatus;
 import com.woori.bookspring.dto.UserDto;
 import com.woori.bookspring.dto.UserUpdateDto;
 import com.woori.bookspring.entity.base.BaseEntity;
@@ -9,10 +10,12 @@ import com.woori.bookspring.entity.ebook.Inventory;
 import com.woori.bookspring.entity.ebook.Like;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -42,19 +45,28 @@ public class User extends BaseEntity {
     private String birth;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    @Builder.Default
+    private UserStatus userStatus = UserStatus.ACTIVE;
 
     @Enumerated(EnumType.STRING)
-    private OAuthType oauth;
+    @Builder.Default
+    private Role role = Role.USER;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Order> orderList;
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private OAuthType oauth = OAuthType.WOORI;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Order> orderList = new ArrayList<>();
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Inventory inventory;
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Like like;
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Cart cart;
 
     public UserUpdateDto of() {
@@ -72,5 +84,14 @@ public class User extends BaseEntity {
         birth = userUpdateDto.getBirth();
         phone = userUpdateDto.getPhone();
         address = userUpdateDto.getAddress();
+    }
+
+  
+    public void useTicket(int price) {
+        ticket -= price;
+    }
+  
+    public void changeUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
     }
 }

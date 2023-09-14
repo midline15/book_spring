@@ -1,5 +1,6 @@
 package com.woori.bookspring.dto;
 
+
 import com.woori.bookspring.entity.BookComment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,5 +21,4 @@ public class BookCommentDto {
     private Long userId; // 사용자 ID
 
     private Long bookId; // 책 ID
-
 }

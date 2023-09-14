@@ -2,6 +2,7 @@ package com.woori.bookspring.entity.board;
 
 import com.woori.bookspring.constant.ArticleType;
 import com.woori.bookspring.dto.ArticleDto;
+import com.woori.bookspring.dto.HelpFormDto;
 import com.woori.bookspring.entity.User;
 import com.woori.bookspring.entity.base.BaseEntity;
 import jakarta.persistence.*;
@@ -40,5 +41,10 @@ public class Article extends BaseEntity {
                 .regTime(getRegTime())
                 .createdBy(getCreatedBy())
                 .build();
+    }
+
+    public void updateArticle(HelpFormDto dto) {
+        title = dto.getTitle();
+        content = dto.getContent();
     }
 }

@@ -1,15 +1,15 @@
 package com.woori.bookspring.controller;
 
 import com.woori.bookspring.dto.EbookDto;
+import com.woori.bookspring.dto.EbookFormDto;
 import com.woori.bookspring.entity.ebook.Like;
 import com.woori.bookspring.service.LikeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
@@ -23,7 +23,7 @@ public class LikeController {
 
     @GetMapping
     public String showLike(Model model, Principal principal){
-        List<EbookDto> ebookList = likeService.getLikeEbookList(principal.getName());
+        List<EbookFormDto> ebookList = likeService.getLikeEbookList(principal.getName());
         model.addAttribute("list", ebookList);
         return "ebook/like";
     }
@@ -33,5 +33,11 @@ public class LikeController {
         likeService.addLikeEbook(ebookId, principal.getName());
 
         return "redirect:/ebook/"+ebookId;
+    }
+
+    @DeleteMapping("ebook/{ebook-id}")
+    public ResponseEntity<?> deleteLikeEbook(@PathVariable("ebook-id") Long likeEbookId){
+        likeService.deleteLikeEbook(likeEbookId);
+        return new ResponseEntity<>("삭제 완료", HttpStatus.OK);
     }
 }
