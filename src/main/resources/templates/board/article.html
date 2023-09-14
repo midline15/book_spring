@@ -21,7 +21,7 @@
         </article>
     </div>
     <div class="row g-5" id="article-buttons">
-        <form id="delete-article-form" th:action="@{/article/01/{article-id} (article-id = ${article.id})}" >
+        <form id="delete-article-form" th:action="@{/article/01/{article-id} (article-id = ${article.id})}">
             <div class="pb-5 d-grid gap-2 d-md-block"
                  th:if="${#authorization.expression('isAuthenticated()')} and ${article.createdBy} == ${#authentication.name}">
                 <article>
@@ -38,42 +38,88 @@
 
     <div class="row g-5">
         <section>
-            <form class="row g-3 comment-form" th:action="@{/article/01/{article-id}/articleComment (article-id=${article.id})}" method="POST">
+            <form class="row g-3 comment-form"
+                  th:action="@{/article/01/{article-id}/comment (article-id=${article.id})}" method="POST">
                 <div class="col-md-9 col-lg-8">
                     <label for="comment-textbox" hidden>댓글</label>
-                    <textarea class="form-control comment-textbox" id="comment-textbox" placeholder="댓글 쓰기.." rows="3"
-                              required ></textarea>
+                    <textarea name="content" class="form-control comment-textbox" id="comment-textbox"
+                              placeholder="댓글 쓰기.." rows="3"
+                              required></textarea>
                 </div>
                 <div class="col-md-3 col-lg-4">
-                    <label for="comment-submit" hidden th:href="@{/article/01/{article-id}/articleComment (article-id = ${article.id})}">댓글 쓰기</label>
                     <button class="btn btn-primary" id="comment-submit" type="submit">쓰기</button>
                 </div>
             </form>
-            <ul id="article-comments" class="row col-md-10 col-lg-8 pt-3">
-                <li class="parent-comment" th:each="comment : ${dto.articleCommentList}" th:object="${comment}">
-                    <form class="comment-delete-form"
-                          th:action="@{/articles/{id}/articleComments/{article-comment-id}/delete(id=${dto.id},
-                article-comment-id=*{id})}" method="POST">
-                        <div class="row">
-                            <div class="col-md-10 col-lg-9">
-                                <strong th:text="*{userAccount.userId}">Mini</strong>
+            <ul class="list-unstyled">
+                <th:block th:each="comment : ${article.commentDtoList}">
+                    <li class="media mt-4" th:id="'comment_'+ ${comment.id}">
+                        <img class="mr-3" th:alt="${comment.email}">
+                        <p th:text="${comment.regTime}"></p>
+                        <div class="media-body">
+                            <!-- 댓글 -->
+                            <h5 class="mt-0 mb-1">
                                 <small>
-                                    <time th:text="${#temporals.format(createdAt,'yyyy-MM-dd hh:mm:ss')}">2023-01-01
-                                    </time>
+                                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" th:data-bs-target="'.multi-collapse-'+${comment.id}" aria-expanded="false">수정</button>
+                                    <button class="btn btn-secondary" onclick="deleteComment(this)" th:data-id="${comment.id}">삭제</button>
                                 </small>
-                                <p class="mb-1" th:text="*{content}">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>
-                                    Lorem ipsum dolor sit amet
-                                </p>
-                            </div>
-                            <div class="col-2 mb-3 align-self-center"
-                                 th:if="${#authorization.expression('isAuthenticated()')} and
-                                                *{userAccount.userId} == ${#authentication.name}">
-                                <button type="submit" class="btn btn-outline-danger">삭제</button>
-                            </div>
+                            </h5>
+                            <!-- 보기 모드 -->
+                            <p class="collapse show" th:classappend="'multi-collapse-'+${comment.id}">[[${comment.content}]]</p>
+                            <!-- 수정 모드 -->
+                            <form class="collapse" th:classappend="'multi-collapse-'+${comment.id}">
+                                <div class="form-group">
+                                    <textarea class="form-control" id="comment-content" rows="3">[[${comment.content}]]</textarea>
+                                </div>
+                                <input type="hidden" id="comment-id" th:value="${comment.id}">
+                                <input type="hidden" id="comment-email" th:value="${comment.email}">
+                                <input type="hidden" id="articleId" th:value="${article.id}">
+                                <button type="button" class="btn btn-info comment-update-btn" onclick="updateComment()">수정 완료</button>
+                            </form>
                         </div>
+                    </li>
+                </th:block>
+            </ul>
         </section>
     </div>
     <script src="/js/article.js"></script>
+    <script th:inline="javascript">
+        function updateComment(obj) {
+            if (confirm("댓글을 수정하시겠습니까?")) {
+                let articleId = [[${article.id}]]
+                let commentId = obj.dataset.id;
+                let form = obj.parentElement;
+                var data = {
+                    id: form.querySelector('#comment-id').value,
+                    email: form.querySelector('#comment-email').value,
+                    content: form.querySelector('#comment-content').value,
+                };
+                fetch(`/article/01/${articleId}/comment/${commentId}`, {
+                    method: "PATCH",
+                    body: JSON.stringify(data),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(() => {
+                        alert('수정 완료');
+                        location.href = `/article/01/${articleId}`
+                    });
+            }
+        }
+
+        function deleteComment(obj) {
+            if (confirm("댓글을 삭제하시겠습니까?")) {
+                let articleId = [[${article.id}]]
+                let commentId = obj.dataset.id;
+                fetch(`/article/01/${articleId}/comment/${commentId}`, {
+                    method: "DELETE",
+                })
+                    .then(() => {
+                        alert('삭제 완료');
+                        location.href = `/article/01/${articleId}`
+                    });
+            }
+        }
+    </script>
 </main>
 </html>

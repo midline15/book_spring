@@ -90,13 +90,6 @@
             });
         }
 
-
-
-
-
-
-
-
         // 댓글 작성 함수
         function addComment() {
             var formData = $("#commentForm").serialize(); // 폼 데이터를 가져옵니다.
@@ -184,15 +177,16 @@
             <img th:src="${book.url}" class="rounded repImg" th:alt="${book.title}">
         </div>
         <div class="wd50">
-            <span th:if="${book.sellStatus == T(com.woori.bookspring.constant.SellStatus).SALE}"
-                  class="badge badge-primary mgb-15">
+            <span th:if="${book.sellStatus == T(com.woori.bookspring.constant.SellStatus).SELL}"
+                  class="badge badge-primary mgb-15" style="color: black">
                 판매중
             </span>
-            <span th:unless="${book.sellStatus == T(com.woori.bookspring.constant.SellStatus).SALE}"
-                  class="badge btn-danger mgb-15">
+            <span th:unless="${book.sellStatus == T(com.woori.bookspring.constant.SellStatus).SELL}"
+                  class="badge btn-danger mgb-15" style="color: black">
                 품절
             </span>
             <div class="h4" th:text="${book.title}"></div>
+            평점<p th:text="${book.avgScore}"></p>
             <hr class="my-4">
 
             <form th:action="@{/order/{book-id}(book-id = ${book.id})}" method="post">
@@ -216,13 +210,13 @@
                     <h3 id="totalPrice" class="font-weight-bold"></h3>
                     <input type="hidden" name="totalPrice">
                 </div>
-                <div th:if="${book.sellStatus == T(com.woori.bookspring.constant.SellStatus).SALE}" class="text-right">
+                <div th:if="${book.sellStatus == T(com.woori.bookspring.constant.SellStatus).SELL}" class="text-right">
                     <button type="button" class="btn btn-light border border-primary btn-lg" onclick="addCart()">장바구니
                         담기
                     </button>
                     <button type="submit" class="btn btn-primary btn-lg">주문하기</button>
                 </div>
-                <div th:unless="${book.sellStatus == T(com.woori.bookspring.constant.SellStatus).SALE}"
+                <div th:unless="${book.sellStatus == T(com.woori.bookspring.constant.SellStatus).SELL}"
                      class="text-right">
                     <button type="button" class="btn btn-danger btn-lg">품절</button>
                 </div>
@@ -249,7 +243,7 @@
         </div>
         <div class="form-group">
             <label for="score">별점:</label>
-            <input type="number" name="score" class="form-control" min="1" max="5" />
+            <input type="number" name="score" id="score" class="form-control" min="1" max="5" />
         </div>
         <button type="submit" class="btn btn-primary">댓글 작성</button>
     </form>
@@ -258,8 +252,8 @@
     <div>
         <h3>댓글 목록</h3>
         <ul id="commentList">
-            <li th:each="comment : ${comments}">
-                <p th:text="${comment.user.username}"></p>
+            <li th:each="comment : ${book.bookCommentDtoList}">
+                <p th:text="${comment.email}"></p>
                 <p th:text="${comment.content}"></p>
                 <p th:text="${comment.score}"></p>
             </li>

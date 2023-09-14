@@ -3,6 +3,7 @@ package com.woori.bookspring.entity.base;
 import com.woori.bookspring.constant.Genre;
 import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -20,6 +21,7 @@ public class BaseBook extends BaseEntity {
     protected List<Genre> genreList;
     protected String intro; // 소개글
     protected int price;
-    protected float avgScore; // 평균 별점
+    @Builder.Default
+    protected float avgScore = 0; // 평균 별점
     protected int totalSales; // 총 판매량
 }

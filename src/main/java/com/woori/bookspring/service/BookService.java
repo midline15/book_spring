@@ -57,7 +57,7 @@ public class BookService {
 
     @Transactional(readOnly = true)
     public List<BookDto> getBookList(String type, String keyword) {
-        List<Book> bookList = new ArrayList<>();
+        List<Book> bookList;
         if ("title".equals(type)) {
             bookList = bookRepository.findByTitleContaining(keyword);
         } else if ("publisher".equals(type)) {
@@ -69,12 +69,4 @@ public class BookService {
         return bookList.stream().map(Book::of).toList();
     }
 
-
-    @Transactional // 댓글달기
-    public void createBookComment(BookCommentDto bookCommentDto, String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
-        Book book = bookRepository.findById(bookCommentDto.getBookId()).orElseThrow(EntityNotFoundException::new);
-
-        bookCommentRepository.save(BookComment.createBookComment(user, book, bookCommentDto));
-    }
 }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -18,4 +19,5 @@ public class ArticleDto {
     private String content;
     private String createdBy;
     private LocalDateTime regTime;
+    private List<CommentDto> commentDtoList;
 }

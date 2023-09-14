@@ -2,7 +2,6 @@ package com.woori.bookspring.controller;
 
 import com.woori.bookspring.dto.SignupForm;
 import com.woori.bookspring.dto.UserUpdateDto;
-import com.woori.bookspring.repository.UserRepository;
 import com.woori.bookspring.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -61,8 +60,8 @@ public class UserController {
     }
 
     @DeleteMapping("user/{user-id}")
-    public ResponseEntity<?> deleteUser(@PathVariable("user-id") Long userId){
-        userService.deleteUser(userId);
+    public ResponseEntity<?> disableUser(@PathVariable("user-id") Long userId){
+        userService.disableUser(userId);
         return new ResponseEntity<>("회원탈퇴 완료", HttpStatus.OK);
     }
 

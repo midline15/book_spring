@@ -38,7 +38,6 @@ public class BookFormDto {
                 .publisher(publisher)
                 .origDate(origDate)
                 .sellStatus(sellStatus)
-                .avgScore(1)
                 .build();
     }
 }
