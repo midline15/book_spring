@@ -29,11 +29,12 @@ public class CartController {
     @PostMapping("{book-id}")
     public @ResponseBody ResponseDto<?> addCartBook(@RequestBody CartBookDto dto, Principal principal){
         cartService.addCart(dto, principal.getName());
-        return new ResponseDto<>(HttpStatus.OK.value(), "장바구니 등록");
+        return new ResponseDto<>(HttpStatus.OK.value(), "장바구니에 등록 되었습니다.");
     }
 
-    @DeleteMapping("{cartBookId}")
-    public @ResponseBody ResponseEntity<?> deleteCartBook(@PathVariable("cartBookId") Long cartBookId) {
+    @DeleteMapping("{cart-book-id}")
+    public @ResponseBody ResponseEntity<?> deleteCartBook
+            (@PathVariable("cart-book-id") Long cartBookId) {
         cartService.deleteCartBook(cartBookId);
         return new ResponseEntity<>(cartBookId, HttpStatus.OK);
     }
@@ -50,5 +51,21 @@ public class CartController {
         cartService.orderCartBook(cartBookDtoList, principal.getName());
 
         return new ResponseEntity<>("주문 완료", HttpStatus.OK);
+    }
+
+    @PatchMapping("{cart-book-id}")
+    public @ResponseBody ResponseEntity updateCartBook
+            (@PathVariable("cart-book-id") Long id, int count, Principal principal){
+
+        if (count <= 0){
+            return new ResponseEntity<String>
+                    ("최소 1개 이상 담아주세요.",HttpStatus.BAD_REQUEST);
+        } else if (!cartService.validateCartBook
+                (id, principal.getName())){
+            return new ResponseEntity<String>
+                    ("수정 권한이 없습니다.", HttpStatus.FORBIDDEN);
+        }
+        cartService.updateCartBookCount(id,count);
+        return new ResponseEntity<Long>(id, HttpStatus.OK);
     }
 }

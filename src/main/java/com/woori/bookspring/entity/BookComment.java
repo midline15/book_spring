@@ -1,8 +1,10 @@
 package com.woori.bookspring.entity;
 
+import com.woori.bookspring.dto.BookCommentDto;
 import com.woori.bookspring.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -12,6 +14,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 @Entity
+@Data
 public class BookComment extends BaseEntity {
 
     @Id
@@ -29,4 +32,13 @@ public class BookComment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     private Book book;
+
+    public static BookComment createBookComment(User user, Book book, BookCommentDto bookCommentDto) {
+        return BookComment.builder()
+                .content(bookCommentDto.getContent())
+                .score(bookCommentDto.getScore())
+                .user(user)
+                .book(book)
+                .build();
+    }
 }

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
@@ -10,30 +11,44 @@
 
         $(document).ready(function () {
             $("input[name=cartChkBox]").change(function () {
-                getOrderTotalPrice();
+                calculateOrderTotalPrice();
             });
         });
 
-        function getOrderTotalPrice() {
+        function getOrderTotalPrice(){
             var orderTotalPrice = 0;
+            $("input[name=cartChkBox]:checked").each(function() {
+                var cartBookId = $(this).val();
+                var price = $("#price_" + cartBookId).attr("data-price");
+                var count = $("#count_" + cartBookId).val();
+                orderTotalPrice += price*count;
+            });
+
+            $("#orderTotalPrice").html(orderTotalPrice+'원');
+        }
+
+        function calculateOrderTotalPrice() {
+            var orderTotalPrice = 0;
+
+            // 선택된 모든 체크박스에 대해 반복
             $("input[name=cartChkBox]:checked").each(function () {
-                var cartItemId = $(this).val();
-                var price = $("#price_" + cartItemId).attr("data-price");
-                var count = $("#count_" + cartItemId).val();
+                var cartBookId = $(this).val();
+                var price = parseFloat($("#price_" + cartBookId).attr("data-price"));
+                var count = parseInt($("#count_" + cartBookId).val());
                 orderTotalPrice += price * count;
             });
 
-            $("#orderTotalPrice").html(orderTotalPrice + '원');
+            $("#orderTotalPrice").html(orderTotalPrice.toFixed(0) + '원');
         }
 
         function changeCount(obj) {
-            var count = obj.value;
-            var cartItemId = obj.id.split('_')[1];
-            var price = $("#price_" + cartItemId).data("price");
+            var count = parseInt(obj.value);
+            var cartBookId = obj.id.split('_')[1];
+            var price = parseFloat($("#price_" + cartBookId).data("price"));
             var totalPrice = count * price;
-            $("#totalPrice_" + cartItemId).html(totalPrice + "원");
+            $("#totalPrice_" + cartBookId).html(totalPrice.toFixed(0) + "원");
             getOrderTotalPrice();
-            updateCartItemCount(cartItemId, count);
+            updateCartBookCount(cartBookId, count);
         }
 
         function checkAll() {
@@ -45,9 +60,9 @@
             getOrderTotalPrice();
         }
 
-        function updateCartItemCount(cartItemId, count) {
+        function updateCartBookCount(cartBookId, count) {
 
-            var url = "/cartItem/" + cartItemId + "?count=" + count;
+            var url = "/cart/" + cartBookId + "?count=" + count;
 
             $.ajax({
                 url: url,
@@ -55,13 +70,13 @@
                 dataType: "json",
                 cache: false,
                 success: function (result, status) {
-                    console.log("cartItem count update success");
+                    console.log("cartBook count update success");
                 },
                 error: function (jqXHR, status, error) {
 
                     if (jqXHR.status == '401') {
                         alert('로그인 후 이용해주세요');
-                        location.href = '/members/login';
+                        location.href = '/user/login';
                     } else {
                         alert(jqXHR.responseJSON.message);
                     }
@@ -70,7 +85,7 @@
             });
         }
 
-        function deleteCartItem(obj) {
+        function deleteCartBook(obj) {
             var cartBookId = obj.dataset.id;
 
             var url = "/cart/" + cartBookId;
@@ -101,12 +116,12 @@
             var dataList = [];
 
             $("input[name=cartChkBox]:checked").each(function () {
-                let cartItemId = $(this).val();
+                let cartBookId = $(this).val();
                 dataList.push({
-                    id: cartItemId,
-                    bookId: $("#bookId_" + cartItemId).val(),
-                    price: $("#price_" + cartItemId).attr("data-price"),
-                    count: $("#count_" + cartItemId).val()
+                    id: cartBookId,
+                    bookId: $("#bookId_" + cartBookId).val(),
+                    price: $("#price_" + cartBookId).attr("data-price"),
+                    count: $("#count_" + cartBookId).val()
                 });
             });
 
@@ -128,11 +143,43 @@
 
                     if (jqXHR.status == '401') {
                         alert('로그인 후 이용해주세요');
-                        location.href = '/members/login';
+                        location.href = '/user/login';
                     } else {
                         alert(jqXHR.responseJSON.message);
                     }
 
+                }
+            });
+        }
+
+
+        function deleteAllCartBooks() {
+            // 선택된 모든 체크박스에 대해 반복
+            $("input[name=cartChkBox]:checked").each(function () {
+                var cartBookId = $(this).val();
+                deleteCartBookById(cartBookId);
+            });
+        }
+
+        function deleteCartBookById(cartBookId) {
+            var url = "/cart/" + cartBookId;
+
+            $.ajax({
+                url: url,
+                type: "DELETE",
+                dataType: "json",
+                cache: false,
+                success: function (result, status) {
+                    // 삭제 성공 시 할 일 (예: 특별한 처리 없이 페이지 리로드)
+                    location.reload(); // 페이지 리로드 예시
+                },
+                error: function (jqXHR, status, error) {
+                    if (jqXHR.status == '401') {
+                        alert('로그인 후 이용해주세요');
+                        location.href = '/user/login';
+                    } else {
+                        alert(jqXHR.responseJSON.message);
+                    }
                 }
             });
         }
@@ -218,7 +265,7 @@
                                 <input type="hidden" name="bookId" th:id="'bookId_' + ${cartBook.id}"
                                        th:value="${cartBook.bookId}">
                                 <button type="button" class="close" aria-label="Close">
-                                    <span aria-hidden="true" th:data-id="${cartBook.id}" onclick="deleteCartItem(this)">&times;</span>
+                                    <span aria-hidden="true" th:data-id="${cartBook.id}" onclick="deleteCartBook(this)">&times;</span>
                                 </button>
                             </span>
                         </div>
@@ -239,6 +286,7 @@
 
         <div class="text-center mt-3">
             <button type="button" class="btn btn-primary btn-lg" onclick="orders()">주문하기</button>
+            <button type="button" class="btn btn-danger btn-lg" onclick="deleteAllCartBooks()">선택삭제</button>
         </div>
 
     </div>
