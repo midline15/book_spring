@@ -1,12 +1,13 @@
 package com.woori.bookspring.service;
 
 import com.woori.bookspring.dto.EbookFormDto;
+import com.woori.bookspring.dto.EpisodeUserDto;
 import com.woori.bookspring.entity.Cover;
+import com.woori.bookspring.entity.EpisodeUser;
 import com.woori.bookspring.entity.ebook.Ebook;
 import com.woori.bookspring.repository.EbookRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,12 +21,8 @@ import java.util.List;
 public class EbookService {
 
     private final EbookRepository ebookRepository;
-    private CoverService coverService;
-
-    @Autowired
-    public void CoverService(CoverService coverService) {
-        this.coverService = coverService;
-    }
+    private final CoverService coverService;
+    private final EpisodeService episodeService;
 
     public void createEbook(EbookFormDto ebookFormDto, MultipartFile imgFile) throws Exception {
         Cover cover = coverService.saveCover(imgFile);
@@ -34,8 +31,22 @@ public class EbookService {
     }
 
     @Transactional(readOnly = true)
-    public EbookFormDto getEbook(Long ebookId) { //e북 조회, 검색
+    public EbookFormDto getEbook(Long ebookId){
         return ebookRepository.findById(ebookId).orElseThrow(EntityNotFoundException::new).of();
+    }
+
+    @Transactional(readOnly = true)
+    public EbookFormDto getEbook(Long ebookId, String email) { //e북 조회, 검색
+        EbookFormDto ebookFormDto = ebookRepository.findById(ebookId).orElseThrow(EntityNotFoundException::new).of();
+        List<EpisodeUserDto> episodeUserList = episodeService.getEpisodeUserList(email);
+        episodeUserList.forEach(episodeUserDto -> {
+            ebookFormDto.getEpisodeList().forEach(episodeFormDto -> {
+                if(episodeUserDto.getEpisodeId().equals(episodeFormDto.getId())){
+                    episodeFormDto.checkBuy(true);
+                }
+            });
+        });
+        return ebookFormDto;
     }
 
     @GetMapping
@@ -55,7 +66,7 @@ public class EbookService {
     }
 
     @Transactional(readOnly = true)
-    public List<Ebook> getEbookList() { //e북 리스트,목록
-        return ebookRepository.findAll();
+    public List<EbookFormDto> getEbookList() { //e북 리스트,목록
+        return ebookRepository.findAll().stream().map(Ebook::of).toList();
     }
 }

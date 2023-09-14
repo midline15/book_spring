@@ -52,6 +52,7 @@ public class Ebook extends BaseBook {
                 .price(price)
                 .url(cover.getUrl())
                 .coverId(cover.getId())
+                .episodeList(episodeList.stream().map(Episode::of).toList())
                 .build();
 
     }

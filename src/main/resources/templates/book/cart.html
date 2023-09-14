@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
@@ -9,31 +10,38 @@
     <script th:inline="javascript">
 
         $(document).ready(function () {
+            // 체크박스 상태 변경 시
             $("input[name=cartChkBox]").change(function () {
-                getOrderTotalPrice();
+                calculateOrderTotalPrice();
             });
+
+            // 페이지 로딩 시 초기 계산
+            calculateOrderTotalPrice();
         });
 
-        function getOrderTotalPrice() {
+        function calculateOrderTotalPrice() {
             var orderTotalPrice = 0;
+
+            // 선택된 모든 체크박스에 대해 반복
             $("input[name=cartChkBox]:checked").each(function () {
                 var cartItemId = $(this).val();
-                var price = $("#price_" + cartItemId).attr("data-price");
-                var count = $("#count_" + cartItemId).val();
+                var price = parseFloat($("#price_" + cartItemId).attr("data-price"));
+                var count = parseInt($("#count_" + cartItemId).val());
                 orderTotalPrice += price * count;
             });
 
-            $("#orderTotalPrice").html(orderTotalPrice + '원');
+            // 주문 총 금액 업데이트 (소수점 이하 자리 없음)
+            $("#orderTotalPrice").html(orderTotalPrice.toFixed(0) + '원');
         }
 
+        // 나머지 함수들은 동일하게 유지
         function changeCount(obj) {
-            var count = obj.value;
+            var count = parseInt(obj.value);
             var cartItemId = obj.id.split('_')[1];
-            var price = $("#price_" + cartItemId).data("price");
+            var price = parseFloat($("#price_" + cartItemId).data("price"));
             var totalPrice = count * price;
-            $("#totalPrice_" + cartItemId).html(totalPrice + "원");
-            getOrderTotalPrice();
-            updateCartItemCount(cartItemId, count);
+            $("#totalPrice_" + cartItemId).html(totalPrice.toFixed(0) + "원");
+            // getOrderTotalPrice(); // 이 함수는 더 이상 필요하지 않습니다.
         }
 
         function checkAll() {
@@ -42,7 +50,7 @@
             } else {
                 $("input[name=cartChkBox]").prop("checked", false);
             }
-            getOrderTotalPrice();
+            // getOrderTotalPrice(); // 이 함수는 더 이상 필요하지 않습니다.
         }
 
         function updateCartItemCount(cartItemId, count) {

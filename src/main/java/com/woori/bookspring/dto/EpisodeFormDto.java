@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -18,11 +20,17 @@ public class EpisodeFormDto {
     private String content;
     private Long id;
     private PermitStatus permitStatus;
-    private Ebook ebook;
+    private Long ebookId;
+    private LocalDateTime regTime;
+    private boolean buy;
 
     public Episode toEntity() {
         return Episode.builder()
                 .title(title)
                 .content(content).build();
+    }
+
+    public void checkBuy(boolean buy) {
+        this.buy = buy;
     }
 }

@@ -86,6 +86,11 @@ public class User extends BaseEntity {
         address = userUpdateDto.getAddress();
     }
 
+  
+    public void useTicket(int price) {
+        ticket -= price;
+    }
+  
     public void changeUserStatus(UserStatus userStatus) {
         this.userStatus = userStatus;
     }
