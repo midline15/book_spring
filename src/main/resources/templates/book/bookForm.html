@@ -7,32 +7,30 @@
 <th:block layout:fragment="script">
 
     <script th:inline="javascript">
-        $(document).ready(function(){
-            var errorMessage = [[${errorMessage}]];
-            if(errorMessage != null){
-                alert(errorMessage);
+
+
+        function updateBook() {
+            if (confirm("Book을 수정하시겠습니까?")) {
+                let bookId = [[${book.id}]]
+                var formData = new FormData();
+                formData.append("imgFile",document.querySelector("[name=imgFile]").files[0]);
+                formData.append("title", $("[name=title]").val())
+                formData.append("coverId", $("[name=coverId]").val())
+                formData.append("intro", $("[name=intro]").val())
+                formData.append("price", $("[name=price]").val())
+                formData.append("publisher", $("[name=publisher]").val())
+                formData.append("origDate", $("[name=origDate]").val())
+                formData.append("sellStatus", $("[name=sellStatus]").val())
+                formData.append("stockNumber", $("[name=stockNumber]").val())
+                fetch(`/admin/book/${bookId}`, {
+                    method: "PATCH",
+                    body: formData,
+                }).then(() => {
+                    alert("수정완료");
+                    location.href = `/book/${bookId}`;
+                })
             }
-
-            bindDomEvent();
-
-        });
-
-        function bindDomEvent(){
-            $(".custom-file-input").on("change", function() {
-                var fileName = $(this).val().split("\\").pop();  //이미지 파일명
-                var fileExt = fileName.substring(fileName.lastIndexOf(".")+1); // 확장자 추출
-                fileExt = fileExt.toLowerCase(); //소문자 변환
-
-                if(fileExt != "jpg" && fileExt != "jpeg" && fileExt != "gif" && fileExt != "png" && fileExt != "bmp"){
-                    alert("이미지 파일만 등록이 가능합니다.");
-                    return;
-                }
-
-                $(this).siblings(".custom-file-label").html(fileName);
-            });
         }
-
-
     </script>
 
 </th:block>
@@ -41,11 +39,13 @@
 <th:block layout:fragment="css">
     <style>
         .input-group {
-            margin-bottom : 15px
+            margin-bottom: 15px
         }
+
         .img-div {
-            margin-bottom : 10px
+            margin-bottom: 10px
         }
+
         .fieldError {
             color: #bd2130;
         }
@@ -61,55 +61,66 @@
             상품 등록
         </p>
 
-        <input type="hidden" name="id">
 
         <div class="form-group">
-            <select class="custom-select" name="sellStatus">
-                <option value="SELL">판매중</option>
+            <select class="custom-select" name="sellStatus" th:value="${book.sellStatus}">
+                <option value="SELL" selected>판매중</option>
                 <option value="SOLD_OUT">품절</option>
             </select>
         </div>
 
         <div class="input-group">
             <div class="input-group-prepend">
-                <span class="input-group-text">상품명</span>
+                <span class="input-group-text">도서명</span>
             </div>
-            <input type="text" class="form-control" placeholder="책 제목을 입력해주세요" name="title">
+            <input type="text" class="form-control" placeholder="책 제목을 입력해주세요" name="title" th:value="${book.title}">
         </div>
+        <p th:if="${#fields.hasErrors('book.title')}" th:errors="${book.title}"
+           class="fieldError">Incorrect data</p>
+
 
         <div class="input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text">가격</span>
             </div>
-            <input type="number" class="form-control" placeholder="가격을 입력해주세요" name="price">
+            <input type="number" class="form-control" placeholder="가격을 입력해주세요" name="price" th:value="${book.price}">
         </div>
+        <p th:if="${#fields.hasErrors('book.price')}" th:errors="${book.price}"
+           class="fieldError">Incorrect data</p>
 
         <div class="input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text">재고</span>
             </div>
-            <input type="number" class="form-control" placeholder="상품의 재고를 입력해주세요" name="stockNumber">
+            <input type="number" class="form-control" placeholder="상품의 재고를 입력해주세요" name="stockNumber" th:value="${book.stockNumber}">
         </div>
+        <p th:if="${#fields.hasErrors('book.stockNumber')}" th:errors="${book.stockNumber}"
+           class="fieldError">Incorrect data</p>
 
         <div class="input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text">책 소개</span>
             </div>
-            <textarea class="form-control" aria-label="With textarea" name="intro"></textarea>
+            <textarea class="form-control" aria-label="With textarea" name="intro" th:value="${book.intro}" th:text="${book.intro}"></textarea>
         </div>
+        <p th:if="${#fields.hasErrors('book.intro')}" th:errors="${book.intro}"
+           class="fieldError">Incorrect data</p>
 
         <div class="input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text">출판사</span>
             </div>
-            <input type="text" class="form-control" placeholder="출판사를 입력해주세요" name="publisher"/>
+            <input type="text" class="form-control" placeholder="출판사를 입력해주세요" name="publisher" th:value="${book.publisher}">
         </div>
+        <p th:if="${#fields.hasErrors('book.publisher')}" th:errors="${book.publisher}"
+           class="fieldError">Incorrect data</p>
+
 
         <div class="input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text">발행일</span>
             </div>
-            <input type="date" class="form-control" placeholder="발행일을 입력해주세요" name="origDate"></input>
+            <input type="date" class="form-control" placeholder="발행일을 입력해주세요" name="origDate" th:value="${book.origDate}"></input>
         </div>
 
         <div class="form-group">
@@ -119,9 +130,13 @@
             </div>
         </div>
 
-        <button th:formaction="@{/book/new}" type="submit" class="btn btn-primary">저장</button>
-
+        <th:block th:if="${book.id} == null">
+            <button th:formaction="@{/admin/book}" type="submit" class="btn btn-primary">저장</button>
+        </th:block>
     </form>
+    <th:block th:unless="${book.id} == null">
+        <button class="btn btn-primary" onclick="updateBook()">수정</button>
+    </th:block>
 
 </div>
 

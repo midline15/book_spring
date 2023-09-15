@@ -45,10 +45,17 @@ public class BookComment extends BaseEntity {
     public BookCommentDto of() {
         return BookCommentDto.builder()
                 .id(id)
+                .content(content)
                 .email(user.getEmail())
                 .bookTitle(book.getTitle())
                 .regTime(getRegTime())
                 .score(score)
                 .build();
+    }
+
+    public void updateBookComment(BookCommentDto bookCommentDto) {
+        content = bookCommentDto.getContent();
+        score = bookCommentDto.getScore();
+        book.calculateAvgScore();
     }
 }

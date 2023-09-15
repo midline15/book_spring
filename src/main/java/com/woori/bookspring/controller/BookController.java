@@ -1,17 +1,16 @@
 package com.woori.bookspring.controller;
 
-import com.woori.bookspring.dto.BookCommentDto;
-import com.woori.bookspring.dto.BookDto;
-import com.woori.bookspring.dto.BookFormDto;
-import com.woori.bookspring.dto.SearchParam;
+import com.woori.bookspring.dto.*;
 import com.woori.bookspring.repository.BookRepository;
 import com.woori.bookspring.service.BookCommentService;
 import com.woori.bookspring.service.BookService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,14 +18,13 @@ import java.security.Principal;
 import java.util.List;
 
 @RequiredArgsConstructor
-@RequestMapping("book")
 @Controller
 public class BookController {
 
     private final BookService bookService;
     private final BookCommentService bookCommentService;
 
-    @GetMapping // 리스트조회
+    @GetMapping("book") // 리스트조회
     public String bookList(Model model, @RequestParam(value = "searchType", required = false) String searchType,
                            @RequestParam(value = "searchValue", required = false) String searchValue){
 
@@ -35,7 +33,7 @@ public class BookController {
         searchParam.setSearchValue(searchValue);
 
         // 도서목록조회
-        List<BookDto> bookList = bookService.getBookList(searchType,searchValue);
+        List<BookFormDto> bookList = bookService.getBookList(searchType,searchValue);
 
 
         model.addAttribute("list",bookList);
@@ -44,21 +42,26 @@ public class BookController {
         return "book/bookList";
     }
 
-    @GetMapping("{book-id}") // 단건조회
+    @GetMapping("book/{book-id}") // 단건조회
     public String getBook(@PathVariable("book-id") Long id, Model model) {
-        BookDto bookDto = bookService.getBook(id);
+        BookFormDto bookDto = bookService.getBook(id);
         model.addAttribute("book", bookDto);
 
         return "book/book";
     }
 
-    @GetMapping("new")
-    public String createBook(){
+    @GetMapping("admin/book/new")
+    public String createBook(@ModelAttribute("book") BookFormDto bookFormDto){
         return "book/bookForm";
     }
 
-    @PostMapping("new") // newBook
-    public String createBook(Model model, BookFormDto bookFormDto, @RequestParam("imgFile") MultipartFile imgFile) {
+    @PostMapping("admin/book") // newBook
+    public String createBook(Model model, @Valid @ModelAttribute("book") BookFormDto bookFormDto, BindingResult bindingResult, @RequestParam("imgFile") MultipartFile imgFile) {
+
+        if (bindingResult.hasErrors()){
+            return "book/bookForm";
+        }
+
         try {
             bookService.createBook(bookFormDto, imgFile);
         } catch (Exception e){
@@ -67,7 +70,7 @@ public class BookController {
         }
         return "redirect:/book";
     }
-    @DeleteMapping("{book-id}") // 삭제
+    @DeleteMapping("admin/book/{book-id}") // 삭제
     public @ResponseBody ResponseEntity<?> deleteBook
             (@PathVariable("book-id") Long id){
         bookService.deleteBook(id);
@@ -75,34 +78,41 @@ public class BookController {
     }
 
 
-    @PostMapping("{book-id}/bookComment")
-    private String createBookComment(BookCommentDto bookCommentDto, Principal principal){
+    @PostMapping("book/{book-id}/book-comment")
+    public String createBookComment(BookCommentDto bookCommentDto, Principal principal){
         bookCommentService.createBookComment(bookCommentDto, principal.getName());
         return "redirect:/book/{book-id}";
     }
 
+    @PatchMapping("book/{book-id}/book-comment/{book-comment-id}")
+    public ResponseEntity<?> updateBookComment(@RequestBody BookCommentDto bookCommentDto){
+        bookCommentService.updateBookComment(bookCommentDto);
+        return new ResponseEntity<>("수정완료", HttpStatus.OK);
+    }
 
+    @DeleteMapping("book/{book-id}/book-comment/{book-comment-id}")
+    public ResponseEntity<?> deleteBookComment(@PathVariable("book-comment-id") Long bookCommentId, @PathVariable("book-id") Long bookId){
+        bookCommentService.deleteBookComment(bookCommentId);
+        bookService.calculateAvgScore(bookId);
+        return new ResponseEntity<>("댓글 삭제", HttpStatus.OK);
+    }
 
-
-
-   /* @GetMapping("/{book-id}") // 수정페이지 진입
+    @GetMapping("/admin/book/{book-id}")
     public String updateBook(@PathVariable("book-id") Long bookId, Model model){
-        try {
-            BookDto bookDto = bookService.getBook(bookId);
-            model.addAttribute("bookDto", bookDto);
-        } catch (EntityNotFoundException e) {
-            model.addAttribute("errorMessage", "존재하지 않는 상품입니다.");
-            model.addAttribute("bookDto",new BookDto());
-            return "book/bookForm";
-        }
+        model.addAttribute("book",bookService.getBook(bookId));
         return "book/bookForm";
-    }*/
+    }
 
+    @PatchMapping("/admin/book/{book-id}")
+    public ResponseEntity<?> updateBook(@PathVariable("book-id") Long bookId, BookFormDto bookFormDto, @RequestParam("imgFile") MultipartFile imgFile, Model model) {
 
+        try {
+            bookService.updateBook(bookId, bookFormDto, imgFile);
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "상품 수정 중 에러가 발생 하였습니다.");
+            return new ResponseEntity<>("실패", HttpStatus.BAD_REQUEST);
+        }
 
-    /*@PatchMapping("{id}") // 수정
-    public @ResponseBody String updateBook(@PathVariable Long id, @RequestBody Book updateBook) {
-        bookService.updateBook(updateBook);
-        return "수정 완료";
-    }*/
+        return new ResponseEntity<>("성공", HttpStatus.OK);
+    }
 }

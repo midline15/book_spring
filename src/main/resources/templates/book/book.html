@@ -133,6 +133,44 @@
             });
         }
 
+        function updateComment(obj) {
+            if (confirm("댓글을 수정하시겠습니까?")) {
+                let bookId = [[${book.id}]]
+                let commentId = obj.dataset.id;
+                let form = obj.parentElement;
+                var data = {
+                    id: form.querySelector('#comment-id').value,
+                    score: form.querySelector('#comment-score').value,
+                    email: form.querySelector('#comment-email').value,
+                    content: form.querySelector('#comment-content').value,
+                };
+                fetch(`/book/${bookId}/book-comment/${commentId}`, {
+                    method: "PATCH",
+                    body: JSON.stringify(data),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(() => {
+                        alert('수정 완료');
+                        location.href = `/book/${bookId}`
+                    });
+            }
+        }
+
+        function deleteComment(obj) {
+            if (confirm("댓글을 삭제하시겠습니까?")) {
+                let bookId = [[${book.id}]]
+                let commentId = obj.dataset.id;
+                fetch(`/book/${bookId}/book-comment/${commentId}`, {
+                    method: "DELETE",
+                })
+                    .then(() => {
+                        alert('삭제 완료');
+                        location.href = `/book/${bookId}`
+                    });
+            }
+        }
     </script>
 </th:block>
 <!-- 사용자 CSS 추가 -->
@@ -233,10 +271,8 @@
         </div>
     </div>
 
-
-
     <!-- 댓글 작성 폼 -->
-    <form id="commentForm" th:action="@{/book/{book-id}/bookComment (book-id = ${book.id})}" method="post">
+    <form id="commentForm" th:action="@{/book/{book-id}/book-comment (book-id = ${book.id})}" method="post">
         <input type="hidden" name="bookId" th:value="${book.id}" />
         <div class="form-group">
             <textarea name="content" class="form-control" placeholder="댓글을 입력하세요"></textarea>
@@ -248,21 +284,37 @@
         <button type="submit" class="btn btn-primary">댓글 작성</button>
     </form>
 
-    <!-- 댓글 목록 -->
-    <div>
-        <h3>댓글 목록</h3>
-        <ul id="commentList">
-            <li th:each="comment : ${book.bookCommentDtoList}">
-                <p th:text="${comment.email}"></p>
-                <p th:text="${comment.content}"></p>
+    <ul class="list-unstyled">
+        <th:block th:each="comment : ${book.bookCommentDtoList}">
+            <li class="media mt-4" th:id="'comment_'+ ${comment.id}">
+                <img class="mr-3" th:alt="${comment.email}">
+                <p th:text="${comment.regTime}"></p>
                 <p th:text="${comment.score}"></p>
+                <p th:text="${comment.content}"></p>
+                <div class="media-body">
+                    <!-- 댓글 -->
+                    <h5 class="mt-0 mb-1">
+                        <small>
+                            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" th:data-bs-target="'.multi-collapse-'+${comment.id}" aria-expanded="false">수정</button>
+                            <button class="btn btn-secondary" onclick="deleteComment(this)" th:data-id="${comment.id}">삭제</button>
+                        </small>
+                    </h5>
+                    <!-- 보기 모드 -->
+                    <p class="collapse show" th:classappend="'multi-collapse-'+${comment.id}">[[${comment.content}]]</p>
+                    <!-- 수정 모드 -->
+                    <form class="collapse" th:classappend="'multi-collapse-'+${comment.id}">
+                        <div class="form-group">
+                            <textarea class="form-control" id="comment-content" rows="3">[[${comment.content}]]</textarea>
+                        </div>
+                        <input type="number" id="comment-score" class="form-control" min="1" max="5" >
+                        <input type="hidden" id="comment-id" th:value="${comment.id}">
+                        <input type="hidden" id="comment-email" th:value="${comment.email}">
+                        <button type="button" class="btn btn-info comment-update-btn" onclick="updateComment(this)">수정 완료</button>
+                    </form>
+                </div>
             </li>
-        </ul>
-    </div>
-
-
-
-
+        </th:block>
+    </ul>
 </div>
 
 </html>
