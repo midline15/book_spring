@@ -2,6 +2,7 @@ package com.woori.bookspring.entity;
 
 import com.woori.bookspring.constant.SellStatus;
 import com.woori.bookspring.dto.BookDto;
+import com.woori.bookspring.dto.BookFormDto;
 import com.woori.bookspring.entity.base.BaseBook;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -38,14 +39,18 @@ public class Book extends BaseBook {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<BookComment> bookCommentList;
 
-    public BookDto of() {
-        return BookDto.builder()
+    public BookFormDto of() {
+        return BookFormDto.builder()
                 .id(id)
                 .title(title)
                 .price(price)
                 .intro(intro)
+                .publisher(publisher)
+                .origDate(origDate)
                 .sellStatus(sellStatus)
+                .stockNumber(stockNumber)
                 .url(cover.getUrl())
+                .coverId(cover.getId())
                 .bookCommentDtoList(bookCommentList.stream().map(BookComment::of).toList())
                 .avgScore(getAvgScore())
                 .build();
@@ -57,5 +62,15 @@ public class Book extends BaseBook {
             totalScore += bookComment.getScore();
         }
         avgScore = (float) totalScore/bookCommentList.size();
+    }
+
+    public void updateBook(BookFormDto bookFormDto, Cover cover) {
+        this.cover = cover;
+        this.title = bookFormDto.getTitle();
+        this.intro = bookFormDto.getIntro();
+        this.price = bookFormDto.getPrice();
+        this.publisher = bookFormDto.getPublisher();
+        this.sellStatus = bookFormDto.getSellStatus();
+        this.stockNumber = bookFormDto.getStockNumber();
     }
 }

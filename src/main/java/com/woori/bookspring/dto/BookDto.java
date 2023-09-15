@@ -17,6 +17,9 @@ public class BookDto {
     private String title;  //제목
     private SellStatus sellStatus;  // 재고
     private String url; // 유알엘
+    private Long coverId;
     private float avgScore;
+    private int stockNumber;
+    private String publisher;
     private List<BookCommentDto> bookCommentDtoList;
 }

@@ -3,10 +3,12 @@ package com.woori.bookspring.service;
 import com.woori.bookspring.dto.BookCommentDto;
 import com.woori.bookspring.dto.BookDto;
 import com.woori.bookspring.dto.BookFormDto;
+import com.woori.bookspring.dto.EbookFormDto;
 import com.woori.bookspring.entity.Book;
 import com.woori.bookspring.entity.BookComment;
 import com.woori.bookspring.entity.Cover;
 import com.woori.bookspring.entity.User;
+import com.woori.bookspring.entity.ebook.Ebook;
 import com.woori.bookspring.repository.BookCommentRepository;
 import com.woori.bookspring.repository.BookRepository;
 import com.woori.bookspring.repository.CoverRepository;
@@ -41,12 +43,16 @@ public class BookService {
     }
 
     @Transactional(readOnly = true)
-    public BookDto getBook(Long bookId) {
+    public BookFormDto getBook(Long bookId) {
         Book book = bookRepository.findById(bookId).orElseThrow(EntityNotFoundException::new);
         return book.of();
     }
 
-    public void updateBook(Book book) {
+    public void updateBook(Long id, BookFormDto bookFormDto, MultipartFile imgFile) throws Exception{ //e북 수정
+        Book book = bookRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 book을 찾을 수 없슴다."));
+
+        Cover cover = coverService.updateCover(book.getCover().getId(),imgFile);
+        book.updateBook(bookFormDto, cover);
         bookRepository.save(book);
     }
 
@@ -56,7 +62,7 @@ public class BookService {
     }
 
     @Transactional(readOnly = true)
-    public List<BookDto> getBookList(String type, String keyword) {
+    public List<BookFormDto> getBookList(String type, String keyword) {
         List<Book> bookList;
         if ("title".equals(type)) {
             bookList = bookRepository.findByTitleContaining(keyword);
@@ -69,11 +75,7 @@ public class BookService {
         return bookList.stream().map(Book::of).toList();
     }
 
-    @Transactional // 댓글달기
-    public void createBookComment(BookCommentDto bookCommentDto, String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
-        Book book = bookRepository.findById(bookCommentDto.getBookId()).orElseThrow(EntityNotFoundException::new);
-
-        bookCommentRepository.save(BookComment.createBookComment(user, book, bookCommentDto));
+    public void calculateAvgScore(Long bookId) {
+        bookRepository.findById(bookId).orElseThrow(EntityNotFoundException::new).calculateAvgScore();
     }
 }

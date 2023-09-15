@@ -62,7 +62,6 @@ public class Ebook extends BaseBook {
         this.intro = dto.getIntro();
         this.price = dto.getPrice();
         this.cover = cover;
-//        this.url = url;
         return this;
     }
 }

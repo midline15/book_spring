@@ -5,6 +5,7 @@ import com.woori.bookspring.dto.CommentDto;
 import com.woori.bookspring.entity.Book;
 import com.woori.bookspring.entity.BookComment;
 import com.woori.bookspring.entity.User;
+import com.woori.bookspring.entity.board.Comment;
 import com.woori.bookspring.repository.BookCommentRepository;
 import com.woori.bookspring.repository.BookRepository;
 import com.woori.bookspring.repository.UserRepository;
@@ -36,8 +37,9 @@ public class BookCommentService {
         return bookCommentRepository.findById(bookCommentId).orElseThrow(EntityNotFoundException::new);
     }
 
-    public void updateBookComment(BookComment bookComment){
-        bookCommentRepository.save(bookComment);
+    public void updateBookComment(BookCommentDto bookCommentDto){
+        BookComment bookComment = bookCommentRepository.findById(bookCommentDto.getId()).orElseThrow(EntityNotFoundException::new);
+        bookComment.updateBookComment(bookCommentDto);
     }
 
     public void deleteBookComment(Long bookCommentId){
