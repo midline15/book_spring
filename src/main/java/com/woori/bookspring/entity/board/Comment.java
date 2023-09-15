@@ -35,6 +35,7 @@ public class Comment extends BaseEntity {
     public CommentDto of() {
         return CommentDto.builder()
                 .id(id)
+                .content(content)
                 .email(user.getEmail())
                 .regTime(getRegTime()).build();
     }

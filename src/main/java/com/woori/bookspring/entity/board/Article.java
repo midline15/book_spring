@@ -2,6 +2,7 @@ package com.woori.bookspring.entity.board;
 
 import com.woori.bookspring.constant.ArticleType;
 import com.woori.bookspring.dto.ArticleDto;
+import com.woori.bookspring.dto.ArticleFormDto;
 import com.woori.bookspring.dto.HelpFormDto;
 import com.woori.bookspring.entity.User;
 import com.woori.bookspring.entity.base.BaseEntity;
@@ -12,8 +13,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
@@ -35,6 +37,8 @@ public class Article extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> commentList;
     public ArticleDto of() {
         return ArticleDto.builder()
                 .id(id)
@@ -42,14 +46,14 @@ public class Article extends BaseEntity {
                 .content(content)
                 .regTime(getRegTime())
                 .createdBy(getCreatedBy())
+                .articleType(articleType.toString())
+                .commentDtoList(commentList.stream().map(Comment::of).toList())
                 .build();
     }
 
-<<<<<<< Updated upstream
-    public void updateArticle(HelpFormDto dto) {
+    public void updateArticle(ArticleDto dto) {
         title = dto.getTitle();
         content = dto.getContent();
     }
-=======
->>>>>>> Stashed changes
+
 }
