@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Principal;
 import java.util.List;
 
 @Transactional
@@ -26,16 +25,15 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
 
-    public void createArticle(ArticleFormDto articleFormDto, String email) {
+    public Long createArticle(ArticleDto articleDto, String email) {
         User user = userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
-        Article article = articleFormDto.toEntity(user);
-        articleRepository.save(article);
+        Article article = articleDto.toEntity(user);
+        return articleRepository.save(article).getId();
     }
 
     @Transactional(readOnly = true)
     public ArticleDto getArticle(Long articleId) {
-        Article article = articleRepository.findById(articleId).orElseThrow(EntityNotFoundException::new);
-        return article.of();
+        return articleRepository.findById(articleId).orElseThrow(EntityNotFoundException::new).of();
     }
 
     @Transactional(readOnly = true)
@@ -44,13 +42,13 @@ public class ArticleService {
     }
 
     @Transactional(readOnly = true)
-    public List<ArticleDto> getArticleList(Long userId, ArticleType articleType){
+    public List<ArticleDto> getUserArticleList(Long userId, ArticleType articleType) {
         return articleRepository.findByUserIdAndArticleType(userId, articleType).stream().map(Article::of).toList();
     }
 
-    public void updateArticle(HelpFormDto helpFormDto) {
-        Article article = articleRepository.findById(helpFormDto.getId()).orElseThrow(EntityNotFoundException::new);
-        article.updateArticle(helpFormDto);
+    public void updateArticle(ArticleDto articleDto, Long articleId) {
+        Article article = articleRepository.findById(articleId).orElseThrow(EntityNotFoundException::new);
+        article.updateArticle(articleDto);
     }
 
     public void deleteArticle(Long id) {
@@ -61,12 +59,5 @@ public class ArticleService {
         User user = userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
         dto.toEntity(user);
     }
-
-    public void updateArticle(ArticleDto articleDto, Long articleId) {
-        articleRepository.findById(articleId)
-                .orElseThrow(EntityNotFoundException::new)
-                .updateArticle(articleDto);
-    }
-
-
 }
+

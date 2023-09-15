@@ -5,9 +5,11 @@ import com.woori.bookspring.repository.BookRepository;
 import com.woori.bookspring.service.BookCommentService;
 import com.woori.bookspring.service.BookService;
 import jakarta.validation.Valid;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -66,7 +68,7 @@ public class BookController {
             bookService.createBook(bookFormDto, imgFile);
         } catch (Exception e){
             model.addAttribute("errorMessage", "상품 등록 중 에러가 발생하였습니다.");
-            return "book/bookForm";
+            return "bookForm";
         }
         return "redirect:/book";
     }
@@ -76,7 +78,6 @@ public class BookController {
         bookService.deleteBook(id);
         return new ResponseEntity<Long>(id, HttpStatus.OK);
     }
-
 
     @PostMapping("book/{book-id}/book-comment")
     public String createBookComment(BookCommentDto bookCommentDto, Principal principal){

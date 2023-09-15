@@ -1,3 +1,4 @@
+/*
 package com.woori.bookspring.controller;
 
 import com.woori.bookspring.constant.ArticleType;
@@ -22,13 +23,6 @@ public class HelpController {
 
     private final ArticleService articleService;
     private final CommentService commentService;
-
-    @GetMapping("article/{article-type}")
-    public String getNoticeList(Model model, @PathVariable("article-type") String articleType){
-        List<ArticleDto> noticeList = articleService.getArticleList(ArticleType.getArticleType(articleType));
-        model.addAttribute("list",noticeList);
-        return "help/noticeList";
-    }
 
     @GetMapping("article/03/{article-id}")
     public String getNotice(@PathVariable("article-id") Long articleId, Model model){
@@ -147,3 +141,4 @@ public class HelpController {
         return new ResponseEntity<>("답변 수정 완료", HttpStatus.OK);
     }
 }
+*/

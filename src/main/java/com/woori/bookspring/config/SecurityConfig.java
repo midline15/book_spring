@@ -4,6 +4,7 @@ import com.woori.bookspring.config.oauth.OAuth2UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -11,6 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig {
 
     private final OAuth2UserServiceImpl oAuth2UserService;
@@ -20,7 +22,10 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/img/**").permitAll()
-                        .requestMatchers("/", "/book", "/ebook", "/user/**","/book/**","ebook/**").permitAll()
+                        .requestMatchers("/", "/book", "/ebook", "/user/**","/book/*/","/ebook/*/","/article/**").permitAll()
+                        .requestMatchers("/admin","/admin/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/user","/user/**","/order","/order/**","/cart","/cart/**","/like","/like/**","/inven","/inven/**","/article/*/*/comment","/article/*/*/comment/**").hasAnyAuthority("USER")
+                        .requestMatchers("/writer","/writer/**").hasAnyAuthority("WRITER")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/user/login")

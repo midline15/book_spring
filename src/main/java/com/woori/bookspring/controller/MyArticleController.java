@@ -33,7 +33,7 @@ public class MyArticleController {
         if(articleType == null){
             articleType = "ARTICLE";
         }
-        List<ArticleDto> articleList = articleService.getArticleList(userId, ArticleType.valueOf(articleType));
+        List<ArticleDto> articleList = articleService.getUserArticleList(userId, ArticleType.valueOf(articleType));
         model.addAttribute("list", articleList);
         return "user/myArticle";
     }

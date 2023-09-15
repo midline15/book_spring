@@ -2,6 +2,7 @@ package com.woori.bookspring.entity.board;
 
 import com.woori.bookspring.constant.ArticleType;
 import com.woori.bookspring.dto.ArticleDto;
+import com.woori.bookspring.dto.ArticleFormDto;
 import com.woori.bookspring.dto.HelpFormDto;
 import com.woori.bookspring.entity.User;
 import com.woori.bookspring.entity.base.BaseEntity;
@@ -39,7 +40,7 @@ public class Article extends BaseEntity {
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList;
-
+  
     public ArticleDto of() {
         return ArticleDto.builder()
                 .id(id)
@@ -48,16 +49,13 @@ public class Article extends BaseEntity {
                 .commentDtoList(commentList.stream().map(Comment::of).toList())
                 .regTime(getRegTime())
                 .createdBy(getCreatedBy())
+                .articleType(articleType.toString())
+                .commentDtoList(commentList.stream().map(Comment::of).toList())
                 .build();
     }
 
-    public void updateArticle(HelpFormDto dto) {
+    public void updateArticle(ArticleDto dto) {
         title = dto.getTitle();
         content = dto.getContent();
-    }
-
-    public void updateArticle(ArticleDto articleDto) {
-        title = articleDto.getTitle();
-        content = articleDto.getContent();
     }
 }

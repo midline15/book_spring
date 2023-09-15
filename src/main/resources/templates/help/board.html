@@ -7,7 +7,9 @@
     <div id="page-content-wrapper">
         <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
             <div class="container-fluid">
-                <h1 class="mt-4">QnA</h1>
+                <h1 class="mt-4" th:if="${list.articleType == '03'}">공지사항</h1>
+                <h1 class="mt-4" th:if="${list.articleType == '04'}">이벤트</h1>
+                <h1 class="mt-4" th:if="${list.articleType == '05'}">Q&A</h1>
             </div>
         </nav>
         <!-- Page content-->
@@ -22,12 +24,12 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="question : ${list}">
-                        <td class="title"><a th:text="${question.title}"
-                                             th:href="@{/article/05/{article-id} (article-id = ${question.id})}"></a></td>
-                        <td class="user-id" th:text="${question.createdBy}"></td>
+                    <tr th:each="notice : ${list.articleDtoList}">
+                        <td class="title"><a th:text="${notice.title}"
+                                             th:href="@{/article/{article-type}/{article-id} (article-type = ${list.articleType}, article-id = ${notice.id})}"></a></td>
+                        <td class="user-id" th:text="${notice.createdBy}"></td>
                         <td class="created-at">
-                            <time th:text="${question.regTime}"></time>
+                            <time th:text="${notice.regTime}"></time>
                         </td>
                     </tr>
                     </tbody>

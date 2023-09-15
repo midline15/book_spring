@@ -35,10 +35,10 @@ public class Ebook extends BaseBook {
     @JoinColumn(name = "cover_id")
     private Cover cover;
 
-    @OneToMany(mappedBy = "ebook", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "ebook", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Episode> episodeList;
 
-    @OneToMany(mappedBy = "ebook", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "ebook", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LikeEbook> likeEbookList;
 
     @Enumerated(EnumType.STRING)
