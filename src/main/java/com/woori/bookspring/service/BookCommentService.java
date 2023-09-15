@@ -2,8 +2,12 @@ package com.woori.bookspring.service;
 
 import com.woori.bookspring.dto.BookCommentDto;
 import com.woori.bookspring.dto.CommentDto;
+import com.woori.bookspring.entity.Book;
 import com.woori.bookspring.entity.BookComment;
+import com.woori.bookspring.entity.User;
 import com.woori.bookspring.repository.BookCommentRepository;
+import com.woori.bookspring.repository.BookRepository;
+import com.woori.bookspring.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,9 +21,14 @@ import java.util.List;
 public class BookCommentService {
 
     private final BookCommentRepository bookCommentRepository;
+    private final UserRepository userRepository;
+    private final BookRepository bookRepository;
 
-    public void createBookComment(BookComment comment){
-        bookCommentRepository.save(comment);
+    public void createBookComment(BookCommentDto bookCommentDto, String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+        Book book = bookRepository.findById(bookCommentDto.getBookId()).orElseThrow(EntityNotFoundException::new);
+        bookCommentRepository.save(BookComment.createBookComment(user, book, bookCommentDto));
+        book.calculateAvgScore();
     }
 
     @Transactional(readOnly = true)
@@ -39,7 +48,6 @@ public class BookCommentService {
     public List<BookComment> getBookCommentList(){
         return bookCommentRepository.findAll();
     }
-
 
     @Transactional(readOnly = true)
     public List<BookCommentDto> getBookCommentList(Long userId) {

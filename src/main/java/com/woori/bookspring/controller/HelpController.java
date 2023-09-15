@@ -129,8 +129,8 @@ public class HelpController {
     }
 
     @PostMapping("article/05/{article-id}/comment")
-    public String createAnswer(@PathVariable("article-id") Long articleId, CommentDto commentDto){
-        commentService.createComment(articleId, commentDto);
+    public String createAnswer(@PathVariable("article-id") Long articleId, CommentDto commentDto, Principal principal){
+        commentService.createComment(articleId, commentDto, principal.getName());
 
         return "redirect:/article/05/{article-id}";
     }

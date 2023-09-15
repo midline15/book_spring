@@ -48,6 +48,7 @@
                               required></textarea>
                 </div>
                 <input type="hidden" name="email" th:value="${#authentication.name}">
+
                 <div class="col-md-3 col-lg-4">
                     <button class="btn btn-primary" id="comment-submit" type="submit">쓰기</button>
                 </div>
@@ -75,6 +76,7 @@
                                 <input type="hidden" id="comment-id" th:value="${comment.id}">
                                 <input type="hidden" id="comment-email" th:value="${comment.email}">
                                 <input type="hidden" id="articleId" th:value="${article.id}">
+
                                 <button type="button" class="btn btn-info comment-update-btn" onclick="updateComment(this)">수정 완료</button>
                             </form>
                         </div>
@@ -89,13 +91,13 @@
         let articleType = [[${article.articleType}]]
         function updateComment(obj) {
             if (confirm("댓글을 수정하시겠습니까?")) {
-
                 let form = obj.parentElement;
                 var data = {
                     id: form.querySelector('#comment-id').value,
                     email: form.querySelector('#comment-email').value,
                     content: form.querySelector('#comment-content').value,
                 };
+
                 fetch(`/article/${articleType}/${articleId}/comment/${data.id}`, {
                     method: "PATCH",
                     body: JSON.stringify(data),

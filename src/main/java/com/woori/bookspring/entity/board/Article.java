@@ -16,6 +16,7 @@ import lombok.experimental.SuperBuilder;
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
@@ -39,11 +40,13 @@ public class Article extends BaseEntity {
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList;
+  
     public ArticleDto of() {
         return ArticleDto.builder()
                 .id(id)
                 .title(title)
                 .content(content)
+                .commentDtoList(commentList.stream().map(Comment::of).toList())
                 .regTime(getRegTime())
                 .createdBy(getCreatedBy())
                 .articleType(articleType.toString())
@@ -55,5 +58,4 @@ public class Article extends BaseEntity {
         title = dto.getTitle();
         content = dto.getContent();
     }
-
 }

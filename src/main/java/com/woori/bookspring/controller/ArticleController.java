@@ -3,7 +3,6 @@ package com.woori.bookspring.controller;
 import com.woori.bookspring.constant.ArticleType;
 import com.woori.bookspring.dto.ArticleDto;
 import com.woori.bookspring.dto.ArticleFormDto;
-import com.woori.bookspring.dto.ArticleListDto;
 import com.woori.bookspring.dto.CommentDto;
 import com.woori.bookspring.service.ArticleService;
 import com.woori.bookspring.service.CommentService;
@@ -23,6 +22,7 @@ public class ArticleController {
 
     private final ArticleService articleService;
     private final CommentService commentService;
+  
     @GetMapping("article/{article-type}")
     public String getNoticeList(Model model, @PathVariable("article-type") String articleType){
         List<ArticleDto> articleList = articleService.getArticleList(ArticleType.getArticleType(articleType));

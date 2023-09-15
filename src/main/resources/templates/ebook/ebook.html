@@ -110,7 +110,6 @@
     </div>
     <script>
         function buyEpisode(obj) {
-            alert("클릭")
             let ebookId = document.getElementById('ebook-id').value;
             let episodeId = obj.dataset.id;
             fetch(`/ebook/${ebookId}/episode/${episodeId}`, {

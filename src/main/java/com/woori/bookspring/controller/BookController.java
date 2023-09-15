@@ -4,8 +4,8 @@ import com.woori.bookspring.dto.BookCommentDto;
 import com.woori.bookspring.dto.BookDto;
 import com.woori.bookspring.dto.BookFormDto;
 import com.woori.bookspring.dto.SearchParam;
-import com.woori.bookspring.entity.Book;
 import com.woori.bookspring.repository.BookRepository;
+import com.woori.bookspring.service.BookCommentService;
 import com.woori.bookspring.service.BookService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ import java.util.List;
 public class BookController {
 
     private final BookService bookService;
-    private final BookRepository bookRepository;
+    private final BookCommentService bookCommentService;
 
     @GetMapping // 리스트조회
     public String bookList(Model model, @RequestParam(value = "searchType", required = false) String searchType,
@@ -70,7 +70,7 @@ public class BookController {
         return "redirect:/book";
     }
     @DeleteMapping("{book-id}") // 삭제
-    public @ResponseBody ResponseEntity deleteBook
+    public @ResponseBody ResponseEntity<?> deleteBook
             (@PathVariable("book-id") Long id){
         bookService.deleteBook(id);
         return new ResponseEntity<Long>(id, HttpStatus.OK);
