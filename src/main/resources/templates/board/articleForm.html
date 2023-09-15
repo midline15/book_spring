@@ -7,26 +7,61 @@
     <header id="article-form-header" class="py-5 text-center">
         <h1>게시글 저장</h1>
     </header>
-    <form id="article-form" th:action="@{/article/01}" method="post" th:object="${dto}">
+    <form id="article-form" th:action="@{/article/{article-type}(article-type = ${dto.articleType})}" method="post" th:object="${dto}">
 
+        <input type="hidden" name="articleType" th:value="${dto.articleType}">
+        <input type="hidden" id="articleId" th:value="${dto.id}">
         <div class="row mb-3 justify-content-md-center">
             <label for="title" class="col-sm-2 col-lg-1 col-form-label text-sm-end">제목</label>
             <div class="col-sm-8 col-lg-9">
-                <input type="text" class="form-control" id="title" name="title" required>
+                <input type="text" class="form-control" id="title" name="title" th:value="${dto.title}" required>
             </div>
         </div>
         <div class="row mb-3 justify-content-md-center">
             <label for="content" class="col-sm-2 col-lg-1 col-form-label text-sm-end">본문</label>
             <div class="col-sm-8 col-lg-9">
-                <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
+                <textarea class="form-control" id="content" name="content" rows="5" required>[[${dto.content}]]</textarea>
             </div>
         </div>
         <div class="row mb-5 justify-content-md-center">
-            <div class="col-sm-10 d-grid gap-2 d-sm-flex justify-content-sm-end">
+            <div th:if="${dto.id == null}" class="col-sm-10 d-grid gap-2 d-sm-flex justify-content-sm-end">
                 <button type="submit" class="btn btn-primary" id="submit-button">저장</button>
-                <button type="button" class="btn btn-secondary" id="cancel-button" onclick="return_lists()">취소</button>
             </div>
         </div>
     </form>
+    <div th:if="${dto.id != null}">
+        <button type="button" class="btn btn-primary" onclick="updateArticle()">수정</button>
+        <button type="button" class="btn btn-secondary"onclick="cancel()">취소</button>
+    </div>
+
+    <script th:inline="javascript">
+        let articleId = $("#articleId").val();
+        let articleType = $("#articleType").val();
+        function updateArticle(){
+            if (confirm("게시글을 수정하시겠습니까?")) {
+                var data = {
+                    title: $("#title").val(),
+                    content: $("[name=content]").val(),
+                };
+                fetch(`/article/${articleType}/${articleId}`, {
+                    method: "PATCH",
+                    body: JSON.stringify(data),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(() => {
+                        alert('수정 완료');
+                        location.href = `/article/${articleType}/${articleId}`
+                    });
+            }
+        }
+
+        function cancel(){
+            if (confirm("취소?")) {
+                location.href=`/article/${articleType}/${articleId}`
+            }
+        }
+    </script>
 </main>
 </html>

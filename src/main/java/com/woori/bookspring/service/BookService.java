@@ -69,4 +69,11 @@ public class BookService {
         return bookList.stream().map(Book::of).toList();
     }
 
+    @Transactional // 댓글달기
+    public void createBookComment(BookCommentDto bookCommentDto, String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+        Book book = bookRepository.findById(bookCommentDto.getBookId()).orElseThrow(EntityNotFoundException::new);
+
+        bookCommentRepository.save(BookComment.createBookComment(user, book, bookCommentDto));
+    }
 }

@@ -89,7 +89,7 @@
                 alert("에러 발생 : " + message);
             });
         }
-
+      
         // 댓글 작성 함수
         function addComment() {
             var formData = $("#commentForm").serialize(); // 폼 데이터를 가져옵니다.
@@ -243,7 +243,7 @@
         </div>
         <div class="form-group">
             <label for="score">별점:</label>
-            <input type="number" name="score" id="score" class="form-control" min="1" max="5" />
+            <input type="number" name="score" class="form-control" min="1" max="5" />
         </div>
         <button type="submit" class="btn btn-primary">댓글 작성</button>
     </form>
@@ -252,17 +252,12 @@
     <div>
         <h3>댓글 목록</h3>
         <ul id="commentList">
-            <li th:each="comment : ${book.bookCommentDtoList}">
-                <p th:text="${comment.email}"></p>
+            <li th:each="comment : ${comments}">
+                <p th:text="${comment.user.username}"></p>
                 <p th:text="${comment.content}"></p>
                 <p th:text="${comment.score}"></p>
             </li>
         </ul>
     </div>
-
-
-
-
 </div>
-
 </html>

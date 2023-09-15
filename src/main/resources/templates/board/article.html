@@ -4,6 +4,7 @@
       layout:decorate="~{layouts/user_layout}">
 
 <main layout:fragment="content" id="article-main" class="container">
+    <input type="hidden" id="articleType" th:value="${article.articleType}">
     <header id="article-header" class="py-5 text-center">
         <h1>[[${article.title}]]</h1>
     </header>
@@ -21,13 +22,13 @@
         </article>
     </div>
     <div class="row g-5" id="article-buttons">
-        <form id="delete-article-form" th:action="@{/article/01/{article-id} (article-id = ${article.id})}">
+        <form>
             <div class="pb-5 d-grid gap-2 d-md-block"
                  th:if="${#authorization.expression('isAuthenticated()')} and ${article.createdBy} == ${#authentication.name}">
                 <article>
                     <input type="hidden" id="article-id" th:value="${article.id}">
-                    <a class="btn btn-success me-md-2" role="button" id="update-article"
-                       th:href="@{/article/01/{article-id}/form (article-id = ${article.id})}">수정</a>
+                    <a class="btn btn-success me-md-2" role="button"
+                       th:href="@{/article/{article-type}/{article-id}/update (article-type = ${article.articleType}, article-id = ${article.id})}">수정</a>
                     <button type="button" id="delete-btn" class="btn btn-danger me-md-2">
                         삭제
                     </button>
@@ -39,13 +40,15 @@
     <div class="row g-5">
         <section>
             <form class="row g-3 comment-form"
-                  th:action="@{/article/01/{article-id}/comment (article-id=${article.id})}" method="POST">
+                  th:action="@{/article/{article-type}/{article-id}/comment (article-type = ${article.articleType}, article-id=${article.id})}" method="POST">
                 <div class="col-md-9 col-lg-8">
                     <label for="comment-textbox" hidden>댓글</label>
                     <textarea name="content" class="form-control comment-textbox" id="comment-textbox"
                               placeholder="댓글 쓰기.." rows="3"
                               required></textarea>
                 </div>
+                <input type="hidden" name="email" th:value="${#authentication.name}">
+
                 <div class="col-md-3 col-lg-4">
                     <button class="btn btn-primary" id="comment-submit" type="submit">쓰기</button>
                 </div>
@@ -73,7 +76,8 @@
                                 <input type="hidden" id="comment-id" th:value="${comment.id}">
                                 <input type="hidden" id="comment-email" th:value="${comment.email}">
                                 <input type="hidden" id="articleId" th:value="${article.id}">
-                                <button type="button" class="btn btn-info comment-update-btn" onclick="updateComment()">수정 완료</button>
+
+                                <button type="button" class="btn btn-info comment-update-btn" onclick="updateComment(this)">수정 완료</button>
                             </form>
                         </div>
                     </li>
@@ -83,17 +87,18 @@
     </div>
     <script src="/js/article.js"></script>
     <script th:inline="javascript">
+        let articleId = [[${article.id}]]
+        let articleType = [[${article.articleType}]]
         function updateComment(obj) {
             if (confirm("댓글을 수정하시겠습니까?")) {
-                let articleId = [[${article.id}]]
-                let commentId = obj.dataset.id;
                 let form = obj.parentElement;
                 var data = {
                     id: form.querySelector('#comment-id').value,
                     email: form.querySelector('#comment-email').value,
                     content: form.querySelector('#comment-content').value,
                 };
-                fetch(`/article/01/${articleId}/comment/${commentId}`, {
+
+                fetch(`/article/${articleType}/${articleId}/comment/${data.id}`, {
                     method: "PATCH",
                     body: JSON.stringify(data),
                     headers: {
@@ -102,21 +107,20 @@
                 })
                     .then(() => {
                         alert('수정 완료');
-                        location.href = `/article/01/${articleId}`
+                        location.href = `/article/${articleType}/${articleId}`
                     });
             }
         }
 
         function deleteComment(obj) {
             if (confirm("댓글을 삭제하시겠습니까?")) {
-                let articleId = [[${article.id}]]
                 let commentId = obj.dataset.id;
-                fetch(`/article/01/${articleId}/comment/${commentId}`, {
+                fetch(`/article/${articleType}/${articleId}/comment/${commentId}`, {
                     method: "DELETE",
                 })
                     .then(() => {
                         alert('삭제 완료');
-                        location.href = `/article/01/${articleId}`
+                        location.href = `/article/${articleType}/${articleId}`
                     });
             }
         }

@@ -7,9 +7,11 @@ import com.woori.bookspring.dto.SearchParam;
 import com.woori.bookspring.repository.BookRepository;
 import com.woori.bookspring.service.BookCommentService;
 import com.woori.bookspring.service.BookService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -63,7 +65,7 @@ public class BookController {
             bookService.createBook(bookFormDto, imgFile);
         } catch (Exception e){
             model.addAttribute("errorMessage", "상품 등록 중 에러가 발생하였습니다.");
-            return "book/bookForm";
+            return "bookForm";
         }
         return "redirect:/book";
     }
@@ -76,9 +78,13 @@ public class BookController {
 
 
     @PostMapping("{book-id}/bookComment")
-    private String createBookComment(BookCommentDto bookCommentDto, Principal principal){
-        bookCommentService.createBookComment(bookCommentDto, principal.getName());
-        return "redirect:/book/{book-id}";
+    private @ResponseBody ResponseEntity<String> createBookComment(BookCommentDto bookCommentDto, Principal principal){
+        try {
+            bookService.createBookComment(bookCommentDto, principal.getName());
+            return new ResponseEntity<>("댓글이 성공적으로 작성되었습니다.", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("댓글 작성 중 오류가 발생했습니다.", HttpStatus.BAD_REQUEST);
+        }
     }
 
 
