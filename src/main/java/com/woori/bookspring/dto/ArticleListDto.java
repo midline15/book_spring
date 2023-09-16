@@ -16,3 +16,4 @@ public class ArticleListDto {
     private String articleType;
     private List<ArticleDto> articleDtoList;
 }
+
