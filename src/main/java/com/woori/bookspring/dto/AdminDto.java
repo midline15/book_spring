@@ -15,13 +15,13 @@ public class AdminDto {
 
     private String email;
     private String password;
-    private String name;
+    private String nickname;
 
     public User toEntity() {
         return User.builder()
                 .email(email)
                 .password(password)
-                .name(name)
+                .nickname(nickname)
                 .role(Role.ADMIN)
                 .build();
     }

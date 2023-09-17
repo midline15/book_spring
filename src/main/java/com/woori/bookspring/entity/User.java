@@ -3,11 +3,8 @@ package com.woori.bookspring.entity;
 import com.woori.bookspring.constant.OAuthType;
 import com.woori.bookspring.constant.Role;
 import com.woori.bookspring.constant.UserStatus;
-import com.woori.bookspring.dto.UserDto;
 import com.woori.bookspring.dto.UserUpdateDto;
 import com.woori.bookspring.entity.base.BaseEntity;
-import com.woori.bookspring.entity.ebook.Inventory;
-import com.woori.bookspring.entity.ebook.Like;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +32,7 @@ public class User extends BaseEntity {
 
     private int ticket;
 
-    private String name;
+    private String nickname;
 
     private String phone;
 
@@ -42,7 +40,7 @@ public class User extends BaseEntity {
 
     private String address;
 
-    private String birth;
+    private LocalDate birth;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
@@ -56,23 +54,23 @@ public class User extends BaseEntity {
     @Builder.Default
     private OAuthType oauth = OAuthType.WOORI;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL ,orphanRemoval = true)
     @Builder.Default
     private List<Order> orderList = new ArrayList<>();
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    /*@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Inventory inventory;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Like like;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Cart cart;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Cart cart;*/
 
     public UserUpdateDto of() {
         return UserUpdateDto.builder()
                 .id(id)
-                .name(name)
+                .nickname(nickname)
                 .address(address)
                 .birth(birth)
                 .phone(phone)
@@ -80,7 +78,7 @@ public class User extends BaseEntity {
     }
 
     public void updateUser(UserUpdateDto userUpdateDto) {
-        name = userUpdateDto.getName();
+        nickname = userUpdateDto.getNickname();
         birth = userUpdateDto.getBirth();
         phone = userUpdateDto.getPhone();
         address = userUpdateDto.getAddress();

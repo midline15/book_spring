@@ -3,6 +3,7 @@ package com.woori.bookspring.controller;
 import com.woori.bookspring.constant.ArticleType;
 import com.woori.bookspring.dto.ArticleDto;
 import com.woori.bookspring.dto.ArticleFormDto;
+import com.woori.bookspring.dto.ArticleListDto;
 import com.woori.bookspring.dto.CommentDto;
 import com.woori.bookspring.service.ArticleService;
 import com.woori.bookspring.service.CommentService;

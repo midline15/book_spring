@@ -23,9 +23,9 @@ public class CommentService {
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
 
-    public void createComment(Long articleId, CommentDto commentDto, String email) {
+    public void createComment(Long articleId, CommentDto commentDto) {
         Article article = articleRepository.findById(articleId).orElseThrow(EntityNotFoundException::new);
-        User user = userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+        User user = userRepository.findByEmail(commentDto.getEmail()).orElseThrow(EntityNotFoundException::new);
 
         commentRepository.save(commentDto.toEntity(article, user));
     }
