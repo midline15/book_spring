@@ -4,41 +4,197 @@
       layout:decorate="~{layouts/user_layout}">
 
 <div layout:fragment="content">
-  <div class="container mt-3">
-    <form action="/user/signup" method="post">
-      <div class="mb-3">
-        <label>이메일ID:</label>
-        <input type="email" class="form-control" placeholder="Enter email" name="email">
+    <style>
+        span {
+            font-size: 12px;
+        }
+    </style>
+    <header>
+        <h1>회원가입</h1>
+    </header>
+    <hr>
+    <div class="container mt-3">
+        <form method="post" th:object="${dto}">
 
-      </div>
-      <div class="mb-3">
-        <label>비밀번호:</label>
-        <input type="password" class="form-control" placeholder="Enter password" name="password">
-      </div>
+            <table class="table">
+                <tr>
+                    <th>
+                        <label for="email">이메일 ID</label>
+                    </th>
+                    <td>
+                        <input id="email" type="email" name="email" placeholder="아이디를 입력해주세요." required/>
+                        <span class="point successEmailChk"></span>
+                        <span class="point">※ 이메일 형식으로 입력</span>
+                        <input type="hidden" id="emailDoubleChk"/>
+                    </td>
+                </tr>
 
-      <div class="mb-3">
-        <label>이름:</label>
-        <input type="text" class="form-control" placeholder="Enter name" name="name">
-      </div>
+                <tr>
+                    <th>
+                        <label for="nickname">이&emsp;름</label>
+                    </th>
+                    <td>
+                        <input id="nickname" type="text" name="nickname" placeholder="닉네임을 설정해 주세요." maxlength="8"
+                               title="8자 까지 입력" required autofocus/>
+                        <span class="point successNicknameChk"></span>
+                        <input type="hidden" id="nicknameDoubleChk"/>
+                    </td>
+                </tr>
 
-      <div class="mb-3">
-        <label>생년월일:</label>
-        <input type="text" class="form-control" placeholder="Enter birth" name="birth">
-      </div>
+                <tr>
+                    <th>
+                        <label for="password">비밀번호</label>
+                    </th>
+                    <td>
+                        <input id="password" type="password" name="password" required minlength="8" maxlength="16"
+                               autocomplete="off"/>
+                        <span class="point">※ 영문/숫자/특수문자 조합, 8자~16자</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <label for="passwordCheck">비밀번호 확인</label>
+                    </th>
+                    <td>
+                        <input id="passwordCheck" type="password" name="passwordCheck" placeholder="비밀번호를 확인해주세요."
+                               required minlength="8" maxlength="16" autocomplete="off"/>
+                        <span class="point successPwChk"></span>
+                        <input type="hidden" id="pwDoubleChk"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <label for="birth">생년월일</label>
+                    </th>
+                    <td>
+                        <input type="date" id="birth" name="birth">
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <label for="address">주소</label>
+                    </th>
+                    <td>
+                        <input type="text" id="address" name="address">
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <label for="phone">전화번호</label>
+                    </th>
+                    <td>
+                        <input type="text" id="phone" name="phone">
+                    </td>
+                </tr>
+            </table>
 
-      <div class="mb-3">
-        <label>주소:</label>
-        <input type="text" class="form-control" placeholder="Enter address" name="address">
-      </div>
+            <button formaction="/user/signup" disabled id="btn-signup" class="btn btn-secondary">회원가입</button>
+        </form>
+    </div>
+    <script th:inline="javascript">
+        function btnAble() {
+            if ($("#nicknameDoubleChk").val()==="true" && $("#emailDoubleChk").val()==="true" && $("#pwDoubleChk").val()==="true") {
+                $("#btn-signup").attr("disabled", false);
+            }else{
+                $("#btn-signup").attr("disabled", true);
+            }
+        }
 
-      <div class="mb-3">
-        <label>전화번호:</label>
-        <input type="text" class="form-control" placeholder="Enter phone" name="phone">
-      </div>
+        $("#nickname").blur(function () {
+            var nickname = $("#nickname").val();
+            if (nickname === "" || nickname.length < 2) {
+                $(".successNicknameChk").text("닉네임은 2자 이상 8자 이하로 설정해 주세요 :)").css("color", "red");
+                $("#nicknameDoubleChk").val("false");
+            } else {
+                $.ajax({
+                    url: '/user/nicknameCheck',
+                    type: 'post',
+                    data: {nickname: nickname},
+                    cache: false,
+                    success: function (data) {
+                        if (!data) {
+                            $(".successNicknameChk").text("사용 가능한 닉네임 입니다.").css("color", "green");
+                            $("#nicknameDoubleChk").val("true");
+                            btnAble();
+                        } else {
+                            $(".successNicknameChk").text("사용 중인 닉네임 입니다 :p").css("color", "red");
+                            $("#nicknameDoubleChk").val("false");
+                            btnAble();
+                        }
+                    }, error: function () {
+                        console.log("실패");
+                    }
+                });
+            }
+        });
 
-      <button type="submit" class="btn btn-secondary">회원가입</button>
-    </form>
-  </div>
+        $("#email").blur(function () {
+            var email = $("#email").val();
+            let regex = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+            if (!regex.test(email)) {
+                $(".successEmailChk").text("이메일을 입력해 주세요 :)").css("color", "red");
+                $("#emailDoubleChk").val("false");
+            } else {
+                $.ajax({
+                    url: '/user/emailCheck',
+                    type: 'post',
+                    data: {email: email},
+                    cache: false,
+                    success: function (data) {
+                        if (!data) {
+                            $(".successEmailChk").text("사용 가능한 이메일 입니다.").css("color", "green");
+                            $("#emailDoubleChk").val("true");
+                            btnAble();
+                        } else {
+                            $(".successEmailChk").text("사용 중인 이메일 입니다 :p").css("color", "red");
+                            $("#emailDoubleChk").val("false");
+                            btnAble();
+                        }
+                    }, error: function () {
+                        console.log("실패");
+                    }
+                });
+            }
+        });
 
+        $("#passwordCheck").on("propertyChange change keyup paste input", function () {
+            let password = $("#password").val()
+            let reg = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$/
+            if (reg.test(password)){
+                if ($("#passwordCheck").val() === password) {
+                    $(".successPwChk").text("비밀번호가 일치합니다.").css("color", "green");
+                    $("#pwDoubleChk").val("true");
+                    btnAble();
+                } else {
+                    $(".successPwChk").text("비밀번호가 일치하지 않습니다.").css("color", "red");
+                    $("#pwDoubleChk").val("false");
+                    btnAble();
+                }
+            }else{
+                $(".successPwChk").text("비밀번호가 올바르지 않습니다.").css("color", "red");
+                $("#pwDoubleChk").val("false");
+                btnAble();
+            }
+        });
+        $("#password").on("propertyChange change keyup paste input", function () {
+            let password = $("#password").val()
+            let reg = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$/
+            if (reg.test(password)){
+                if ($("#passwordCheck").val() === password) {
+                    $(".successPwChk").text("비밀번호가 일치합니다.").css("color", "green");
+                    $("#pwDoubleChk").val("true");
+                    btnAble();
+                } else {
+                    $(".successPwChk").text("비밀번호가 일치하지 않습니다.").css("color", "red");
+                    $("#pwDoubleChk").val("false");
+                    btnAble();
+                }
+            }else{
+                $(".successPwChk").text("비밀번호가 올바르지 않습니다.").css("color", "red");
+                $("#pwDoubleChk").val("false");
+                btnAble();
+            }
+        });
+    </script>
 </div>
 </html>

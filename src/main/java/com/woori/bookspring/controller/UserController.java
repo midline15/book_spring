@@ -4,12 +4,14 @@ import com.woori.bookspring.dto.SignupForm;
 import com.woori.bookspring.dto.UserUpdateDto;
 import com.woori.bookspring.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -24,14 +26,41 @@ public class UserController {
     private String clientId;
 
     @GetMapping("user/signup")
-    public String signup() {
+    public String signup(@ModelAttribute("dto") SignupForm dto) {
         return "user/signup";
     }
 
     @PostMapping("user/signup")
-    public String signup(SignupForm dto){
+    public String signup(@Valid @ModelAttribute("dto") SignupForm dto, BindingResult bindingResult){
+        if (bindingResult.hasErrors()){
+            return "user/signup";
+        }
         userService.createUser(dto);
         return "redirect:/";
+    }
+
+    @PostMapping("user/nicknameCheck")
+    @ResponseBody
+    public boolean nicknameCheck(@RequestParam String nickname) {
+        return userService.nicknameCheck(nickname);
+    }
+
+    @PostMapping("user/emailCheck")
+    @ResponseBody
+    public boolean emailCheck(@RequestParam String email) {
+        return userService.emailCheck(email);
+    }
+
+    @PostMapping("user/id")
+    public String idCheck(SignupForm dto, Model model){
+        boolean flag = userService.idCheck(dto.getEmail());
+        if (flag) {
+            dto.setIdCheck("N");
+        }else {
+            dto.setIdCheck("Y");
+        }
+        model.addAttribute("dto", dto);
+        return "user/signup";
     }
 
     @GetMapping("user/login")

@@ -137,7 +137,7 @@
 <th:block layout:fragment="content">
     <input type="hidden" name="id" th:value="${user.id}">
     <label>이름 :
-        <input name="name" th:value="${user.name}">
+        <input name="name" th:value="${user.getNickname}">
     </label>
     <br>
     <label>생년월일 :

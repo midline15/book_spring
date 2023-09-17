@@ -62,4 +62,16 @@ public class UserService {
         adminDto.setPassword(passwordEncoder.encode(adminDto.getPassword()));
         userRepository.save(adminDto.toEntity());
     }
+
+    public boolean idCheck(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    public boolean nicknameCheck(String nickname) {
+        return userRepository.existsByNickname(nickname);
+    }
+
+    public boolean emailCheck(String email) {
+        return userRepository.existsByEmail(email);
+    }
 }
