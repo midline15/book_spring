@@ -15,12 +15,15 @@ import com.woori.bookspring.repository.CoverRepository;
 import com.woori.bookspring.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional
 @RequiredArgsConstructor
@@ -62,17 +65,23 @@ public class BookService {
     }
 
     @Transactional(readOnly = true)
-    public List<BookFormDto> getBookList(String type, String keyword) {
-        List<Book> bookList;
+    public Page<BookFormDto> getBookList(Pageable pageable, String type, String keyword) {
+        Page<Book> bookPage;
+
         if ("title".equals(type)) {
-            bookList = bookRepository.findByTitleContaining(keyword);
+            bookPage = bookRepository.findByTitleContaining(keyword, pageable);
         } else if ("publisher".equals(type)) {
-            bookList = bookRepository.findByPublisherContaining(keyword);
+            bookPage = bookRepository.findByPublisherContaining(keyword, pageable);
         } else {
-            bookList = bookRepository.findAll();
+            bookPage = bookRepository.findAll(pageable);
         }
 
-        return bookList.stream().map(Book::of).toList();
+        return bookPage.map(Book::of);
+    }
+
+    public Page<BookFormDto> getAllBooks(Pageable pageable){
+        Page<Book> bookPage = bookRepository.findAll(pageable);
+        return bookPage.map(Book::of);
     }
 
     public void calculateAvgScore(Long bookId) {

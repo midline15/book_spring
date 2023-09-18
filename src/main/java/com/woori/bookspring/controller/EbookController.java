@@ -1,6 +1,7 @@
 package com.woori.bookspring.controller;
 
 import com.woori.bookspring.dto.EbookFormDto;
+import com.woori.bookspring.dto.SearchParam;
 import com.woori.bookspring.entity.ebook.Ebook;
 import com.woori.bookspring.repository.EbookRepository;
 import com.woori.bookspring.service.EbookService;
@@ -24,9 +25,16 @@ public class EbookController {
     private final EbookService ebookService;
 
     @GetMapping("/ebook") // e북 조회
-    public String getEbookList(Model model) {
-        List<EbookFormDto> ebookList = ebookService.getEbookList();
+    public String getEbookList(Model model,@RequestParam(value = "searchType", required = false) String searchType, @RequestParam(value = "searchValue", required = false) String searchValue) {
+
+        SearchParam searchParam = new SearchParam();
+        searchParam.setSearchType(searchType);
+        searchParam.setSearchValue(searchValue);
+
+        List<EbookFormDto> ebookList = ebookService.getEbookList(searchType,searchValue);
+
         model.addAttribute("list", ebookList);
+        model.addAttribute("param", searchParam);
         return "ebook/ebookList";
     }
 

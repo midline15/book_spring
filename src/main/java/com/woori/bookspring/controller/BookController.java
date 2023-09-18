@@ -1,15 +1,19 @@
 package com.woori.bookspring.controller;
 
 import com.woori.bookspring.dto.*;
-import com.woori.bookspring.repository.BookRepository;
 import com.woori.bookspring.service.BookCommentService;
 import com.woori.bookspring.service.BookService;
+import com.woori.bookspring.service.PaginationService;
+import com.woori.bookspring.service.Paginator;
 import jakarta.validation.Valid;
-import jakarta.persistence.EntityNotFoundException;
+
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
-import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Controller
@@ -25,22 +29,52 @@ public class BookController {
 
     private final BookService bookService;
     private final BookCommentService bookCommentService;
+    private final PaginationService paginationService;
 
     @GetMapping("book") // 리스트조회
-    public String bookList(Model model, @RequestParam(value = "searchType", required = false) String searchType,
-                           @RequestParam(value = "searchValue", required = false) String searchValue){
+    public String bookList(Model model,
+                           @RequestParam(value = "searchType", required = false) String searchType,
+                           @RequestParam(value = "searchValue", required = false) String searchValue,
+                           @PageableDefault(page = 0, size = 4, direction = Sort.Direction.DESC) Pageable pageable) {
 
+        // 검색설정
         SearchParam searchParam = new SearchParam();
         searchParam.setSearchType(searchType);
         searchParam.setSearchValue(searchValue);
-
-        // 도서목록조회
-        List<BookFormDto> bookList = bookService.getBookList(searchType,searchValue);
-
-
-        model.addAttribute("list",bookList);
-
         model.addAttribute("param", searchParam);
+
+        // 페이징 처리
+        Page<BookFormDto> paging = (Page<BookFormDto>) bookService.getBookList(pageable,searchType,searchValue);
+
+        /*if (searchType != null && searchValue != null) {
+            // 검색을 수행한 경우 페이징 처리
+            paging = bookService.getBookList(pageable, searchType, searchValue);
+        } else {
+            paging = bookService.getBookList(pageable, null, null);
+        }*/
+
+        //페이지블럭 처리
+        //1을 더해주는 이유는 pageable은 0부터라 1을 처리하려면 1을 더해서 시작해주어야 한다.
+        Integer nowPage = paging.getPageable().getPageNumber() + 1;
+        Long totalPage = paging.getTotalElements();
+
+        Paginator paginator = new Paginator(5, 4, totalPage);
+
+        for (int i = 1; i <= paginator.getTotalLastPageNum(); i++) {
+            System.out.println(paginator.getElasticBlock(i));
+        }
+
+        Map<String, Object> sPage = paginator.getElasticBlock(nowPage);
+        int startPage = (int) sPage.get("blockFirstPageNum");
+        int endPage = (int) sPage.get("blockLastPageNum");
+
+        model.addAttribute("paging", paging);
+        model.addAttribute("nowPage", nowPage);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
+        model.addAttribute("list", paging);
+
         return "book/bookList";
     }
 
@@ -69,7 +103,7 @@ public class BookController {
             bookService.createBook(bookFormDto, imgFile);
         } catch (Exception e){
             model.addAttribute("errorMessage", "상품 등록 중 에러가 발생하였습니다.");
-            return "bookForm";
+            return "/book/bookForm";
         }
         return "redirect:/book";
     }
@@ -79,6 +113,7 @@ public class BookController {
         bookService.deleteBook(id);
         return new ResponseEntity<Long>(id, HttpStatus.OK);
     }
+
 
     @PostMapping("book/{book-id}/book-comment")
     public String createBookComment(BookCommentDto bookCommentDto, Principal principal){
@@ -117,4 +152,6 @@ public class BookController {
 
         return new ResponseEntity<>("성공", HttpStatus.OK);
     }
+
+
 }

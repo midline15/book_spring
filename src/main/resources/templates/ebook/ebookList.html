@@ -109,6 +109,48 @@
 
 <div layout:fragment="content">
 
+
+    <!-- 검색창 추가 -->
+    <div class="row">
+        <div class="card card-margin search-form">
+            <div class="card-body p-0">
+                <form id="search-form" th:action="@{/ebook}">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row no-gutters">
+                                <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                    <label for="searchType" hidden>책 검색</label>
+                                    <select class="form-control" id="searchType" name="searchType">
+                                        <option name="searchType" value="title">제목</option>
+                                        <option name="searchType" value="intro">소개</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-8 col-md-6 col-sm-12 p-0">
+                                    <label for="searchValue" hidden>eBook 검색</label>
+                                    <input type="text" placeholder="검색어..." class="form-control" id="searchValue"
+                                           name="searchValue">
+                                </div>
+                                <div class="col-lg-1 col-md-3 col-sm-12 p-0">
+                                    <button type="submit" class="btn btn-base">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                             stroke-linecap="round" stroke-linejoin="round"
+                                             class="feather feather-search">
+                                            <circle cx="11" cy="11" r="8"></circle>
+                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
     <div class="row">
         <th:block th:each="ebook : ${list}">
             <div class="col-md-4 margin">

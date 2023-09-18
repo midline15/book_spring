@@ -91,8 +91,7 @@
                                 </div>
                                 <div class="col-lg-8 col-md-6 col-sm-12 p-0">
                                     <label for="searchValue" hidden>책 검색</label>
-                                    <input type="text" placeholder="검색어..." class="form-control" id="searchValue"
-                                           name="searchValue">
+                                    <input type="text" placeholder="검색어..." class="form-control" id="searchValue" name="searchValue" th:value="${param.searchValue}">
                                 </div>
                                 <div class="col-lg-1 col-md-3 col-sm-12 p-0">
                                     <button type="submit" class="btn btn-base">
@@ -112,8 +111,51 @@
             </div>
         </div>
     </div>
+    <!-- 검색창 추가 끝 -->
 
+    <!-- 페이징 처리 부분 (검색 파라미터가 있는 경우에만 표시) -->
+    <nav id="pagination" aria-label="Page navigation" th:if="${param.searchValue != null and !param.searchValue.isEmpty() and !paging.empty}">
+        <ul class="pagination justify-content-center">
+            <li class="page-book" th:classappend="${!paging.hasPrevious} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/book(page=0, searchType=${param.searchType}, searchValue=${param.searchValue})}">
+                    <span>처음</span>
+                </a>
+            </li>
 
+            <li class="page-book" th:classappend="${!paging.hasPrevious} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/book(page=${paging.number - 1}, searchType=${param.searchType}, searchValue=${param.searchValue})}">
+                    <span>이전</span>
+                </a>
+            </li>
+
+            <th:block th:each="page:${#numbers.sequence(0, paging.totalPages - 1)}">
+                <li class="page-book">
+                    <a class="page-link"
+                       th:href="@{/book(page=${page}, searchType=${param.searchType}, searchValue=${param.searchValue})}"
+                       th:text="${page + 1}"></a>
+                </li>
+            </th:block>
+
+            <li class="page-book" th:classappend="${!paging.hasNext} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/book(page=${paging.number + 1}, searchType=${param.searchType}, searchValue=${param.searchValue})}">
+                    <span>다음</span>
+                </a>
+            </li>
+
+            <li class="page-book" th:classappend="${!paging.hasNext} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/book(page=${paging.totalPages - 1}, searchType=${param.searchType}, searchValue=${param.searchValue})}">
+                    <span>마지막</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <!-- 페이징 처리 끝 -->
+
+    <!-- 책 목록 -->
     <div class="row">
         <th:block th:each="book : ${list}">
             <div class="col-md-4 margin">
@@ -134,37 +176,16 @@
                             <a th:href="@{/admin/book/{book-id}(book-id = ${book.id})}" class="btn btn-primary">
                                 수정
                             </a>
-
-
                         </div>
                     </a>
                 </div>
             </div>
         </th:block>
     </div>
+    <!-- 책 목록 끝 -->
 
 
-    <div>
-        <ul class="pagination justify-content-center">
-
-            <li class="page-item">
-                <a aria-label='Previous' class="page-link">
-                    <span aria-hidden='true'>Previous</span>
-                </a>
-            </li>
-
-            <li class="page-item">
-                <a th:inline="text" class="page-link"></a>
-            </li>
-
-            <li class="page-item">
-                <a aria-label='Next' class="page-link">
-                    <span aria-hidden='true'>Next</span>
-                </a>
-            </li>
-
-        </ul>
-    </div>
     <a href="/admin/book/new" class="btn btn-outline-secondary"> 책 등록하기 </a>
 </div>
+
 </html>
