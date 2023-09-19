@@ -1,7 +1,9 @@
 package com.woori.bookspring.service;
 
+import com.woori.bookspring.dto.BookFormDto;
 import com.woori.bookspring.dto.EbookFormDto;
 import com.woori.bookspring.dto.EpisodeUserDto;
+import com.woori.bookspring.entity.Book;
 import com.woori.bookspring.entity.Cover;
 import com.woori.bookspring.entity.EpisodeUser;
 import com.woori.bookspring.entity.ebook.Ebook;
@@ -66,7 +68,19 @@ public class EbookService {
     }
 
     @Transactional(readOnly = true)
-    public List<EbookFormDto> getEbookList() { //e북 리스트,목록
-        return ebookRepository.findAll().stream().map(Ebook::of).toList();
+    public List<EbookFormDto> getEbookList(String type, String keyword) {
+        List<Ebook> ebookList;
+        if ("title".equals(type)) {
+            ebookList = ebookRepository.findByTitleContaining(keyword);
+        } else if ("intro".equals(type)) {
+            ebookList = ebookRepository.findByIntroContaining(keyword);
+        } else {
+            ebookList = ebookRepository.findAll();
+        }
+
+        return ebookList.stream().map(Ebook::of).toList();
     }
+
+
+
 }
