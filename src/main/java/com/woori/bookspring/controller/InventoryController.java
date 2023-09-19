@@ -1,7 +1,6 @@
 package com.woori.bookspring.controller;
 
 import com.woori.bookspring.dto.EbookFormDto;
-import com.woori.bookspring.dto.InventoryEbookDto;
 import com.woori.bookspring.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,7 +23,7 @@ public class InventoryController {
     public String showInventory(Model model, Principal principal){
         List<EbookFormDto> inventoryEbookDtoList = inventoryService.getInventoryEbookList(principal.getName());
         model.addAttribute("list", inventoryEbookDtoList);
-        return "ebook/inven";
+        return "user/inven";
     }
 
     @PostMapping("ebook/{ebook-id}")

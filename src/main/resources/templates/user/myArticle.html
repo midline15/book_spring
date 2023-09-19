@@ -5,130 +5,40 @@
       layout:decorate="~{layouts/mypage_layout}">
 <th:block layout:fragment="script">
     <script th:inline="javascript">
-        function getOrderTotalPrice() {
-            var orderTotalPrice = 0;
-            $("input[name=cartChkBox]:checked").each(function () {
-                var cartItemId = $(this).val();
-                var price = $("#price_" + cartItemId).attr("data-price");
-                var count = $("#count_" + cartItemId).val();
-                orderTotalPrice += price * count;
-            });
-
-            $("#orderTotalPrice").html(orderTotalPrice + '원');
-        }
-
-        function changeCount(obj) {
-            var count = obj.value;
-            var cartItemId = obj.id.split('_')[1];
-            var price = $("#price_" + cartItemId).data("price");
-            var totalPrice = count * price;
-            $("#totalPrice_" + cartItemId).html(totalPrice + "원");
-            getOrderTotalPrice();
-            updateCartItemCount(cartItemId, count);
-        }
-
         function checkAll() {
             if ($("#checkall").prop("checked")) {
-                $("input[name=cartChkBox]").prop("checked", true);
+                $("input[name=articleChkBox]").prop("checked", true);
             } else {
-                $("input[name=cartChkBox]").prop("checked", false);
+                $("input[name=articleChkBox]").prop("checked", false);
             }
-            getOrderTotalPrice();
         }
-
-        function updateUser(obj) {
-            var param = {
-                id: obj.dataset.id,
-                name: $("[name=name]").val(),
-                birth: $("[name=birth]").val(),
-                phone: $("[name=phone]").val(),
-                address: $("[name=address]").val(),
+        function deleteAllArticles() {
+            if (confirm("정말 삭제하시겠습니까?")){
+                $("input[name=articleChkBox]:checked").each(function () {
+                    var articleId = $(this).val();
+                    deleteArticleById(articleId);
+                });
             }
+        }
+        function deleteArticleById(articleId) {
+            let articleType = [[${list.articleType}]];
 
             $.ajax({
-                url: /user/ + param.id,
-                type: "PATCH",
-                contentType: "application/json",
-                data: JSON.stringify(param),
+                url: `/article/${articleType}/${articleId}`,
+                type: "DELETE",
                 cache: false,
                 success: function (result, status) {
-                    alert(result);
-                    location.href = "/"
+                    console.log(result)
+                    location.reload(); // 페이지 리로드 예시
                 },
                 error: function (jqXHR, status, error) {
-
+                    console.log(error)
                     if (jqXHR.status == '401') {
                         alert('로그인 후 이용해주세요');
                         location.href = '/user/login';
                     } else {
                         alert(jqXHR.responseJSON.message);
                     }
-
-                }
-            });
-        }
-
-        function deleteUser(obj) {
-            if (confirm("탈퇴하시겠습니까?")) {
-                $.ajax({
-                    url: /user/ + obj.dataset.id,
-                    type: "DELETE",
-                    cache: false,
-                    success: function (result, status) {
-                        alert(result);
-                        location.href = "/logout"
-                    },
-                    error: function (jqXHR, status, error) {
-
-                        if (jqXHR.status == '401') {
-                            alert('로그인 후 이용해주세요');
-                            location.href = '/user/login';
-                        } else {
-                            alert(jqXHR.responseJSON.message);
-                        }
-
-                    }
-                });
-            }
-        }
-
-        function orders() {
-
-            var dataList = [];
-
-            $("input[name=cartChkBox]:checked").each(function () {
-                let cartItemId = $(this).val();
-                dataList.push({
-                    id: cartItemId,
-                    bookId: $("#bookId_" + cartItemId).val(),
-                    price: $("#price_" + cartItemId).attr("data-price"),
-                    count: $("#count_" + cartItemId).val()
-                });
-            });
-
-            var param = JSON.stringify({
-                cartBookDtoList: dataList
-            });
-
-            $.ajax({
-                url: "/cart/order",
-                type: "POST",
-                contentType: "application/json",
-                data: param,
-                cache: false,
-                success: function (result, status) {
-                    alert("주문이 완료 되었습니다.");
-                    location.href = '/order';
-                },
-                error: function (jqXHR, status, error) {
-
-                    if (jqXHR.status == '401') {
-                        alert('로그인 후 이용해주세요');
-                        location.href = '/members/login';
-                    } else {
-                        alert(jqXHR.responseJSON.message);
-                    }
-
                 }
             });
         }
@@ -179,15 +89,17 @@
         <table class="table" id="article-table">
             <thead>
             <tr>
+                <th><input type="checkbox" id="checkall" onclick="checkAll()"> 전체선택</th>
                 <th class="title col-6"><a>제목</a></th>
                 <th class="user-id"><a>작성자</a></th>
                 <th class="created-at"><a>작성일</a></th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="article : ${list}">
+            <tr th:each="article : ${list.articleDtoList}">
+                <td class="text-center align-middle"><input type="checkbox" name="articleChkBox" th:value="${article.id}"></td>
                 <td class="title"><a th:text="${article.title}"
-                                     th:href="@{/article/01/{article-id} (article-id = ${article.id})}"></a></td>
+                                     th:href="@{/article/{articleType}/{article-id} (article-type = ${list.articleType}, article-id = ${article.id})}"></a></td>
                 <td class="user-id" th:text="${article.createdBy}"></td>
                 <td class="created-at">
                     <time th:text="${article.regTime}"></time>
@@ -195,6 +107,7 @@
             </tr>
             </tbody>
         </table>
+        <button type="button" class="btn btn-danger btn-lg" onclick="deleteAllArticles()">선택삭제</button>
     </div>
 
 </th:block>

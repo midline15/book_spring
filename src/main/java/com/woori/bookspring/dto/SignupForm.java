@@ -41,16 +41,4 @@ public class SignupForm {
 
     @Pattern(regexp = "Y", message = "중복 검사를 해주세요.")
     private String idCheck;
-
-    public User toEntity(){
-        return User.builder()
-                .email(email)
-                .password(password)
-                .nickname(nickname)
-                .address(address)
-                .birth(birth)
-                .phone(phone)
-                .build();
-    }
-
 }

@@ -22,7 +22,7 @@
                         <label for="email">이메일 ID</label>
                     </th>
                     <td>
-                        <input id="email" type="email" name="email" placeholder="아이디를 입력해주세요." required/>
+                        <input id="email" type="email" th:field="*{email}" placeholder="아이디를 입력해주세요." required/>
                         <span class="point successEmailChk"></span>
                         <span class="point">※ 이메일 형식으로 입력</span>
                         <input type="hidden" id="emailDoubleChk"/>
@@ -31,11 +31,11 @@
 
                 <tr>
                     <th>
-                        <label for="nickname">이&emsp;름</label>
+                        <label for="nickname">닉네임</label>
                     </th>
                     <td>
-                        <input id="nickname" type="text" name="nickname" placeholder="닉네임을 설정해 주세요." maxlength="8"
-                               title="8자 까지 입력" required autofocus/>
+                        <input id="nickname" type="text" th:field="*{nickname}" placeholder="닉네임을 설정해 주세요." maxlength="8"
+                               title="8자 까지 입력" required/>
                         <span class="point successNicknameChk"></span>
                         <input type="hidden" id="nicknameDoubleChk"/>
                     </td>
@@ -46,7 +46,7 @@
                         <label for="password">비밀번호</label>
                     </th>
                     <td>
-                        <input id="password" type="password" name="password" required minlength="8" maxlength="16"
+                        <input id="password" type="password" th:field="*{password}" required minlength="8" maxlength="16"
                                autocomplete="off"/>
                         <span class="point">※ 영문/숫자/특수문자 조합, 8자~16자</span>
                     </td>
@@ -56,7 +56,7 @@
                         <label for="passwordCheck">비밀번호 확인</label>
                     </th>
                     <td>
-                        <input id="passwordCheck" type="password" name="passwordCheck" placeholder="비밀번호를 확인해주세요."
+                        <input id="passwordCheck" type="password" th:field="*{passwordCheck}" placeholder="비밀번호를 확인해주세요."
                                required minlength="8" maxlength="16" autocomplete="off"/>
                         <span class="point successPwChk"></span>
                         <input type="hidden" id="pwDoubleChk"/>
@@ -67,7 +67,7 @@
                         <label for="birth">생년월일</label>
                     </th>
                     <td>
-                        <input type="date" id="birth" name="birth">
+                        <input type="date" id="birth" th:field="*{birth}">
                     </td>
                 </tr>
                 <tr>
@@ -75,7 +75,7 @@
                         <label for="address">주소</label>
                     </th>
                     <td>
-                        <input type="text" id="address" name="address">
+                        <input type="text" id="address" th:field="*{address}">
                     </td>
                 </tr>
                 <tr>
@@ -83,15 +83,38 @@
                         <label for="phone">전화번호</label>
                     </th>
                     <td>
-                        <input type="text" id="phone" name="phone">
+                        <input type="text" id="phone" th:field="*{phone}">
                     </td>
                 </tr>
             </table>
 
-            <button formaction="/user/signup" disabled id="btn-signup" class="btn btn-secondary">회원가입</button>
+            <button type="button" onclick="signup()" disabled id="btn-signup" class="btn btn-secondary">회원가입</button>
         </form>
     </div>
     <script th:inline="javascript">
+        function signup(){
+            $.ajax({
+                url: '/user/signup',
+                type: 'post',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    email: $("#email").val(),
+                    password: $("#password").val(),
+                    passwordCheck: $("#passwordCheck").val(),
+                    nickname: $("#nickname").val(),
+                    birth: $("#birth").val(),
+                    address: $("#address").val(),
+                    phone: $("#phone").val(),
+                }),
+                success: function (data){
+                    alert(data);
+                    location.href = "/";
+                },
+                error: function (data){
+                    alert(data.responseText);
+                }
+            })
+        }
         function btnAble() {
             if ($("#nicknameDoubleChk").val()==="true" && $("#emailDoubleChk").val()==="true" && $("#pwDoubleChk").val()==="true") {
                 $("#btn-signup").attr("disabled", false);

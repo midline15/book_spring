@@ -81,9 +81,9 @@ public class ArticleController {
     }
 
     @DeleteMapping("article/{article-type}/{article-id}") //삭제
-    public @ResponseBody String deleteArticle(@PathVariable("article-id") Long articleId) {
+    public @ResponseBody ResponseEntity<?> deleteArticle(@PathVariable("article-id") Long articleId) {
         articleService.deleteArticle(articleId);
-        return "redirect:/article/{article-type}";
+        return new ResponseEntity<>("삭제완료", HttpStatus.OK);
     }
 
     @PostMapping("article/{article-type}/{article-id}/comment") //댓글 달기

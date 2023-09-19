@@ -23,7 +23,7 @@ public class CartController {
     public String showCart(Model model, Principal principal){
         List<CartBookDto> cartBookDtoList = cartService.getCartBookList(principal.getName());
         model.addAttribute("list", cartBookDtoList);
-        return "book/cart";
+        return "user/cart";
     }
 
     @PostMapping("{book-id}")

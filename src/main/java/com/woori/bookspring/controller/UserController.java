@@ -2,6 +2,7 @@ package com.woori.bookspring.controller;
 
 import com.woori.bookspring.dto.SignupForm;
 import com.woori.bookspring.dto.UserUpdateDto;
+import com.woori.bookspring.service.BillingService;
 import com.woori.bookspring.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -14,11 +15,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RequiredArgsConstructor
 @Controller
 public class UserController {
 
     private final UserService userService;
+    private final BillingService billingService;
 
     @Value("${logout_redirect_uri}")
     private String logoutUri;
@@ -31,12 +35,12 @@ public class UserController {
     }
 
     @PostMapping("user/signup")
-    public String signup(@Valid @ModelAttribute("dto") SignupForm dto, BindingResult bindingResult){
+    public ResponseEntity<?> signup(@Valid @RequestBody SignupForm dto, BindingResult bindingResult){
         if (bindingResult.hasErrors()){
-            return "user/signup";
+            return new ResponseEntity<>(bindingResult.getAllErrors().get(0).getDefaultMessage(), HttpStatus.BAD_REQUEST);
         }
         userService.createUser(dto);
-        return "redirect:/";
+        return new ResponseEntity<>("회원가입 완료", HttpStatus.OK);
     }
 
     @PostMapping("user/nicknameCheck")
@@ -49,18 +53,6 @@ public class UserController {
     @ResponseBody
     public boolean emailCheck(@RequestParam String email) {
         return userService.emailCheck(email);
-    }
-
-    @PostMapping("user/id")
-    public String idCheck(SignupForm dto, Model model){
-        boolean flag = userService.idCheck(dto.getEmail());
-        if (flag) {
-            dto.setIdCheck("N");
-        }else {
-            dto.setIdCheck("Y");
-        }
-        model.addAttribute("dto", dto);
-        return "user/signup";
     }
 
     @GetMapping("user/login")
@@ -76,21 +68,22 @@ public class UserController {
     }
 
     @GetMapping("user/{user-id}")
-    public String getUser(@PathVariable("user-id") Long userId, Model model){
-        UserUpdateDto userUpdateDto = userService.getUser(userId);
+    public String getUser(@PathVariable("user-id") Long userId, Model model, Principal principal){
+
+        UserUpdateDto userUpdateDto = userService.getUser(userId, principal.getName());
         model.addAttribute("user",userUpdateDto);
-        return "user/user";
+        return "user/userInfo";
     }
 
     @PatchMapping("user/{user-id}")
-    public ResponseEntity<?> updateUser(@RequestBody UserUpdateDto userUpdateDto){
-        userService.updateUser(userUpdateDto);
+    public ResponseEntity<?> updateUser(@RequestBody UserUpdateDto userUpdateDto, Principal principal){
+        userService.updateUser(userUpdateDto, principal.getName());
         return new ResponseEntity<>("수정 완료", HttpStatus.OK);
     }
 
     @DeleteMapping("user/{user-id}")
-    public ResponseEntity<?> disableUser(@PathVariable("user-id") Long userId){
-        userService.disableUser(userId);
+    public ResponseEntity<?> disableUser(@PathVariable("user-id") Long userId, Principal principal){
+        userService.disableUser(userId, principal.getName());
         return new ResponseEntity<>("회원탈퇴 완료", HttpStatus.OK);
     }
 

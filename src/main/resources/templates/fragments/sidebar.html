@@ -1,68 +1,28 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
-<th:block th:fragment="sidebar">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 
-    <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px; height: 100%;">
-        <div class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-            <svg class="bi pe-none me-2" width="40" height="32">
-                <use xlink:href="#bootstrap"></use>
-            </svg>
-            <span class="fs-4">마이페이지</span>
-        </div>
-        <hr>
-        <ul class="nav nav-pills flex-column mb-auto">
-            <li class="nav-item">
-                <a th:href="@{/user/{user-id}(user-id = ${#authentication.principal.user.id})}" class="nav-link active" aria-current="page">
-                    <svg class="bi pe-none me-2" width="16" height="16">
-                        <use xlink:href="#home"></use>
-                    </svg>
-                    회원정보
-                </a>
-            </li>
-            <li>
-                <a href="/cart" class="nav-link text-white">
-                    <svg class="bi pe-none me-2" width="16" height="16">
-                        <use xlink:href="#speedometer2"></use>
-                    </svg>
-                    장바구니
-                </a>
-            </li>
-            <li>
-                <a href="/order" class="nav-link text-white">
-                    <svg class="bi pe-none me-2" width="16" height="16">
-                        <use xlink:href="#table"></use>
-                    </svg>
-                    주문내역
-                </a>
-            </li>
-            <li>
-                <a href="/inven" class="nav-link text-white">
-                    <svg class="bi pe-none me-2" width="16" height="16">
-                        <use xlink:href="#grid"></use>
-                    </svg>
-                    보관함
-                </a>
-            </li>
-            <li>
-                <button th:href="@{/user/{user-id}/article (user-id = ${#authentication.principal.user.id})}" class="btn btn-toggle d-inline-flex align-items-center rounded border-0" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
-                    내 글 관리
-                </button>
-                <div class="collapse show" id="home-collapse" style="">
-                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                        <li><a th:href="@{/user/{user-id}/article?articleType=ARTICLE (user-id = ${#authentication.principal.user.id})}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">게시글</a></li>
-                        <li><a th:href="@{/user/{user-id}/article?articleType=REVIEW (user-id = ${#authentication.principal.user.id})}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">리뷰</a></li>
-                        <li><a th:href="@{/user/{user-id}/article?articleType=QUESTION (user-id = ${#authentication.principal.user.id})}" class="link-body-emphasis d-inline-flex text-decoration-none rounded">질문</a></li>
-                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">댓글</a></li>
-                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">book댓글</a></li>
-                        <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">episode댓글</a></li>
-                    </ul>
-                </div>
-            </li>
-        </ul>
-        <hr>
+<!-- Sidebar-->
+<div class="border-end bg-white" id="sidebar-wrapper" th:fragment="sidebar">
+    <div class="sidebar-heading border-bottom bg-light">마이페이지</div>
+    <div class="list-group list-group-flush">
+        <a class="list-group-item list-group-item-action list-group-item-light p-3"
+           th:href="@{/user/{user-id}(user-id = ${#authentication.principal.user.id})}">회원정보</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/cart">장바구니</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/order">주문내역</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/inven">보관함</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/like">좋아요</a>
+        <a class="nav-item dropdown" th:href="@{/user/{user-id}/article/01 (user-id = ${#authentication.principal.user.id})}">
+            <a class="list-group-item list-group-item-action list-group-item-light p-3 dropdown-toggle"
+               data-bs-toggle="dropdown" aria-expanded="false">내 글 관리</a>
+            <ul class="dropdown-menu dropdown-menu-dark">
+                <li><a class="dropdown-item" th:href="@{/user/{user-id}/article/01 (user-id = ${#authentication.principal.user.id})}">자유게시판</a></li>
+                <li><a class="dropdown-item" th:href="@{/user/{user-id}/article/01 (user-id = ${#authentication.principal.user.id})}">리뷰게시판</a></li>
+                <li><a class="dropdown-item" th:href="@{/user/{user-id}/article/01 (user-id = ${#authentication.principal.user.id})}">Q&A</a></li>
+                <li><a class="dropdown-item" th:href="@{/user/{user-id}/article/01 (user-id = ${#authentication.principal.user.id})}">댓글</a></li>
+                <li><a class="dropdown-item" th:href="@{/user/{user-id}/article/01 (user-id = ${#authentication.principal.user.id})}">Book댓글</a></li>
+                <li><a class="dropdown-item" th:href="@{/user/{user-id}/article/01 (user-id = ${#authentication.principal.user.id})}">Ebook댓글</a></li>
+            </ul>
+        </a>
     </div>
-    </div>
-</th:block>
-
+</div>
 </html>

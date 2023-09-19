@@ -54,10 +54,5 @@ public class ArticleService {
     public void deleteArticle(Long id) {
         articleRepository.deleteById(id);
     }
-
-    public void createHelpArticle(HelpFormDto dto, String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
-        dto.toEntity(user);
-    }
 }
 
