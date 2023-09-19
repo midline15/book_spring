@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/mypage_layout}">
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        function updateUser(obj) {
+            var param = {
+                id: obj.dataset.id,
+                name: $("[name=name]").val(),
+                birth: $("[name=birth]").val(),
+                phone: $("[name=phone]").val(),
+                address: $("[name=address]").val(),
+            }
+
+            $.ajax({
+                url: /user/ + param.id,
+                type: "PATCH",
+                contentType: "application/json",
+                data: JSON.stringify(param),
+                cache: false,
+                success: function (result, status) {
+                    alert(result);
+                    location.href = "/"
+                },
+                error: function (jqXHR, status, error) {
+
+                    if (jqXHR.status == '401') {
+                        alert('로그인 후 이용해주세요');
+                        location.href = '/user/login';
+                    } else {
+                        alert(jqXHR.responseJSON.message);
+                    }
+
+                }
+            });
+        }
+
+        function deleteUser(obj) {
+            if (confirm("탈퇴하시겠습니까?")) {
+                $.ajax({
+                    url: /user/ + obj.dataset.id,
+                    type: "DELETE",
+                    cache: false,
+                    success: function (result, status) {
+                        alert(result);
+                        location.href = "/logout"
+                    },
+                    error: function (jqXHR, status, error) {
+
+                        if (jqXHR.status == '401') {
+                            alert('로그인 후 이용해주세요');
+                            location.href = '/user/login';
+                        } else {
+                            alert(jqXHR.responseJSON.message);
+                        }
+
+                    }
+                });
+            }
+        }
+    </script>
+</th:block>
+<th:block layout:fragment="content">
+    <table class="table" th:object="${user}">
+        <input type="hidden" name="id" th:value="*{id}">
+        <tr>
+            <th>
+                <label for="nickname">닉네임</label>
+            </th>
+            <td>
+                <input id="nickname" type="text" th:field="*{nickname}" placeholder="닉네임을 설정해 주세요." maxlength="8"
+                       title="8자 까지 입력" required/>
+                <span class="point successNicknameChk"></span>
+                <input type="hidden" id="nicknameDoubleChk"/>
+            </td>
+        </tr>
+
+        <tr>
+            <th>
+                <label for="birth">생년월일</label>
+            </th>
+            <td>
+                <input type="date" id="birth" th:field="*{birth}">
+            </td>
+        </tr>
+        <tr>
+            <th>
+                <label for="address">주소</label>
+            </th>
+            <td>
+                <input type="text" id="address" th:field="*{address}">
+            </td>
+        </tr>
+        <tr>
+            <th>
+                <label for="phone">전화번호</label>
+            </th>
+            <td>
+                <input type="text" id="phone" th:field="*{phone}">
+            </td>
+        </tr>
+    </table>
+    <br>
+    <button type="button" class="btn btn-primary" th:data-id="${user.id}" onclick="updateUser(this)">수 정</button>
+    <button type="button" class="btn btn-secondary" th:data-id="${user.id}" onclick="deleteUser(this)">탈 퇴</button>
+</th:block>

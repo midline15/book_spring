@@ -1,8 +1,6 @@
 package com.woori.bookspring.controller;
 
-import com.woori.bookspring.dto.EbookDto;
 import com.woori.bookspring.dto.EbookFormDto;
-import com.woori.bookspring.entity.ebook.Like;
 import com.woori.bookspring.service.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,7 +23,7 @@ public class LikeController {
     public String showLike(Model model, Principal principal){
         List<EbookFormDto> ebookList = likeService.getLikeEbookList(principal.getName());
         model.addAttribute("list", ebookList);
-        return "ebook/like";
+        return "user/like";
     }
 
     @PostMapping("ebook/{ebook-id}")

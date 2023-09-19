@@ -3,7 +3,13 @@ package com.woori.bookspring.service;
 import com.woori.bookspring.constant.Role;
 import com.woori.bookspring.constant.UserStatus;
 import com.woori.bookspring.dto.*;
+import com.woori.bookspring.entity.Billing;
+import com.woori.bookspring.entity.Cart;
 import com.woori.bookspring.entity.User;
+import com.woori.bookspring.entity.ebook.Inventory;
+import com.woori.bookspring.entity.ebook.Like;
+import com.woori.bookspring.exception.UserMissMatchException;
+import com.woori.bookspring.repository.BillingRepository;
 import com.woori.bookspring.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -19,27 +25,33 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BillingRepository billingRepository;
     private final PasswordEncoder passwordEncoder;
 
     public void createUser(SignupForm dto) {
         dto.setPassword(passwordEncoder.encode(dto.getPassword()));
-        User user = dto.toEntity();
-        userRepository.save(user);
+        User user = userRepository.save(User.createUser(dto));
+        Billing billing  = Billing.builder().amount(100).history("가입 축하 선물").user(user).build();
+        billingRepository.save(billing);
     }
 
     @Transactional(readOnly = true)
-    public UserUpdateDto getUser(Long userId) {
-        return userRepository.findById(userId).orElseThrow(EntityNotFoundException::new).of();
+    public UserUpdateDto getUser(Long userId, String email) {
+        User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
+        validateUser(user.getEmail(), email);
+        return user.of();
     }
 
 
-    public void disableUser(Long userId) {
+    public void disableUser(Long userId, String email) {
         User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
+        validateUser(user.getEmail(), email);
         user.changeUserStatus(UserStatus.DISABLE);
     }
 
-    public void updateUser(UserUpdateDto userUpdateDto) {
+    public void updateUser(UserUpdateDto userUpdateDto, String email) {
         User findUser = userRepository.findById(userUpdateDto.getId()).orElseThrow(EntityNotFoundException::new);
+        validateUser(findUser.getEmail(), email);
         findUser.updateUser(userUpdateDto);
     }
 
@@ -63,15 +75,15 @@ public class UserService {
         userRepository.save(adminDto.toEntity());
     }
 
-    public boolean idCheck(String email) {
-        return userRepository.existsByEmail(email);
-    }
-
     public boolean nicknameCheck(String nickname) {
         return userRepository.existsByNickname(nickname);
     }
 
     public boolean emailCheck(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    private void validateUser(String findEmail, String email){
+        if (!findEmail.equals(email)) throw new UserMissMatchException();
     }
 }
