@@ -24,7 +24,7 @@ public class OrderController {
     public String showOrderList(Model model, Principal principal){
         List<OrderDto> orderDtoList = orderService.getOrderList(principal.getName());
         model.addAttribute("list", orderDtoList);
-        return "book/order";
+        return "user/order";
     }
 
     @PostMapping("{book-id}")

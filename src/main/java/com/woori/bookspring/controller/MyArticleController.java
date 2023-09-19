@@ -1,10 +1,7 @@
 package com.woori.bookspring.controller;
 
 import com.woori.bookspring.constant.ArticleType;
-import com.woori.bookspring.dto.ArticleDto;
-import com.woori.bookspring.dto.BookCommentDto;
-import com.woori.bookspring.dto.CommentDto;
-import com.woori.bookspring.dto.EpisodeCommentDto;
+import com.woori.bookspring.dto.*;
 import com.woori.bookspring.service.ArticleService;
 import com.woori.bookspring.service.BookCommentService;
 import com.woori.bookspring.service.CommentService;
@@ -28,13 +25,11 @@ public class MyArticleController {
     private final EpisodeCommentService episodeCommentService;
 
 
-    @GetMapping("user/{user-id}/article")
-    public String manageMyArticle(@PathVariable("user-id") Long userId, @RequestParam(required = false) String articleType, Model model){
-        if(articleType == null){
-            articleType = "ARTICLE";
-        }
-        List<ArticleDto> articleList = articleService.getUserArticleList(userId, ArticleType.valueOf(articleType));
-        model.addAttribute("list", articleList);
+    @GetMapping("user/{user-id}/article/{article-type}")
+    public String manageMyArticle(@PathVariable("user-id") Long userId, @PathVariable("article-type") String articleType, Model model){
+        List<ArticleDto> articleList = articleService.getUserArticleList(userId, ArticleType.getArticleType(articleType));
+        ArticleListDto articleListDto = new ArticleListDto(articleType, articleList);
+        model.addAttribute("list", articleListDto);
         return "user/myArticle";
     }
 

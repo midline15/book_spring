@@ -3,6 +3,7 @@ package com.woori.bookspring.entity;
 import com.woori.bookspring.constant.OAuthType;
 import com.woori.bookspring.constant.Role;
 import com.woori.bookspring.constant.UserStatus;
+import com.woori.bookspring.dto.SignupForm;
 import com.woori.bookspring.dto.UserUpdateDto;
 import com.woori.bookspring.entity.base.BaseEntity;
 import jakarta.persistence.*;
@@ -57,6 +58,22 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL ,orphanRemoval = true)
     @Builder.Default
     private List<Order> orderList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Billing> billingList = new ArrayList<>();
+
+    public static User createUser(SignupForm dto) {
+        return User.builder()
+                .email(dto.getEmail())
+                .password(dto.getPassword())
+                .nickname(dto.getNickname())
+                .address(dto.getAddress())
+                .birth(dto.getBirth())
+                .phone(dto.getPhone())
+                .ticket(100)
+                .build();
+    }
 
     /*@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Inventory inventory;

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/user_layout}">
+      layout:decorate="~{layouts/mypage_layout}">
 
 <th:block layout:fragment="script">
 
@@ -35,11 +35,11 @@
             var ebookId = obj.dataset.id;
 
             $.ajax({
-                url: `/inven/ebook/${ebookId}`,
+                url: `/like/ebook/${ebookId}`,
                 type: "DELETE",
                 cache: false,
                 success: function (result, status) {
-                    location.href = '/inven';
+                    location.href = '/like';
                 },
                 error: function (jqXHR, status, error) {
 
@@ -127,7 +127,7 @@
                 </div>
 
                 <button type="button" class="close" aria-label="Close">
-                    <span aria-hidden="true" th:data-id="${ebook.inventoryEbookId}" onclick="deleteEbook(this)">삭 제</span>
+                    <span aria-hidden="true" th:data-id="${ebook.likeEbookId}" onclick="deleteEbook(this)">삭 제</span>
                 </button>
             </div>
         </th:block>
