@@ -32,14 +32,24 @@ public class EpisodeComment extends BaseEntity {
     @JoinColumn(name = "episode_id")
     private Episode episode;
 
+    public static EpisodeComment createEpisodeComment(User user, Episode episode, EpisodeCommentDto episodeCommentDto) {
+        return EpisodeComment.builder()
+                .score(episodeCommentDto.getScore())
+                .content(episodeCommentDto.getContent())
+                .user(user)
+                .episode(episode)
+                .build();
+    }
+
     public EpisodeCommentDto of() {
         return EpisodeCommentDto.builder()
                 .id(id)
+                .content(content)
+                .score(score)
                 .episodeTitle(episode.getTitle())
                 .ebookTitle(episode.getEbook().getTitle())
                 .email(user.getEmail())
                 .regTime(getRegTime())
-                .score(score)
                 .build();
     }
 }

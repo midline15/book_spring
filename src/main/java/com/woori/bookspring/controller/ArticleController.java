@@ -1,10 +1,7 @@
 package com.woori.bookspring.controller;
 
 import com.woori.bookspring.constant.ArticleType;
-import com.woori.bookspring.dto.ArticleDto;
-import com.woori.bookspring.dto.ArticleFormDto;
-import com.woori.bookspring.dto.ArticleListDto;
-import com.woori.bookspring.dto.CommentDto;
+import com.woori.bookspring.dto.*;
 import com.woori.bookspring.service.ArticleService;
 import com.woori.bookspring.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Controller
@@ -25,8 +23,8 @@ public class ArticleController {
     private final CommentService commentService;
   
     @GetMapping("article/{article-type}")
-    public String getNoticeList(Model model, @PathVariable("article-type") String articleType){
-        List<ArticleDto> articleList = articleService.getArticleList(ArticleType.getArticleType(articleType));
+    public String getArticleList(Model model, @PathVariable("article-type") String articleType, @RequestParam(required = false) String searchType, @RequestParam(required = false) String searchValue){
+        List<ArticleDto> articleList = articleService.getArticleList(ArticleType.getArticleType(articleType), searchType, searchValue);
         ArticleListDto articleListDto = new ArticleListDto(articleType, articleList);
 
         model.addAttribute("list", articleListDto);
@@ -66,6 +64,7 @@ public class ArticleController {
     @GetMapping("article/{article-type}/{article-id}/update") //수정 폼
     public String updateArticle(@PathVariable("article-type") String articleType, @PathVariable("article-id") Long articleId, Model model) {
         ArticleDto articledto = articleService.getArticle(articleId);
+        articledto.setArticleType(articleType);
         model.addAttribute("dto", articledto);
         if (articleType.equals("01") || articleType.equals("02")) {
             return "board/articleForm";

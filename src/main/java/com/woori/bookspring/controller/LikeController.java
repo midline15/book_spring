@@ -28,7 +28,7 @@ public class LikeController {
 
     @PostMapping("ebook/{ebook-id}")
     public String addLikeEbook(@PathVariable("ebook-id") Long ebookId, Principal principal){
-        likeService.addLikeEbook(ebookId, principal.getName());
+        likeService.createLikeEbook(ebookId, principal.getName());
 
         return "redirect:/ebook/"+ebookId;
     }

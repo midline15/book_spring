@@ -9,7 +9,7 @@
     </header>
     <form id="article-form" th:action="@{/article/{article-type}(article-type = ${dto.articleType})}" method="post" th:object="${dto}">
 
-        <input type="hidden" name="articleType" th:value="${dto.articleType}">
+        <input type="hidden" id="articleType" th:value="${dto.articleType}">
         <input type="hidden" id="articleId" th:value="${dto.id}">
         <div class="row mb-3 justify-content-md-center">
             <label for="title" class="col-sm-2 col-lg-1 col-form-label text-sm-end">제목</label>
@@ -37,6 +37,7 @@
     <script th:inline="javascript">
         let articleId = $("#articleId").val();
         let articleType = $("#articleType").val();
+        console.log(articleType)
         function updateArticle(){
             if (confirm("게시글을 수정하시겠습니까?")) {
                 var data = {

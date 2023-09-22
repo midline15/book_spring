@@ -23,5 +23,6 @@ public class BaseBook extends BaseEntity {
     protected int price;
     @Builder.Default
     protected float avgScore = 0; // 평균 별점
-    protected int totalSales; // 총 판매량
+    @Builder.Default
+    protected int totalSales = 0; // 총 판매량
 }

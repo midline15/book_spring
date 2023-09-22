@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class EpisodeCommentDto {
     private Long id;
     private String email;
+    private String content;
     private String ebookTitle;
     private String episodeTitle;
     private LocalDateTime regTime;

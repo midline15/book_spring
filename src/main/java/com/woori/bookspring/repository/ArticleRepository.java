@@ -11,4 +11,10 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     List<Article> findByArticleType(ArticleType articleType);
 
     List<Article> findByUserIdAndArticleType(Long userId, ArticleType articleType);
+
+    List<Article> findByArticleTypeAndTitleContains(ArticleType articleType, String searchValue);
+
+    List<Article> findByArticleTypeAndContentContains(ArticleType articleType, String searchValue);
+
+    List<Article> findByArticleTypeAndUser_NicknameContains(ArticleType articleType, String searchValue);
 }

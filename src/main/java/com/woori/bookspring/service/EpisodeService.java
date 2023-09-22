@@ -67,5 +67,6 @@ public class EpisodeService {
         User user = userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
         user.useTicket(episode.getEbook().getPrice());
         episodeUserRepository.save(EpisodeUser.createEpisodeUser(episode, user));
+        episode.getEbook().sellEpisode();
     }
 }
