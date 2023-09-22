@@ -3,7 +3,9 @@ package com.woori.bookspring.entity;
 import com.woori.bookspring.constant.SellStatus;
 import com.woori.bookspring.dto.BookDto;
 import com.woori.bookspring.dto.BookFormDto;
+import com.woori.bookspring.dto.CartBookDto;
 import com.woori.bookspring.entity.base.BaseBook;
+import com.woori.bookspring.exception.OutOfStockException;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -72,5 +74,15 @@ public class Book extends BaseBook {
         this.publisher = bookFormDto.getPublisher();
         this.sellStatus = bookFormDto.getSellStatus();
         this.stockNumber = bookFormDto.getStockNumber();
+    }
+
+    public void sellBook(int count) {
+        if(stockNumber == count){
+            this.sellStatus = SellStatus.SOLD_OUT;
+        } else if (stockNumber < count) {
+            throw new OutOfStockException(stockNumber);
+        }
+        this.stockNumber -= count;
+        this.totalSales += count;
     }
 }

@@ -5,6 +5,7 @@ import com.woori.bookspring.dto.SearchParam;
 import com.woori.bookspring.entity.ebook.Ebook;
 import com.woori.bookspring.repository.EbookRepository;
 import com.woori.bookspring.service.EbookService;
+import com.woori.bookspring.service.LikeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EbookController {
     private final EbookService ebookService;
+    private final LikeService likeService;
 
     @GetMapping("/ebook") // e북 조회
     public String getEbookList(Model model,@RequestParam(value = "searchType", required = false) String searchType, @RequestParam(value = "searchValue", required = false) String searchValue) {
@@ -41,6 +43,7 @@ public class EbookController {
     @GetMapping("/ebook/{ebook-id}") //e북 id 단건 조회
     public String getEbook(@PathVariable("ebook-id") Long ebookId, Model model, Principal principal) {
         EbookFormDto ebook = ebookService.getEbook(ebookId, principal.getName());
+        ebook.setLikeEbookId(likeService.getLikeEbook(ebookId, principal.getName()));        ;
         model.addAttribute("ebook", ebook);
         return "ebook/ebook";
     }

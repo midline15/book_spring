@@ -1,10 +1,7 @@
 package com.woori.bookspring.service;
 
 import com.woori.bookspring.constant.ArticleType;
-import com.woori.bookspring.dto.ArticleDto;
-import com.woori.bookspring.dto.ArticleFormDto;
-import com.woori.bookspring.dto.CommentDto;
-import com.woori.bookspring.dto.HelpFormDto;
+import com.woori.bookspring.dto.*;
 import com.woori.bookspring.entity.User;
 import com.woori.bookspring.entity.board.Article;
 import com.woori.bookspring.entity.board.Comment;
@@ -15,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Transactional
 @Service
@@ -37,8 +36,20 @@ public class ArticleService {
     }
 
     @Transactional(readOnly = true)
-    public List<ArticleDto> getArticleList(ArticleType articleType) {
-        return articleRepository.findByArticleType(articleType).stream().map(Article::of).toList();
+    public List<ArticleDto> getArticleList(ArticleType articleType, String searchType, String searchValue) {
+
+        List<Article> articleList = new ArrayList<>();
+        if (searchType == null){
+            articleList = articleRepository.findByArticleType(articleType);
+        } else if (searchType.equals("content")){
+            articleList = articleRepository.findByArticleTypeAndContentContains(articleType, searchValue);
+        } else if (searchType.equals("nickname")) {
+            articleList = articleRepository.findByArticleTypeAndUser_NicknameContains(articleType, searchValue);
+        } else if(searchType.equals("title")){
+            articleList = articleRepository.findByArticleTypeAndTitleContains(articleType, searchValue);
+        }
+
+        return articleList.stream().map(Article::of).toList();
     }
 
     @Transactional(readOnly = true)

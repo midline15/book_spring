@@ -28,6 +28,8 @@ public class Episode extends BaseEntity {
 
     private String content;
 
+    private int totalScore;
+
     @Enumerated(EnumType.STRING)
     private PermitStatus permitStatus;
 
@@ -37,6 +39,9 @@ public class Episode extends BaseEntity {
 
     @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EpisodeUser> episodeUserList;
+
+    @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EpisodeComment> episodeCommentList;
 
     public static Episode createEpisode(EpisodeFormDto episodeFormDto, Ebook ebook) {
         return Episode.builder()
@@ -52,6 +57,7 @@ public class Episode extends BaseEntity {
                 .ebookId(ebook.getId())
                 .title(title)
                 .content(content)
+                .episodeCommentDtoList(episodeCommentList.stream().map(EpisodeComment::of).toList())
                 .regTime(getRegTime())
                 .build();
     }
@@ -59,5 +65,10 @@ public class Episode extends BaseEntity {
     public void updateEpisode(EpisodeFormDto episodeFormDto) {
         title = episodeFormDto.getTitle();
         content = episodeFormDto.getContent();
+    }
+
+    public void addScore(int score) {
+        totalScore += score;
+        ebook.calculateAvgScore();
     }
 }

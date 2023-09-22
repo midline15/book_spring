@@ -41,9 +41,6 @@ public class Ebook extends BaseBook {
     @OneToMany(mappedBy = "ebook", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LikeEbook> likeEbookList;
 
-    @Enumerated(EnumType.STRING)
-    private SellStatus sellStatus;
-
     public EbookFormDto of() {
         return EbookFormDto.builder()
                 .id(id)
@@ -63,5 +60,19 @@ public class Ebook extends BaseBook {
         this.price = dto.getPrice();
         this.cover = cover;
         return this;
+    }
+
+    public void calculateAvgScore() {
+        int totalScore = 0;
+        int totalComment = 0;
+        for (Episode episode : episodeList){
+            totalScore += episode.getTotalScore();
+            totalComment += episode.getEpisodeCommentList().size();
+        }
+        avgScore = (float)totalScore/totalComment;
+    }
+
+    public void sellEpisode() {
+        totalSales++;
     }
 }

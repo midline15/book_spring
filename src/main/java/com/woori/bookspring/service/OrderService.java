@@ -37,7 +37,7 @@ public class OrderService {
         User user = userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
         return orderRepository.save(Order.createOrder(user));
     }
-    public void createOrderBook(OrderBookDto orderBookDto, Book book, Order order){
+    private void createOrderBook(OrderBookDto orderBookDto, Book book, Order order){
         OrderBook orderBook = OrderBook.createOrderBook(orderBookDto,book, order);
         orderBookRepository.save(orderBook);
     }
@@ -45,6 +45,7 @@ public class OrderService {
     public void addOrder(OrderBookDto orderBookDto, String email){
         Order order = createOrder(email);
         Book book = bookRepository.findById(orderBookDto.getBookId()).orElseThrow(EntityNotFoundException::new);
+        book.sellBook(orderBookDto.getCount());
         createOrderBook(orderBookDto, book, order);
     }
 
@@ -52,6 +53,7 @@ public class OrderService {
         Order order = createOrder(email);
         cartBookDtoList.forEach(cartBookDto -> {
             Book book = bookRepository.findById(cartBookDto.getBookId()).orElseThrow(EntityNotFoundException::new);
+            book.sellBook(cartBookDto.getCount());
             createOrderBook(cartBookDto.toOrderBook(), book, order);
         });
     }

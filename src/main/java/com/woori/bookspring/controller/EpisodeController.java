@@ -1,8 +1,11 @@
 package com.woori.bookspring.controller;
 
 
+import com.woori.bookspring.dto.EpisodeCommentDto;
 import com.woori.bookspring.dto.EpisodeFormDto;
 import com.woori.bookspring.entity.ebook.Episode;
+import com.woori.bookspring.service.EbookService;
+import com.woori.bookspring.service.EpisodeCommentService;
 import com.woori.bookspring.service.EpisodeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,11 +24,12 @@ import java.security.Principal;
 public class EpisodeController {
 
     private final EpisodeService episodeService;
+    private final EpisodeCommentService episodeCommentService;
 
     //에피소드 단건 조회
     @GetMapping("/ebook/{ebook-id}/episode/{episode-id}")
-    public String getEpisode(@PathVariable("episode-id") Long epsodeId, Model model) {
-        EpisodeFormDto episode = episodeService.getEpisode(epsodeId);
+    public String getEpisode(@PathVariable("episode-id") Long episodeId, Model model) {
+        EpisodeFormDto episode = episodeService.getEpisode(episodeId);
         model.addAttribute("episode", episode);
         return "ebook/episode";
     }
@@ -84,5 +88,11 @@ public class EpisodeController {
     public ResponseEntity<?> buyEpisode(@PathVariable("episode-id") Long episodeId, Principal principal){
         episodeService.buyEpisode(episodeId, principal.getName());
         return new ResponseEntity<>("구매 완료", HttpStatus.OK);
+    }
+
+    @PostMapping("/episode/{episode-id}/episode-comment")
+    public String createEpisodeComment(EpisodeCommentDto episodeCommentDto, @PathVariable("episode-id") Long episodeId){
+        Long ebookId = episodeCommentService.createEpisodeComment(episodeCommentDto, episodeId);
+        return "redirect:/ebook/"+ebookId+"/episode/{episode-id}";
     }
 }

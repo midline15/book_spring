@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -23,6 +24,7 @@ public class EpisodeFormDto {
     private Long ebookId;
     private LocalDateTime regTime;
     private boolean buy;
+    private List<EpisodeCommentDto> episodeCommentDtoList;
 
     public Episode toEntity() {
         return Episode.builder()
