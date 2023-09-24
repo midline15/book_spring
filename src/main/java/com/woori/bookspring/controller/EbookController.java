@@ -42,9 +42,13 @@ public class EbookController {
 
     @GetMapping("/ebook/{ebook-id}") //e북 id 단건 조회
     public String getEbook(@PathVariable("ebook-id") Long ebookId, Model model, Principal principal) {
-        EbookFormDto ebook = ebookService.getEbook(ebookId, principal.getName());
-        ebook.setLikeEbookId(likeService.getLikeEbook(ebookId, principal.getName()));        ;
-        model.addAttribute("ebook", ebook);
+        if (principal == null) {
+            model.addAttribute("ebook",ebookService.getEbook(ebookId));
+        }else {
+            EbookFormDto ebook = ebookService.getEbook(ebookId, principal.getName());
+            ebook.setLikeEbookId(likeService.getLikeEbook(ebookId, principal.getName()));        ;
+            model.addAttribute("ebook", ebook);
+        }
         return "ebook/ebook";
     }
 

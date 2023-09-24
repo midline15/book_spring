@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface EpisodeUserRepository extends JpaRepository<EpisodeUser, Long> {
-    List<EpisodeUser> findByUser_Email(String email);
+    List<EpisodeUser> findByUser_EmailAndEpisode_EbookId(String email, Long ebookId);
 }

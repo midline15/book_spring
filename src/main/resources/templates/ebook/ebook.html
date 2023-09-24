@@ -24,7 +24,7 @@
         }
 
         .repImg {
-            width: 10%;
+            width: 100px;
         }
 
         .wd50 {
@@ -67,8 +67,6 @@
                         <button type="button" class="btn btn-light border border-primary btn-lg">
                             <span aria-hidden="true" th:data-id="${ebook.likeEbookId}" onclick="deleteEbook(this)">삭 제</span></button>
                     </form>
-
-                    <button type="button" class="btn btn-primary btn-lg">이용권</button>
                 </div>
             </div>
         </div>
@@ -76,32 +74,18 @@
 
 
     <a th:href="@{/writer/ebook/{ebook-id}/episode(ebook-id = ${ebook.id})}">에피소드 등록</a>
-    <div data-t-obj="{&quot;click&quot;:{&quot;layer1&quot;:&quot;전체회차목록&quot;}}" class="min-h-360pxr">
+    <div class="min-h-360pxr">
         <div> 예 시 용</div>
-        <ul class="jsx-2531468679 jsx-376872051 flex"
+        <ul class=" flex"
             style="flex-direction: column; background-color: var(--bg-a-20);"
             th:each="episode : ${ebook.episodeList}">
-            <li class="jsx-2531468679 jsx-376872051 list-child-item">
+            <li class="list-child-item">
                 <div>
                     <div class="relative flex py-8pxr bg-bg-a-20 px-15pxr">
                         <div class="flex items-center">
-                            <div class="relative overflow-hidden mr-12pxr shrink-0 w-66pxr"
-                                 style="border-radius: 8px;">
-                                <div class="jsx-905614930 image-container relative h-full w-full">
-                                    <div class="jsx-905614930 absolute top-0 left-0 h-full w-full select-none items-center justify-center bg-s-gray-20/15 object-cover hidden"></div>
-                                </div>
-                                <div class="absolute top-0 left-0 h-full w-full border-[0.5px] border-solid border-sp-thumb-line"
-                                     style="border-radius: 8px;"></div>
-                            </div>
                             <div class="flex flex-col">
-                                <div class="mb-4pxr flex items-center"><span
-                                        class="font-medium2 break-all text-el-60 line-clamp-2"
-                                        th:text="${episode.title}"></span>
-                                </div>
-                                <div class="text-ellipsis line-clamp-1 font-small2 text-el-60"><span
-                                        class="break-all align-middle"
-                                        th:text="${episode.regTime}">2022.01.12</span>
-                                </div>
+                                <div><span th:text="${episode.title}"></span></div>
+                                <div><span th:text="${episode.regTime}"></span></div>
                                 <a th:href="@{/ebook/{ebook-id}/episode/{episode-id} (ebook-id = ${ebook.id}, episode-id=${episode.id})}"
                                    th:if="${episode.buy}">보기</a>
                                 <button th:unless="${episode.buy}" th:data-id="${episode.id}" onclick="buyEpisode(this)">구매</button>
@@ -123,7 +107,11 @@
                     "Content-Type": "application/json",
                 },
             })
-                .then(() => {
+                .then(response => {
+                    console.log(response)
+                    if(response.url.includes('login')){
+                        alert("로그인이 필요합니다.")
+                    }else{
                     alert('구매 완료');
                     fetch(`/inven/ebook/${ebookId}`, {
                         method: "POST",
@@ -134,8 +122,8 @@
                         .then(() => {
                             alert('보관함 추가 완료');
                             location.replace(`/ebook/${ebookId}/episode/${episodeId}`);
-                        });
-                });
+                        });}
+                })
         }
 
         function deleteEbook(obj) {

@@ -59,8 +59,8 @@
                         <a class="btn btn-outline-light me-2" href="/user/login">Login</a>
                         <a class="btn btn-outline-light me-2" href="/user/signup">Signup</a>
                     </div>
-                    <div sec:authorize="isAuthenticated()">
-                        <a class="btn btn-outline-light me-2" href="/#">내 이용권 : [[${#authentication.principal.user.ticket}]] 개</a>
+                    <div sec:authorize="hasAnyAuthority('USER')">
+                        <a class="btn btn-outline-light me-2" href="/ticket">내 이용권 : [[${#authentication.principal.user.ticket}]] 개</a>
                         <a class="btn btn-outline-light me-2" th:href="@{/user/{user-id}(user-id = ${#authentication.principal.user.id})}">[[${#authentication.principal.user.nickname}]]</a>
                         <input type="button" class="btn btn-outline-light me-2" th:data-id="${#authentication.principal.user.oauth}" onclick="logout(this);" value="Logout">
                     </div>

@@ -6,6 +6,7 @@ import com.woori.bookspring.constant.UserStatus;
 import com.woori.bookspring.dto.SignupForm;
 import com.woori.bookspring.dto.UserUpdateDto;
 import com.woori.bookspring.entity.base.BaseEntity;
+import com.woori.bookspring.exception.OutOfStockException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,7 +32,7 @@ public class User extends BaseEntity {
 
     private String email;
 
-    private int ticket;
+    private int totalTicket;
 
     private String nickname;
 
@@ -55,13 +56,13 @@ public class User extends BaseEntity {
     @Builder.Default
     private OAuthType oauth = OAuthType.WOORI;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL ,orphanRemoval = true)
+   /* @OneToMany(mappedBy = "user", cascade = CascadeType.ALL ,orphanRemoval = true)
     @Builder.Default
     private List<Order> orderList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<Billing> billingList = new ArrayList<>();
+    private List<Ticket> ticketList = new ArrayList<>();*/
 
     public static User createUser(SignupForm dto) {
         return User.builder()
@@ -71,7 +72,7 @@ public class User extends BaseEntity {
                 .address(dto.getAddress())
                 .birth(dto.getBirth())
                 .phone(dto.getPhone())
-                .ticket(100)
+                .totalTicket(100)
                 .build();
     }
 
@@ -100,13 +101,19 @@ public class User extends BaseEntity {
         phone = userUpdateDto.getPhone();
         address = userUpdateDto.getAddress();
     }
-
-  
-    public void useTicket(int price) {
-        ticket -= price;
-    }
   
     public void changeUserStatus(UserStatus userStatus) {
         this.userStatus = userStatus;
+    }
+
+    public void addTicket(int amount) {
+        totalTicket += amount;
+    }
+
+    public void useTicket(int amount) {
+        if (totalTicket < amount){
+            throw new RuntimeException("이용권이 부족합니다.");
+        }
+        totalTicket -= amount;
     }
 }

@@ -14,15 +14,16 @@
         <a class="nav-item dropdown" th:href="@{/user/{user-id}/article/01 (user-id = ${#authentication.principal.user.id})}">
             <a class="list-group-item list-group-item-action list-group-item-light p-3 dropdown-toggle"
                data-bs-toggle="dropdown" aria-expanded="false">내 글 관리</a>
-            <ul class="dropdown-menu dropdown-menu-dark">
+            <ul class="dropdown-menu">
                 <li><a class="dropdown-item" th:href="@{/user/{user-id}/article/01 (user-id = ${#authentication.principal.user.id})}">자유게시판</a></li>
-                <li><a class="dropdown-item" th:href="@{/user/{user-id}/article/01 (user-id = ${#authentication.principal.user.id})}">리뷰게시판</a></li>
-                <li><a class="dropdown-item" th:href="@{/user/{user-id}/article/01 (user-id = ${#authentication.principal.user.id})}">Q&A</a></li>
-                <li><a class="dropdown-item" th:href="@{/user/{user-id}/article/01 (user-id = ${#authentication.principal.user.id})}">댓글</a></li>
-                <li><a class="dropdown-item" th:href="@{/user/{user-id}/article/01 (user-id = ${#authentication.principal.user.id})}">Book댓글</a></li>
-                <li><a class="dropdown-item" th:href="@{/user/{user-id}/article/01 (user-id = ${#authentication.principal.user.id})}">Ebook댓글</a></li>
+                <li><a class="dropdown-item" th:href="@{/user/{user-id}/article/02 (user-id = ${#authentication.principal.user.id})}">리뷰게시판</a></li>
+                <li><a class="dropdown-item" th:href="@{/user/{user-id}/article/05 (user-id = ${#authentication.principal.user.id})}">Q&A</a></li>
+                <li><a class="dropdown-item" th:href="@{/user/{user-id}/comment (user-id = ${#authentication.principal.user.id})}">댓글</a></li>
+                <li><a class="dropdown-item" th:href="@{/user/{user-id}/book-comment (user-id = ${#authentication.principal.user.id})}">Book댓글</a></li>
+                <li><a class="dropdown-item" th:href="@{/user/{user-id}/episode-comment (user-id = ${#authentication.principal.user.id})}">Ebook댓글</a></li>
             </ul>
         </a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/ticket">이용권 내역</a>
     </div>
 </div>
 </html>

@@ -1,18 +1,20 @@
 package com.woori.bookspring.service;
 
+import com.woori.bookspring.config.auth.UserDetailsImpl;
 import com.woori.bookspring.constant.Role;
 import com.woori.bookspring.constant.UserStatus;
 import com.woori.bookspring.dto.AdminDto;
 import com.woori.bookspring.dto.SignupForm;
 import com.woori.bookspring.dto.UserUpdateDto;
 import com.woori.bookspring.dto.WriterDto;
-import com.woori.bookspring.entity.Billing;
+import com.woori.bookspring.entity.Ticket;
 import com.woori.bookspring.entity.User;
 import com.woori.bookspring.exception.UserMissMatchException;
-import com.woori.bookspring.repository.BillingRepository;
+import com.woori.bookspring.repository.TicketRepository;
 import com.woori.bookspring.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,14 +27,14 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final BillingRepository billingRepository;
+    private final TicketRepository ticketRepository;
     private final PasswordEncoder passwordEncoder;
 
     public void createUser(SignupForm dto) {
         dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         User user = userRepository.save(User.createUser(dto));
-        Billing billing  = Billing.builder().amount(100).history("가입 축하 선물").user(user).build();
-        billingRepository.save(billing);
+        Ticket ticket = Ticket.builder().amount(100).history("가입 축하 선물").user(user).build();
+        ticketRepository.save(ticket);
     }
 
     @Transactional(readOnly = true)
@@ -53,6 +55,7 @@ public class UserService {
         User findUser = userRepository.findById(userUpdateDto.getId()).orElseThrow(EntityNotFoundException::new);
         validateUser(findUser.getEmail(), email);
         findUser.updateUser(userUpdateDto);
+        ((UserDetailsImpl)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).updateUser(findUser);
     }
 
     @Transactional(readOnly = true)

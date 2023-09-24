@@ -18,6 +18,7 @@ public class EbookFormDto {
     private Long id;
     private String title;
     private String intro;
+    private String writerNickname;
     private int price;
     private Long coverId;
     private String url;

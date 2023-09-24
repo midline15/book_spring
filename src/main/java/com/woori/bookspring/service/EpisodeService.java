@@ -1,18 +1,17 @@
 package com.woori.bookspring.service;
 
-import com.woori.bookspring.dto.EbookFormDto;
+import com.woori.bookspring.config.auth.UserDetailsImpl;
 import com.woori.bookspring.dto.EpisodeFormDto;
 import com.woori.bookspring.dto.EpisodeUserDto;
+import com.woori.bookspring.entity.Ticket;
 import com.woori.bookspring.entity.EpisodeUser;
 import com.woori.bookspring.entity.User;
 import com.woori.bookspring.entity.ebook.Ebook;
 import com.woori.bookspring.entity.ebook.Episode;
-import com.woori.bookspring.repository.EbookRepository;
-import com.woori.bookspring.repository.EpisodeRepository;
-import com.woori.bookspring.repository.EpisodeUserRepository;
-import com.woori.bookspring.repository.UserRepository;
+import com.woori.bookspring.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +25,7 @@ public class EpisodeService {
     private final EbookRepository ebookRepository;
     private final EpisodeUserRepository episodeUserRepository;
     private final UserRepository userRepository;
+    private final TicketRepository ticketRepository;
 
     public void createEpisode(EpisodeFormDto episodeFormDto, Long ebookId) { //에피소드 생성
         Ebook ebook = ebookRepository.findById(ebookId).get();
@@ -58,15 +58,20 @@ public class EpisodeService {
 
     }
 
-    public List<EpisodeUserDto> getEpisodeUserList(String email) {
-        return episodeUserRepository.findByUser_Email(email).stream().map(EpisodeUser::of).toList();
+    public List<EpisodeUserDto> getEpisodeUserList(String email, Long ebookId) {
+        return episodeUserRepository.findByUser_EmailAndEpisode_EbookId(email, ebookId).stream().map(EpisodeUser::of).toList();
     }
 
     public void buyEpisode(Long episodeId, String email) {
         Episode episode = episodeRepository.findById(episodeId).orElseThrow(EntityNotFoundException::new);
         User user = userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
-        user.useTicket(episode.getEbook().getPrice());
+
+        Ebook ebook = episode.getEbook();
+        user.useTicket(ebook.getPrice());
+        ebook.sellEpisode();
+
+        ticketRepository.save(Ticket.useTicket(episode, user));
         episodeUserRepository.save(EpisodeUser.createEpisodeUser(episode, user));
-        episode.getEbook().sellEpisode();
+        ((UserDetailsImpl)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).updateUser(user);
     }
 }

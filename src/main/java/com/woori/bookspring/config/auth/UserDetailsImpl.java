@@ -19,6 +19,10 @@ public class UserDetailsImpl implements UserDetails, OAuth2User {
 
     private Map<String, Object> attributes;
 
+    public void updateUser(User user){
+        this.user = user;
+    }
+
     public UserDetailsImpl(User user) {
         this.user = user;
     }

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/mypage_layout}">
+
+<!-- 사용자 스크립트 추가 -->
+<th:block layout:fragment="script">
+
+    <script th:inline="javascript">
+    </script>
+
+</th:block>
+
+사용자 CSS 추가
+<th:block layout:fragment="css">
+    <style>
+        .content-mg {
+            margin-left: 30%;
+            margin-right: 30%;
+            margin-top: 2%;
+            margin-bottom: 100px;
+        }
+    </style>
+</th:block>
+
+<div layout:fragment="content" class="content-mg">
+
+    <h2 class="mb-4">
+        충전 이력
+    </h2>
+
+    <table>
+        <tr>
+            <th>이용권</th>
+            <th>내용</th>
+            <th>날짜</th>
+        </tr>
+        <tr th:each="ticket : ${list}" th:object="${ticket}">
+            <td th:text="*{amount}"></td>
+            <td th:text="*{history}"></td>
+            <td th:text="*{regTime}"></td>
+        </tr>
+    </table>
+    <a class="btn btn-primary" href="/ticket/buy"> 구매하기 </a>
+</div>
+</html>
