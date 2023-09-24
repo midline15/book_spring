@@ -2,7 +2,6 @@ package com.woori.bookspring.controller;
 
 import com.woori.bookspring.dto.SignupForm;
 import com.woori.bookspring.dto.UserUpdateDto;
-import com.woori.bookspring.service.BillingService;
 import com.woori.bookspring.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -22,7 +21,6 @@ import java.security.Principal;
 public class UserController {
 
     private final UserService userService;
-    private final BillingService billingService;
 
     @Value("${logout_redirect_uri}")
     private String logoutUri;
@@ -86,5 +84,4 @@ public class UserController {
         userService.disableUser(userId, principal.getName());
         return new ResponseEntity<>("회원탈퇴 완료", HttpStatus.OK);
     }
-
 }

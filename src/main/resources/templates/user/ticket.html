@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/mypage_layout}">
+
+<!-- 사용자 스크립트 추가 -->
+<th:block layout:fragment="script">
+
+    <script th:inline="javascript">
+        function cancelOrder(orderId) {
+            $.ajax({
+                url: "/order/"+orderId,
+                type: "PATCH",
+                cache: false,
+                success: function (result, status) {
+                    alert("주문이 취소 되었습니다.");
+                    location.href = '/order';
+                },
+                error: function (jqXHR, status, error) {
+                    if (jqXHR.status == '401') {
+                        alert('로그인 후 이용해주세요');
+                        location.href = '/user/login';
+                    } else {
+                        alert(jqXHR.responseText);
+                    }
+                }
+            });
+        }
+    </script>
+
+</th:block>
+
+사용자 CSS 추가
+<th:block layout:fragment="css">
+    <style>
+        .content-mg {
+            margin-left: 30%;
+            margin-right: 30%;
+            margin-top: 2%;
+            margin-bottom: 100px;
+        }
+
+        .repImgDiv {
+            margin-right: 15px;
+            margin-left: 15px;
+            height: auto;
+        }
+
+        .repImg {
+            height: 100px;
+            width: 100px;
+        }
+
+        .card {
+            width: 750px;
+            height: 100%;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .fs18 {
+            font-size: 18px
+        }
+
+        .fs24 {
+            font-size: 24px
+        }
+    </style>
+</th:block>
+
+<div layout:fragment="content" class="content-mg">
+
+    <h2 class="mb-4">
+        이용권 충전
+    </h2>
+
+        <div data-role="fieldcontain">
+            <fieldset data-role="controlgroup">
+                <legend>뭔 소린지 아시겠어요?:</legend>
+                <input type="radio" name="amount" id="radio-choice-1" value="10" checked="checked" />
+                <label for="radio-choice-1" id="label-1">1000원</label>
+                <input type="radio" name="amount" id="radio-choice-2" value="32" />
+                <label for="radio-choice-2" id="label-2">3000원</label>
+                <input type="radio" name="amount" id="radio-choice-3" value="54" />
+                <label for="radio-choice-3" id="label-3">5000원</label>
+                <input type="radio" name="amount" id="radio-choice-4" value="110" />
+                <label for="radio-choice-4" id="label-4">10000원</label>
+            </fieldset>
+        </div>
+        <button onclick="buyTicket()">구매</button>
+
+    <script th:inline="javascript">
+        function buyTicket(){
+            let chk = $("input[name=amount]:checked");
+            console.log(chk.next().text())
+            fetch(`/ticket/buy`,{
+                method: 'post',
+                body: JSON.stringify({
+                    amount: chk.val(),
+                    history: chk.next().text()
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(() => {
+                alert("구매완료")
+                location.href="/ticket"
+            })
+        }
+    </script>
+
+</div>
+</html>

@@ -38,12 +38,16 @@ public class EbookService {
     }
 
     @Transactional(readOnly = true)
-    public EbookFormDto getEbook(Long ebookId, String email) { //e북 조회, 검색
+    public EbookFormDto getEbook(Long ebookId, String email) {
+        // 이북을 찾고
         EbookFormDto ebookFormDto = ebookRepository.findById(ebookId).orElseThrow(EntityNotFoundException::new).of();
-        List<EpisodeUserDto> episodeUserList = episodeService.getEpisodeUserList(email);
+        // 해당 이북에서 구입한 에피소드 목록을 찾고
+        List<EpisodeUserDto> episodeUserList = episodeService.getEpisodeUserList(email,ebookId);
         episodeUserList.forEach(episodeUserDto -> {
             ebookFormDto.getEpisodeList().forEach(episodeFormDto -> {
+                // 이북의 에피소드와 구매한 에피소드를 비교하여
                 if(episodeUserDto.getEpisodeId().equals(episodeFormDto.getId())){
+                    // 구매 상태를 확인
                     episodeFormDto.checkBuy(true);
                 }
             });
