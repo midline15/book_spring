@@ -41,6 +41,9 @@ public class Ebook extends BaseBook {
     @OneToMany(mappedBy = "ebook", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LikeEbook> likeEbookList;
 
+    @OneToMany(mappedBy = "ebook", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<InventoryEbook> inventoryEbookList;
+
     public EbookFormDto of() {
         return EbookFormDto.builder()
                 .id(id)

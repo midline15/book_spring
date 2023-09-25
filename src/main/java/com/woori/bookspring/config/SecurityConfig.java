@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -13,6 +15,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
+
+import java.io.PrintWriter;
 
 @RequiredArgsConstructor
 @Configuration
@@ -27,7 +32,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/img/**").permitAll()
-                        .requestMatchers("/", "/book", "/ebook", "/user/**","/book/*/","/ebook/*","/article/**").permitAll()
+                        .requestMatchers("/", "/book", "/ebook", "/user/**","/book/*","/ebook/*","/article/**").permitAll()
                         .requestMatchers("/admin","/admin/**").hasAnyAuthority("ADMIN")
                         .requestMatchers("/user","/user/**","/order","/order/**","/cart","/cart/**","/like","/like/**","/inven","/inven/**","/article/*/*/comment","/article/*/*/comment/**").hasAnyAuthority("USER")
                         .requestMatchers("/writer","/writer/**").hasAnyAuthority("WRITER")
@@ -44,7 +49,8 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/")
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(oAuth2UserService)))
-                .csrf(csrf -> csrf.disable());
+                .csrf(csrf -> csrf.disable())
+                .exceptionHandling(handler -> handler.accessDeniedHandler(new AccessDeniedHandlerImpl()));
         return http.build();
     }
 

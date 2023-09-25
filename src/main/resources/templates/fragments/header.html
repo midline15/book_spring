@@ -13,13 +13,16 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a id="home" href="/" class="nav-link px-2 text-secondary">Home</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false"
+                    aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
                             Book
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark">
@@ -27,7 +30,8 @@
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle"role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
                             Ebook
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark">
@@ -35,7 +39,8 @@
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
                             커뮤니티
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark">
@@ -44,7 +49,8 @@
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
                             고객센터
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark">
@@ -59,23 +65,37 @@
                         <a class="btn btn-outline-light me-2" href="/user/login">Login</a>
                         <a class="btn btn-outline-light me-2" href="/user/signup">Signup</a>
                     </div>
-                    <div sec:authorize="hasAnyAuthority('USER')">
-                        <a class="btn btn-outline-light me-2" href="/ticket">내 이용권 : [[${#authentication.principal.user.ticket}]] 개</a>
-                        <a class="btn btn-outline-light me-2" th:href="@{/user/{user-id}(user-id = ${#authentication.principal.user.id})}">[[${#authentication.principal.user.nickname}]]</a>
-                        <input type="button" class="btn btn-outline-light me-2" th:data-id="${#authentication.principal.user.oauth}" onclick="logout(this);" value="Logout">
-                    </div>
+                    <a sec:authorize="hasAnyAuthority('USER')" class="btn btn-outline-light me-2" href="/ticket">내 이용권 :
+                        [[${#authentication.principal.user.totalTicket}]] 개</a>
+                    <th:block sec:authorize="isAuthenticated()">
+                        <a th:if="${#authentication.principal.user.role == T(com.woori.bookspring.constant.Role).USER}"
+                           class="btn btn-outline-light me-2"
+                           th:href="@{/user/{user-id}(user-id = ${#authentication.principal.user.id})}">마이 페이지</a>
+                        <a th:if="${#authentication.principal.user.role == T(com.woori.bookspring.constant.Role).WRITER}"
+                           class="btn btn-outline-light me-2" th:href="@{/writer}">작가 페이지</a>
+                        <a th:if="${#authentication.principal.user.role == T(com.woori.bookspring.constant.Role).ADMIN}"
+                           class="btn btn-outline-light me-2" th:href="@{/admin/user}">관리자 페이지</a>
+                        <input type="button" class="btn btn-outline-light me-2"
+                               th:data-id="${#authentication.principal.user.oauth}" onclick="logout(this);"
+                               value="Logout">
+                    </th:block>
                 </div>
             </div>
         </div>
     </nav>
 
     <script th:inline="javascript">
+        $(document).ready(() => {
+            if([[${errorMessage}]]){
+                alert("접근 권한이 없습니다.")
+            }
+        })
 
-        function logout(obj){
+        function logout(obj) {
             let oauth = obj.dataset.id.toString();
             console.log(oauth)
             if (confirm("정말 로그아웃 하시겠습니까?")) {
-                switch (oauth){
+                switch (oauth) {
                     case 'WOORI':
                         location.href = "/logout";
                         break;

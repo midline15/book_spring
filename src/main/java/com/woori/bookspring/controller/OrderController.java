@@ -1,11 +1,17 @@
 package com.woori.bookspring.controller;
 
+import com.woori.bookspring.config.auth.UserDetailsImpl;
+import com.woori.bookspring.constant.Role;
 import com.woori.bookspring.dto.OrderBookDto;
 import com.woori.bookspring.dto.OrderDto;
+import com.woori.bookspring.entity.User;
 import com.woori.bookspring.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +34,13 @@ public class OrderController {
     }
 
     @PostMapping("{book-id}")
-    public String addOrder(OrderBookDto orderBookDto, Principal principal) {
+    public ResponseEntity<?> addOrder(OrderBookDto orderBookDto, Principal principal) {
+        User user = ((UserDetailsImpl)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
+        if(!user.getRole().equals(Role.USER)){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
         orderService.addOrder(orderBookDto, principal.getName());
-        return "redirect:/order";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PatchMapping("{order-id}")

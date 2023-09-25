@@ -55,7 +55,7 @@
                 type: "DELETE",
                 cache: false,
                 success: function (result, status) {
-                    location.href = '/book';
+                    alert("삭제 완료");
                 },
                 error: function (jqXHR, status, error) {
 
@@ -147,7 +147,7 @@
         <ul class="pagination justify-content-center">
             <li class="page-book" th:classappend="${!paging.hasPrevious} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/book(page=0)}">
+                   th:href="@{/book}">
                     <span>처음</span>
                 </a>
             </li>
@@ -159,11 +159,11 @@
                 </a>
             </li>
 
-            <th:block th:each="page:${#numbers.sequence(0, paging.totalPages - 1)}">
+            <th:block th:each="page:${#numbers.sequence(1, paging.totalPages)}">
                 <li class="page-book">
                     <a class="page-link"
                        th:href="@{/book(page=${page})}"
-                       th:text="${page + 1}"></a>
+                       th:text="${page}"></a>
                 </li>
             </th:block>
 
@@ -176,7 +176,7 @@
 
             <li class="page-book" th:classappend="${!paging.hasNext} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/book(page=${paging.totalPages - 1})}">
+                   th:href="@{/book(page=${paging.totalPages})}">
                     <span>마지막</span>
                 </a>
             </li>

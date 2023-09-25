@@ -12,9 +12,9 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArticleListDto {
+public class UserListDto {
 
-    private String articleType;
-    private Page<ArticleDto> articleDtoList;
+    private String role;
+    private Page<UserManageDto> userManageDtoList;
 }
 

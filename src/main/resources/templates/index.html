@@ -31,6 +31,10 @@
         .center{
             text-align:center;
         }
+        .card-img-top{
+            width: 150px;
+            height: 150px;
+        }
     </style>
 </th:block>
 
@@ -49,37 +53,14 @@
         <p class="h3 font-weight-bold"></p>
     </div>
 
-    <div class="row"><p class="rem">Book Top 3</p>
+    <p>Book 랭킹</p>
+    <div class="row" th:each="book : ${topBookList}">
         <div class="col-md-4 margin">
             <div class="card">
                 <a class="text-dark">
-                    <img class="card-img-top" src="/img/1.png" height="400">
+                    <img class="card-img-top" th:src="${book.url}">
                     <div class="card-body">
-                        <h4 class="card-title"></h4>
-                        <p class="card-text"></p>
-                        <h3 class="card-title text-danger"></h3>
-                    </div>
-                </a>
-            </div>
-        </div>
-        <div class="col-md-4 margin">
-            <div class="card">
-                <a class="text-dark">
-                    <img class="card-img-top" src="/img/2.png" height="400">
-                    <div class="card-body">
-                        <h4 class="card-title"></h4>
-                        <p class="card-text"></p>
-                        <h3 class="card-title text-danger"></h3>
-                    </div>
-                </a>
-            </div>
-        </div>
-        <div class="col-md-4 margin">
-            <div class="card">
-                <a class="text-dark">
-                    <img class="card-img-top" src="/img/3.png" height="400">
-                    <div class="card-body">
-                        <h4 class="card-title"></h4>
+                        <h4 class="card-title" th:text="${book.title}"></h4>
                         <p class="card-text"></p>
                         <h3 class="card-title text-danger"></h3>
                     </div>
@@ -88,66 +69,20 @@
         </div>
     </div>
 
-    <div class="row"><p class="rem">EBook Top 3</p>
+    <p>Ebook 랭킹</p>
+    <div class="row" th:each="ebook : ${topEbookList}">
         <div class="col-md-4 margin">
             <div class="card">
                 <a class="text-dark">
-                    <img class="card-img-top" src="/img/1.png" height="400">
+                    <img class="card-img-top" th:src="${ebook.url}">
                     <div class="card-body">
-                        <h4 class="card-title"></h4>
+                        <h4 class="card-title" th:text="${ebook.title}"></h4>
                         <p class="card-text"></p>
                         <h3 class="card-title text-danger"></h3>
                     </div>
                 </a>
             </div>
         </div>
-        <div class="col-md-4 margin">
-            <div class="card">
-                <a class="text-dark">
-                    <img class="card-img-top" src="/img/2.png" height="400">
-                    <div class="card-body">
-                        <h4 class="card-title"></h4>
-                        <p class="card-text"></p>
-                        <h3 class="card-title text-danger"></h3>
-                    </div>
-                </a>
-            </div>
-        </div>
-        <div class="col-md-4 margin">
-            <div class="card">
-                <a class="text-dark">
-                    <img class="card-img-top" src="/img/3.png" height="400">
-                    <div class="card-body">
-                        <h4 class="card-title"></h4>
-                        <p class="card-text"></p>
-                        <h3 class="card-title text-danger"></h3>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
-
-
-    <div>
-        <ul class="pagination justify-content-center">
-
-            <li class="page-item">
-                <a aria-label='Previous' class="page-link">
-                    <span aria-hidden='true'>Previous</span>
-                </a>
-            </li>
-
-            <li class="page-item">
-                <a th:inline="text" class="page-link"></a>
-            </li>
-
-            <li class="page-item">
-                <a aria-label='Next' class="page-link">
-                    <span aria-hidden='true'>Next</span>
-                </a>
-            </li>
-
-        </ul>
     </div>
 
 </div>

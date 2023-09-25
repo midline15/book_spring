@@ -38,7 +38,7 @@ public class Ticket extends BaseEntity {
 
     public static Ticket useTicket(Episode episode, User user) {
         return Ticket.builder()
-                .amount(episode.getEbook().getPrice())
+                .amount(-episode.getEbook().getPrice())
                 .history(episode.getTitle() + " 구매")
                 .user(user)
                 .build();

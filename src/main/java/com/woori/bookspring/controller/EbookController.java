@@ -1,13 +1,15 @@
 package com.woori.bookspring.controller;
 
 import com.woori.bookspring.dto.EbookFormDto;
-import com.woori.bookspring.dto.SearchParam;
-import com.woori.bookspring.entity.ebook.Ebook;
-import com.woori.bookspring.repository.EbookRepository;
 import com.woori.bookspring.service.EbookService;
 import com.woori.bookspring.service.LikeService;
+import com.woori.bookspring.service.PaginationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
-import java.util.List;
 
 @Controller
 
@@ -27,26 +28,31 @@ public class EbookController {
     private final LikeService likeService;
 
     @GetMapping("/ebook") // e북 조회
-    public String getEbookList(Model model,@RequestParam(value = "searchType", required = false) String searchType, @RequestParam(value = "searchValue", required = false) String searchValue) {
+    public String getEbookList(Model model,
+                               @PageableDefault(sort = "regTime", direction = Sort.Direction.DESC) Pageable pageable,
+                               @RequestParam(defaultValue = "1") int page, @RequestParam(value = "searchType", required = false) String searchType, @RequestParam(value = "searchValue", required = false) String searchValue) {
 
-        SearchParam searchParam = new SearchParam();
-        searchParam.setSearchType(searchType);
-        searchParam.setSearchValue(searchValue);
+        Page<EbookFormDto> ebookList = ebookService.getEbookList(pageable.withPage(page - 1), searchType, searchValue);
 
-        List<EbookFormDto> ebookList = ebookService.getEbookList(searchType,searchValue);
+        int totalPage = ebookList.getTotalPages();
+
+        PaginationService paging = new PaginationService();
 
         model.addAttribute("list", ebookList);
-        model.addAttribute("param", searchParam);
+        model.addAttribute("bar", paging.getPaginationBarNumbers(page, totalPage));
+        model.addAttribute("paging", paging);
+        model.addAttribute("searchType", searchType);
+        model.addAttribute("searchValue", searchValue);
         return "ebook/ebookList";
     }
 
     @GetMapping("/ebook/{ebook-id}") //e북 id 단건 조회
     public String getEbook(@PathVariable("ebook-id") Long ebookId, Model model, Principal principal) {
         if (principal == null) {
-            model.addAttribute("ebook",ebookService.getEbook(ebookId));
-        }else {
+            model.addAttribute("ebook", ebookService.getEbook(ebookId));
+        } else {
             EbookFormDto ebook = ebookService.getEbook(ebookId, principal.getName());
-            ebook.setLikeEbookId(likeService.getLikeEbook(ebookId, principal.getName()));        ;
+            ebook.setLikeEbookId(likeService.getLikeEbook(ebookId, principal.getName()));
             model.addAttribute("ebook", ebook);
         }
         return "ebook/ebook";

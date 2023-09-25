@@ -1,4 +1,4 @@
-package com.woori.bookspring.exception;
+package com.woori.bookspring.controller.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

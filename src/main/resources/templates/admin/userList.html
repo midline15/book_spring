@@ -1,10 +1,123 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin_layout}">
+<th:block layout:fragment="content">
+    <div id="page-content-wrapper">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+            <div class="container-fluid">
+                <h1 class="mt-4" th:if="${list.role == 'user'}">유저 관리</h1>
+                <h1 class="mt-4" th:if="${list.role == 'writer'}">작가 관리</h1>
+                <h1 class="mt-4" th:if="${list.role == 'admin'}">관리자 목록</h1>
+            </div>
+        </nav>
+        <!-- Page content-->
+        <div class="container-fluid">
+            <div class="row">
+                <table class="table" id="article-table">
+                    <thead>
+                    <tr>
+                        <th class="title col-6"><a>ID</a></th>
+                        <th class="user-id"><a>EMAIL</a></th>
+                        <th class="created-at"><a>NICKNAME</a></th>
+                        <th>상태</th>
+                        <th>탈퇴</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user : ${list.userManageDtoList}">
+                        <td>[[${user.id}]]</td>
+                        <td>[[${user.email}]]</td>
+                        <td>[[${user.nickname}]]</td>
+                        <td><input type="hidden" th:id="'userStatus_'+${user.id}" th:value="${user.userStatus}">[[${user.userStatus}]]</td>
+                        <td>
+                            <button th:if="${user.userStatus == 'ACTIVE'}" onclick="changeUserStatus(this)"
+                                    class="btn btn-secondary" th:data-id="${user.id}">정지
+                            </button>
+                            <button th:if="${user.userStatus == 'BLOCK'}" onclick="changeUserStatus(this)"
+                                    class="btn btn-primary" th:data-id="${user.id}">해제
+                            </button>
+                        </td>
+                        <td>
+                            <button th:if="${user.userStatus == 'DISABLE'}" class="btn-danger" onclick="deleteUser(this)" th:data-id="${user.id}">탈퇴</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item">
+                <a class="page-link" th:href="@{?page=1 (searchType = ${searchType}, searchValue = ${searchValue})}"
+                   aria-label="Previous">
+                    <span aria-hidden="true">처음</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link"
+                   th:href="@{?(searchType = ${searchType}, searchValue = ${searchValue}, page = ${paging.startNumber-1})}"
+                   th:classappend="${paging.startNumber == 1}?disabled">
+                    <span aria-hidden="true">이전</span>
+                </a>
+            </li>
+            <li class="page-item"
+                th:each="pageButton : ${bar}">
+                <a class="page-link"
+                   th:href="@{?(searchType = ${searchType}, searchValue = ${searchValue}, page = ${pageButton})}"
+                   th:text="${pageButton}" th:classappend="${paging.currentPage == pageButton}?active"></a>
+            </li>
+            <li class="page-item">
+                <a class="page-link"
+                   th:href="@{?(searchType = ${searchType}, searchValue = ${searchValue}, page = ${paging.endNumber+1})}"
+                   th:classappend="${paging.endNumber == list.userManageDtoList.totalPages}?disabled">
+                    <span aria-hidden="true">다음</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link"
+                   th:href="@{?(searchType = ${searchType}, searchValue = ${searchValue}, page = ${list.userManageDtoList.totalPages})}"
+                   aria-label="Previous">
+                    <span aria-hidden="true">끝</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 
-</body>
+    <script th:inline="javascript">
+        function changeUserStatus(obj) {
+            let userId=obj.dataset.id;
+            $.ajax({
+                url: `/admin/user/${userId}`,
+                type: 'patch',
+                data: {userStatus: $("#userStatus_"+userId).val()},
+                cache: false,
+                success: function (result) {
+                    console.log(result);
+                    location.reload();
+                }, error: function () {
+                    console.log("실패");
+                }
+            });
+        }
+
+        function deleteUser(obj) {
+            let userId=obj.dataset.id;
+            console.log(userId);
+            $.ajax({
+                url: `/admin/user/${userId}`,
+                type: 'delete',
+                cache: false,
+                success: function (result) {
+                    console.log(result);
+                    location.reload();
+                }, error: function () {
+                    console.log("실패");
+                }
+            });
+        }
+    </script>
+</th:block>
+
 </html>

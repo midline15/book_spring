@@ -7,6 +7,10 @@ import com.woori.bookspring.service.BookCommentService;
 import com.woori.bookspring.service.CommentService;
 import com.woori.bookspring.service.EpisodeCommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,8 +30,8 @@ public class MyArticleController {
 
 
     @GetMapping("user/{user-id}/article/{article-type}")
-    public String manageMyArticle(@PathVariable("user-id") Long userId, @PathVariable("article-type") String articleType, Model model){
-        List<ArticleDto> articleList = articleService.getUserArticleList(userId, ArticleType.getArticleType(articleType));
+    public String manageMyArticle(@PageableDefault(sort = "regTime", direction = Sort.Direction.DESC) Pageable pageable, @PathVariable("user-id") Long userId, @PathVariable("article-type") String articleType, Model model){
+        Page<ArticleDto> articleList = articleService.getUserArticleList(pageable, userId, ArticleType.getArticleType(articleType));
         ArticleListDto articleListDto = new ArticleListDto(articleType, articleList);
         model.addAttribute("list", articleListDto);
         return "user/myArticle";

@@ -5,6 +5,10 @@ import com.woori.bookspring.dto.*;
 import com.woori.bookspring.service.ArticleService;
 import com.woori.bookspring.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -23,8 +27,13 @@ public class ArticleController {
     private final CommentService commentService;
   
     @GetMapping("article/{article-type}")
-    public String getArticleList(Model model, @PathVariable("article-type") String articleType, @RequestParam(required = false) String searchType, @RequestParam(required = false) String searchValue){
-        List<ArticleDto> articleList = articleService.getArticleList(ArticleType.getArticleType(articleType), searchType, searchValue);
+    public String getArticleList(
+            @PageableDefault(sort = "regTime", direction = Sort.Direction.DESC) Pageable pageable, Model model,
+            @PathVariable("article-type") String articleType,
+            @RequestParam(required = false) String searchType,
+            @RequestParam(required = false) String searchValue){
+
+        Page<ArticleDto> articleList = articleService.getArticleList(pageable, ArticleType.getArticleType(articleType), searchType, searchValue);
         ArticleListDto articleListDto = new ArticleListDto(articleType, articleList);
 
         model.addAttribute("list", articleListDto);

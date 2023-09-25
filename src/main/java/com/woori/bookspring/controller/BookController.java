@@ -29,13 +29,13 @@ public class BookController {
 
     private final BookService bookService;
     private final BookCommentService bookCommentService;
-    private final PaginationService paginationService;
 
     @GetMapping("book") // 리스트조회
     public String bookList(Model model,
+                           @RequestParam(defaultValue = "1") int page,
                            @RequestParam(value = "searchType", required = false) String searchType,
                            @RequestParam(value = "searchValue", required = false) String searchValue,
-                           @PageableDefault(page = 0, size = 4, direction = Sort.Direction.DESC) Pageable pageable) {
+                           @PageableDefault(size = 4,sort = "regTime",direction = Sort.Direction.DESC) Pageable pageable) {
 
         // 검색설정
         SearchParam searchParam = new SearchParam();
@@ -44,7 +44,7 @@ public class BookController {
         model.addAttribute("param", searchParam);
 
         // 페이징 처리
-        Page<BookFormDto> paging = (Page<BookFormDto>) bookService.getBookList(pageable,searchType,searchValue);
+        Page<BookFormDto> paging = bookService.getBookList(pageable.withPage(page-1),searchType,searchValue);
 
         /*if (searchType != null && searchValue != null) {
             // 검색을 수행한 경우 페이징 처리

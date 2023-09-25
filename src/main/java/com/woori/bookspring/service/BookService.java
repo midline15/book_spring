@@ -1,14 +1,8 @@
 package com.woori.bookspring.service;
 
-import com.woori.bookspring.dto.BookCommentDto;
-import com.woori.bookspring.dto.BookDto;
 import com.woori.bookspring.dto.BookFormDto;
-import com.woori.bookspring.dto.EbookFormDto;
 import com.woori.bookspring.entity.Book;
-import com.woori.bookspring.entity.BookComment;
 import com.woori.bookspring.entity.Cover;
-import com.woori.bookspring.entity.User;
-import com.woori.bookspring.entity.ebook.Ebook;
 import com.woori.bookspring.repository.BookCommentRepository;
 import com.woori.bookspring.repository.BookRepository;
 import com.woori.bookspring.repository.CoverRepository;
@@ -21,9 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Transactional
 @RequiredArgsConstructor
@@ -86,5 +78,9 @@ public class BookService {
 
     public void calculateAvgScore(Long bookId) {
         bookRepository.findById(bookId).orElseThrow(EntityNotFoundException::new).calculateAvgScore();
+    }
+
+    public Page<BookFormDto> getTopBookList(Pageable pageable) {
+        return bookRepository.findAll(pageable).map(Book::of);
     }
 }
