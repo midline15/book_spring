@@ -1,13 +1,10 @@
 package com.woori.bookspring.entity;
 
 import com.woori.bookspring.constant.SellStatus;
-import com.woori.bookspring.dto.BookDto;
 import com.woori.bookspring.dto.BookFormDto;
-import com.woori.bookspring.dto.CartBookDto;
 import com.woori.bookspring.entity.base.BaseBook;
-import com.woori.bookspring.exception.OutOfStockException;
+import com.woori.bookspring.controller.exception.OutOfStockException;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;

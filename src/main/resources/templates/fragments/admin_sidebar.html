@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<!-- Sidebar-->
+<div class="border-end bg-white" id="sidebar-wrapper" th:fragment="sidebar">
+    <div class="sidebar-heading border-bottom bg-light">관리자 페이지</div>
+    <div class="list-group list-group-flush">
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/admin/user">회원 목록</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/admin/writer">작가 목록</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/admin/admin">관리자 목록</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/admin/question">질문 목록</a>
+    </div>
+</div>
+</html>

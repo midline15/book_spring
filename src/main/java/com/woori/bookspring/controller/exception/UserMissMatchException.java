@@ -1,4 +1,4 @@
-package com.woori.bookspring.exception;
+package com.woori.bookspring.controller.exception;
 
 public class UserMissMatchException extends RuntimeException{
 

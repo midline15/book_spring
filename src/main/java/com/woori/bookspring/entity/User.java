@@ -4,9 +4,11 @@ import com.woori.bookspring.constant.OAuthType;
 import com.woori.bookspring.constant.Role;
 import com.woori.bookspring.constant.UserStatus;
 import com.woori.bookspring.dto.SignupForm;
+import com.woori.bookspring.dto.UserManageDto;
 import com.woori.bookspring.dto.UserUpdateDto;
 import com.woori.bookspring.entity.base.BaseEntity;
-import com.woori.bookspring.exception.OutOfStockException;
+import com.woori.bookspring.entity.ebook.Inventory;
+import com.woori.bookspring.entity.ebook.Like;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +17,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -76,14 +77,17 @@ public class User extends BaseEntity {
                 .build();
     }
 
-    /*@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Inventory inventory;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Like like;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Cart cart;*/
+    private Cart cart;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<EpisodeUser> episodeUserList;
 
     public UserUpdateDto of() {
         return UserUpdateDto.builder()
@@ -103,7 +107,13 @@ public class User extends BaseEntity {
     }
   
     public void changeUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
+        if(userStatus == UserStatus.ACTIVE){
+            this.userStatus = UserStatus.BLOCK;
+        }else if (userStatus == UserStatus.BLOCK){
+            this.userStatus = UserStatus.ACTIVE;
+        }else if(userStatus == UserStatus.DISABLE){
+            this.userStatus = userStatus;
+        }
     }
 
     public void addTicket(int amount) {
@@ -115,5 +125,14 @@ public class User extends BaseEntity {
             throw new RuntimeException("이용권이 부족합니다.");
         }
         totalTicket -= amount;
+    }
+
+    public UserManageDto forManage() {
+        return UserManageDto.builder()
+                .id(id)
+                .email(email)
+                .nickname(nickname)
+                .userStatus(userStatus.toString())
+                .build();
     }
 }

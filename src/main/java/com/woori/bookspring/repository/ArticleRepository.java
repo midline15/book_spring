@@ -2,19 +2,21 @@ package com.woori.bookspring.repository;
 
 import com.woori.bookspring.constant.ArticleType;
 import com.woori.bookspring.entity.board.Article;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Arrays;
 import java.util.List;
 
 public interface ArticleRepository extends JpaRepository<Article, Long> {
-    List<Article> findByArticleType(ArticleType articleType);
+    Page<Article> findByArticleType(Pageable pageable, ArticleType articleType);
 
-    List<Article> findByUserIdAndArticleType(Long userId, ArticleType articleType);
+    Page<Article> findByUserIdAndArticleType(Pageable pageable, Long userId, ArticleType articleType);
 
-    List<Article> findByArticleTypeAndTitleContains(ArticleType articleType, String searchValue);
+    Page<Article> findByArticleTypeAndTitleContains(Pageable pageable, ArticleType articleType, String searchValue);
 
-    List<Article> findByArticleTypeAndContentContains(ArticleType articleType, String searchValue);
+    Page<Article> findByArticleTypeAndContentContains(Pageable pageable, ArticleType articleType, String searchValue);
 
-    List<Article> findByArticleTypeAndUser_NicknameContains(ArticleType articleType, String searchValue);
+    Page<Article> findByArticleTypeAndUser_NicknameContains(Pageable pageable, ArticleType articleType, String searchValue);
 }

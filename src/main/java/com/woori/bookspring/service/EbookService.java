@@ -1,15 +1,14 @@
 package com.woori.bookspring.service;
 
-import com.woori.bookspring.dto.BookFormDto;
 import com.woori.bookspring.dto.EbookFormDto;
 import com.woori.bookspring.dto.EpisodeUserDto;
-import com.woori.bookspring.entity.Book;
 import com.woori.bookspring.entity.Cover;
-import com.woori.bookspring.entity.EpisodeUser;
 import com.woori.bookspring.entity.ebook.Ebook;
 import com.woori.bookspring.repository.EbookRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -72,19 +71,21 @@ public class EbookService {
     }
 
     @Transactional(readOnly = true)
-    public List<EbookFormDto> getEbookList(String type, String keyword) {
-        List<Ebook> ebookList;
+    public Page<EbookFormDto> getEbookList(Pageable pageable, String type, String keyword) {
+        Page<Ebook> ebookList;
         if ("title".equals(type)) {
-            ebookList = ebookRepository.findByTitleContaining(keyword);
+            ebookList = ebookRepository.findByTitleContaining(pageable, keyword);
         } else if ("intro".equals(type)) {
-            ebookList = ebookRepository.findByIntroContaining(keyword);
+            ebookList = ebookRepository.findByIntroContaining(pageable, keyword);
         } else {
-            ebookList = ebookRepository.findAll();
+            ebookList = ebookRepository.findAll(pageable);
         }
 
-        return ebookList.stream().map(Ebook::of).toList();
+        return ebookList.map(Ebook::of);
     }
 
 
-
+    public Page<EbookFormDto> getTopEbookList(Pageable pageable) {
+        return ebookRepository.findAll(pageable).map(Ebook::of);
+    }
 }

@@ -1,6 +1,5 @@
 package com.woori.bookspring.repository;
 
-import com.woori.bookspring.dto.BookDto;
 import com.woori.bookspring.entity.Book;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -3,23 +3,20 @@ package com.woori.bookspring.service;
 import com.woori.bookspring.config.auth.UserDetailsImpl;
 import com.woori.bookspring.constant.Role;
 import com.woori.bookspring.constant.UserStatus;
-import com.woori.bookspring.dto.AdminDto;
-import com.woori.bookspring.dto.SignupForm;
-import com.woori.bookspring.dto.UserUpdateDto;
-import com.woori.bookspring.dto.WriterDto;
+import com.woori.bookspring.dto.*;
 import com.woori.bookspring.entity.Ticket;
 import com.woori.bookspring.entity.User;
-import com.woori.bookspring.exception.UserMissMatchException;
+import com.woori.bookspring.controller.exception.UserMissMatchException;
 import com.woori.bookspring.repository.TicketRepository;
 import com.woori.bookspring.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Transactional
 @RequiredArgsConstructor
@@ -59,13 +56,14 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<User> getUserList(Role role) {
-        return userRepository.findByRole(role);
+    public Page<UserManageDto> getUserList(Pageable pageable, Role role) {
+        return userRepository.findByRole(pageable, role).map(User::forManage);
     }
 
-    public void changeUserStatus(Long userId, UserStatus userStatus) {
+    public String changeUserStatus(Long userId, UserStatus userStatus) {
         User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
         user.changeUserStatus(userStatus);
+        return user.getUserStatus().toString();
     }
 
     public void createWriter(WriterDto writerDto) {
@@ -88,5 +86,9 @@ public class UserService {
 
     private void validateUser(String findEmail, String email){
         if (!findEmail.equals(email)) throw new UserMissMatchException();
+    }
+
+    public void deleteUser(Long userId) {
+        userRepository.deleteById(userId);
     }
 }
