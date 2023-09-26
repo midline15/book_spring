@@ -24,6 +24,8 @@ public class Book extends BaseBook {
 
     private int stockNumber; // 재고
 
+    private String writer; // 작가
+
     private String publisher; // 출판사
 
     private LocalDate origDate; // 초판 발행일

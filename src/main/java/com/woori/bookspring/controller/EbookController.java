@@ -30,7 +30,9 @@ public class EbookController {
     @GetMapping("/ebook") // e북 조회
     public String getEbookList(Model model,
                                @PageableDefault(sort = "regTime", direction = Sort.Direction.DESC) Pageable pageable,
-                               @RequestParam(defaultValue = "1") int page, @RequestParam(value = "searchType", required = false) String searchType, @RequestParam(value = "searchValue", required = false) String searchValue) {
+                               @RequestParam(defaultValue = "1") int page,
+                               @RequestParam(required = false) String searchType,
+                               @RequestParam(required = false) String searchValue) {
 
         Page<EbookFormDto> ebookList = ebookService.getEbookList(pageable.withPage(page - 1), searchType, searchValue);
 
@@ -48,13 +50,11 @@ public class EbookController {
 
     @GetMapping("/ebook/{ebook-id}") //e북 id 단건 조회
     public String getEbook(@PathVariable("ebook-id") Long ebookId, Model model, Principal principal) {
-        if (principal == null) {
-            model.addAttribute("ebook", ebookService.getEbook(ebookId));
-        } else {
-            EbookFormDto ebook = ebookService.getEbook(ebookId, principal.getName());
+        EbookFormDto ebook = ebookService.getEbook(ebookId, principal.getName());
+        if(!principal.getName().isBlank()){
             ebook.setLikeEbookId(likeService.getLikeEbook(ebookId, principal.getName()));
-            model.addAttribute("ebook", ebook);
         }
+        model.addAttribute("ebook", ebook);
         return "ebook/ebook";
     }
 

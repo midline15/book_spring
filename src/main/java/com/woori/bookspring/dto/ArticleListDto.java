@@ -16,5 +16,6 @@ public class ArticleListDto {
 
     private String articleType;
     private Page<ArticleDto> articleDtoList;
+    private int totalPages;
 }
 

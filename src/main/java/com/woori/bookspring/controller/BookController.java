@@ -33,47 +33,21 @@ public class BookController {
     @GetMapping("book") // 리스트조회
     public String bookList(Model model,
                            @RequestParam(defaultValue = "1") int page,
-                           @RequestParam(value = "searchType", required = false) String searchType,
-                           @RequestParam(value = "searchValue", required = false) String searchValue,
-                           @PageableDefault(size = 4,sort = "regTime",direction = Sort.Direction.DESC) Pageable pageable) {
+                           @RequestParam(required = false) String searchType,
+                           @RequestParam(required = false) String searchValue,
+                           @PageableDefault(sort = "regTime",direction = Sort.Direction.DESC) Pageable pageable) {
 
-        // 검색설정
-        SearchParam searchParam = new SearchParam();
-        searchParam.setSearchType(searchType);
-        searchParam.setSearchValue(searchValue);
-        model.addAttribute("param", searchParam);
+        Page<BookFormDto> bookList = bookService.getBookList(pageable.withPage(page-1),searchType,searchValue);
 
-        // 페이징 처리
-        Page<BookFormDto> paging = bookService.getBookList(pageable.withPage(page-1),searchType,searchValue);
+        int totalPage = bookList.getTotalPages();
 
-        /*if (searchType != null && searchValue != null) {
-            // 검색을 수행한 경우 페이징 처리
-            paging = bookService.getBookList(pageable, searchType, searchValue);
-        } else {
-            paging = bookService.getBookList(pageable, null, null);
-        }*/
+        PaginationService paging = new PaginationService();
 
-        //페이지블럭 처리
-        //1을 더해주는 이유는 pageable은 0부터라 1을 처리하려면 1을 더해서 시작해주어야 한다.
-        Integer nowPage = paging.getPageable().getPageNumber() + 1;
-        Long totalPage = paging.getTotalElements();
-
-        Paginator paginator = new Paginator(5, 4, totalPage);
-
-        for (int i = 1; i <= paginator.getTotalLastPageNum(); i++) {
-            System.out.println(paginator.getElasticBlock(i));
-        }
-
-        Map<String, Object> sPage = paginator.getElasticBlock(nowPage);
-        int startPage = (int) sPage.get("blockFirstPageNum");
-        int endPage = (int) sPage.get("blockLastPageNum");
-
+        model.addAttribute("list", bookList);
+        model.addAttribute("bar", paging.getPaginationBarNumbers(page, totalPage));
         model.addAttribute("paging", paging);
-        model.addAttribute("nowPage", nowPage);
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
-
-        model.addAttribute("list", paging);
+        model.addAttribute("searchType", searchType);
+        model.addAttribute("searchValue", searchValue);
 
         return "book/bookList";
     }

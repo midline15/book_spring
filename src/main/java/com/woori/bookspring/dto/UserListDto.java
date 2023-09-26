@@ -16,5 +16,6 @@ public class UserListDto {
 
     private String role;
     private Page<UserManageDto> userManageDtoList;
+    private int totalPages;
 }
 
