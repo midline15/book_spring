@@ -8,7 +8,9 @@ import com.woori.bookspring.repository.EbookRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,25 +34,22 @@ public class EbookService {
     }
 
     @Transactional(readOnly = true)
-    public EbookFormDto getEbook(Long ebookId){
-        return ebookRepository.findById(ebookId).orElseThrow(EntityNotFoundException::new).of();
-    }
-
-    @Transactional(readOnly = true)
     public EbookFormDto getEbook(Long ebookId, String email) {
         // 이북을 찾고
         EbookFormDto ebookFormDto = ebookRepository.findById(ebookId).orElseThrow(EntityNotFoundException::new).of();
-        // 해당 이북에서 구입한 에피소드 목록을 찾고
-        List<EpisodeUserDto> episodeUserList = episodeService.getEpisodeUserList(email,ebookId);
-        episodeUserList.forEach(episodeUserDto -> {
-            ebookFormDto.getEpisodeList().forEach(episodeFormDto -> {
-                // 이북의 에피소드와 구매한 에피소드를 비교하여
-                if(episodeUserDto.getEpisodeId().equals(episodeFormDto.getId())){
-                    // 구매 상태를 확인
-                    episodeFormDto.checkBuy(true);
-                }
+        if(!email.isBlank()){ // 로그인했으면
+            // 해당 이북에서 구입한 에피소드 목록을 찾고
+            List<EpisodeUserDto> episodeUserList = episodeService.getEpisodeUserList(email,ebookId);
+            episodeUserList.forEach(episodeUserDto -> {
+                ebookFormDto.getEpisodeList().forEach(episodeFormDto -> {
+                    // 이북의 에피소드와 구매한 에피소드를 비교하여
+                    if(episodeUserDto.getEpisodeId().equals(episodeFormDto.getId())){
+                        // 구매 상태를 확인
+                        episodeFormDto.checkBuy(true);
+                    }
+                });
             });
-        });
+        }
         return ebookFormDto;
     }
 
@@ -77,6 +76,9 @@ public class EbookService {
             ebookList = ebookRepository.findByTitleContaining(pageable, keyword);
         } else if ("intro".equals(type)) {
             ebookList = ebookRepository.findByIntroContaining(pageable, keyword);
+        }  else if ("rank".equals(type)) {
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("totalSales").descending());
+            ebookList = ebookRepository.findAll(pageable);
         } else {
             ebookList = ebookRepository.findAll(pageable);
         }

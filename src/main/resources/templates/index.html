@@ -54,35 +54,39 @@
     </div>
 
     <p>Book 랭킹</p>
-    <div class="row" th:each="book : ${topBookList}">
-        <div class="col-md-4 margin">
-            <div class="card">
-                <a class="text-dark">
-                    <img class="card-img-top" th:src="${book.url}">
-                    <div class="card-body">
-                        <h4 class="card-title" th:text="${book.title}"></h4>
-                        <p class="card-text"></p>
-                        <h3 class="card-title text-danger"></h3>
-                    </div>
-                </a>
+    <th:block>
+        <div class="row">
+            <div class="col-md-4 margin" th:each="book : ${topBookList}">
+                <div class="card">
+                    <a class="text-dark">
+                        <img class="card-img-top" th:src="${book.url}">
+                        <div class="card-body">
+                            <h4 class="card-title" th:text="${book.title}"></h4>
+                            <p class="card-text"></p>
+                            <h3 class="card-title text-danger"></h3>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
+    </th:block>
 
-    <p>Ebook 랭킹</p>
-    <div class="row" th:each="ebook : ${topEbookList}">
-        <div class="col-md-4 margin">
-            <div class="card">
-                <a class="text-dark">
-                    <img class="card-img-top" th:src="${ebook.url}">
-                    <div class="card-body">
-                        <h4 class="card-title" th:text="${ebook.title}"></h4>
-                        <p class="card-text"></p>
-                        <h3 class="card-title text-danger"></h3>
-                    </div>
-                </a>
+    <p>Ebook 랭킹 <a href="/ebook?searchType=rank">더보기</a></p>
+    <th:block>
+        <div class="row">
+            <div class="col-md-4 margin" th:each="ebook : ${topEbookList}">
+                <div class="card">
+                    <a class="text-dark">
+                        <img class="card-img-top" th:src="${ebook.url}">
+                        <div class="card-body">
+                            <h4 class="card-title" th:text="${ebook.title}"></h4>
+                            <p class="card-text"></p>
+                            <h3 class="card-title text-danger"></h3>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
+    </th:block>
 
 </div>

@@ -39,9 +39,9 @@ public class AdminController {
 
         Role userRole = Role.valueOf(role.toUpperCase());
         Page<UserManageDto> userManageDtoList = userService.getUserList(pageable, userRole);
-        UserListDto userListDto = new UserListDto(role, userManageDtoList);
 
         int totalPage = userManageDtoList.getTotalPages();
+        UserListDto userListDto = new UserListDto(role, userManageDtoList, totalPage);
 
         PaginationService paging = new PaginationService();
 
@@ -112,4 +112,8 @@ public class AdminController {
         return "admin/questionList";
     }
 
+    @GetMapping("admin/insert")
+    public String insertUser(){
+        return "admin/insert";
+    }
 }

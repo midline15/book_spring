@@ -17,11 +17,16 @@
                 <table class="table" id="article-table">
                     <thead>
                     <tr>
-                        <th class="title col-6"><a>ID</a></th>
-                        <th class="user-id"><a>EMAIL</a></th>
-                        <th class="created-at"><a>NICKNAME</a></th>
-                        <th>상태</th>
-                        <th>탈퇴</th>
+                        <th>ID</th>
+                        <th>EMAIL</th>
+                        <th>NICKNAME</th>
+                        <th:block th:if="${list.role == 'user'}">
+                            <th>상태</th>
+                            <th>탈퇴</th>
+                        </th:block>
+                        <th:block th:unless="${list.role == 'user'}">
+                            <th>삭제</th>
+                        </th:block>
                     </tr>
                     </thead>
                     <tbody>
@@ -29,69 +34,48 @@
                         <td>[[${user.id}]]</td>
                         <td>[[${user.email}]]</td>
                         <td>[[${user.nickname}]]</td>
-                        <td><input type="hidden" th:id="'userStatus_'+${user.id}" th:value="${user.userStatus}">[[${user.userStatus}]]</td>
-                        <td>
-                            <button th:if="${user.userStatus == 'ACTIVE'}" onclick="changeUserStatus(this)"
-                                    class="btn btn-secondary" th:data-id="${user.id}">정지
-                            </button>
-                            <button th:if="${user.userStatus == 'BLOCK'}" onclick="changeUserStatus(this)"
-                                    class="btn btn-primary" th:data-id="${user.id}">해제
-                            </button>
-                        </td>
-                        <td>
-                            <button th:if="${user.userStatus == 'DISABLE'}" class="btn-danger" onclick="deleteUser(this)" th:data-id="${user.id}">탈퇴</button>
-                        </td>
+                        <th:block th:if="${list.role == 'user'}">
+                            <td>
+                                <input type="hidden" th:id="'userStatus_'+${user.id}" th:value="${user.userStatus}">[[${user.userStatus}]]
+                                <button th:if="${user.userStatus == 'ACTIVE'}" onclick="changeUserStatus(this)"
+                                        class="btn btn-secondary" th:data-id="${user.id}">정지
+                                </button>
+                                <button th:if="${user.userStatus == 'BLOCK'}" onclick="changeUserStatus(this)"
+                                        class="btn btn-primary" th:data-id="${user.id}">해제
+                                </button>
+                            </td>
+                            <td>
+                                <button th:if="${user.userStatus == 'DISABLE'}" class="btn-danger"
+                                        onclick="deleteUser(this)" th:data-id="${user.id}">탈퇴
+                                </button>
+                            </td>
+                        </th:block>
+                        <th:block th:unless="${list.role == 'user'}">
+                            <td>
+                                <button class="btn-danger" onclick="deleteUser(this)" th:data-id="${user.id}">삭제
+                                </button>
+                            </td>
+                        </th:block>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-            <li class="page-item">
-                <a class="page-link" th:href="@{?page=1 (searchType = ${searchType}, searchValue = ${searchValue})}"
-                   aria-label="Previous">
-                    <span aria-hidden="true">처음</span>
-                </a>
-            </li>
-            <li class="page-item">
-                <a class="page-link"
-                   th:href="@{?(searchType = ${searchType}, searchValue = ${searchValue}, page = ${paging.startNumber-1})}"
-                   th:classappend="${paging.startNumber == 1}?disabled">
-                    <span aria-hidden="true">이전</span>
-                </a>
-            </li>
-            <li class="page-item"
-                th:each="pageButton : ${bar}">
-                <a class="page-link"
-                   th:href="@{?(searchType = ${searchType}, searchValue = ${searchValue}, page = ${pageButton})}"
-                   th:text="${pageButton}" th:classappend="${paging.currentPage == pageButton}?active"></a>
-            </li>
-            <li class="page-item">
-                <a class="page-link"
-                   th:href="@{?(searchType = ${searchType}, searchValue = ${searchValue}, page = ${paging.endNumber+1})}"
-                   th:classappend="${paging.endNumber == list.userManageDtoList.totalPages}?disabled">
-                    <span aria-hidden="true">다음</span>
-                </a>
-            </li>
-            <li class="page-item">
-                <a class="page-link"
-                   th:href="@{?(searchType = ${searchType}, searchValue = ${searchValue}, page = ${list.userManageDtoList.totalPages})}"
-                   aria-label="Previous">
-                    <span aria-hidden="true">끝</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+    <div class="row" th:unless="${list.role == 'user'}">
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <a class="btn btn-primary me-md-2" role="button" href="/admin/insert">등록</a>
+        </div>
+    </div>
+    <th:block th:replace="~{fragments/pagination}"></th:block>
 
     <script th:inline="javascript">
         function changeUserStatus(obj) {
-            let userId=obj.dataset.id;
+            let userId = obj.dataset.id;
             $.ajax({
                 url: `/admin/user/${userId}`,
                 type: 'patch',
-                data: {userStatus: $("#userStatus_"+userId).val()},
+                data: {userStatus: $("#userStatus_" + userId).val()},
                 cache: false,
                 success: function (result) {
                     console.log(result);
@@ -103,7 +87,7 @@
         }
 
         function deleteUser(obj) {
-            let userId=obj.dataset.id;
+            let userId = obj.dataset.id;
             console.log(userId);
             $.ajax({
                 url: `/admin/user/${userId}`,

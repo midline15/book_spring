@@ -23,8 +23,8 @@ public class MainController {
 
     @GetMapping
     public String mainPage(@PageableDefault(size = 3, sort = "totalSales",direction = Sort.Direction.DESC) Pageable pageable, Model model){
-        model.addAttribute("topBookList", bookService.getTopBookList(pageable));
-        model.addAttribute("topEbookList", ebookService.getTopEbookList(pageable));
+        model.addAttribute("topBookList", bookService.getBookList(pageable,null,null));
+        model.addAttribute("topEbookList", ebookService.getEbookList(pageable,null,null));
         return "index";
     }
 

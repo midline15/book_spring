@@ -10,12 +10,12 @@ import com.woori.bookspring.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @Transactional
 @RequiredArgsConstructor
@@ -58,29 +58,25 @@ public class BookService {
 
     @Transactional(readOnly = true)
     public Page<BookFormDto> getBookList(Pageable pageable, String type, String keyword) {
-        Page<Book> bookPage;
+        Page<Book> bookList;
 
         if ("title".equals(type)) {
-            bookPage = bookRepository.findByTitleContaining(keyword, pageable);
+            bookList = bookRepository.findByTitleContaining(keyword, pageable);
         } else if ("publisher".equals(type)) {
-            bookPage = bookRepository.findByPublisherContaining(keyword, pageable);
+            bookList = bookRepository.findByPublisherContaining(keyword, pageable);
+        } else if ("writer".equals(type)) {
+            bookList = bookRepository.findByWriterContaining(keyword, pageable);
+        } else if ("rank".equals(type)) {
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("totalSales").descending());
+            bookList = bookRepository.findAll(pageable);
         } else {
-            bookPage = bookRepository.findAll(pageable);
+            bookList = bookRepository.findAll(pageable);
         }
 
-        return bookPage.map(Book::of);
-    }
-
-    public Page<BookFormDto> getAllBooks(Pageable pageable){
-        Page<Book> bookPage = bookRepository.findAll(pageable);
-        return bookPage.map(Book::of);
+        return bookList.map(Book::of);
     }
 
     public void calculateAvgScore(Long bookId) {
         bookRepository.findById(bookId).orElseThrow(EntityNotFoundException::new).calculateAvgScore();
-    }
-
-    public Page<BookFormDto> getTopBookList(Pageable pageable) {
-        return bookRepository.findAll(pageable).map(Book::of);
     }
 }
