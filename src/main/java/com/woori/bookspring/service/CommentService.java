@@ -9,6 +9,8 @@ import com.woori.bookspring.repository.CommentRepository;
 import com.woori.bookspring.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +42,7 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public List<CommentDto> getCommentList(Long userId) {
-        return commentRepository.findByUserId(userId).stream().map(Comment::of).toList();
+    public Page<CommentDto> getCommentList(Pageable pageable, Long userId) {
+        return commentRepository.findByUserId(pageable, userId).map(Comment::of);
     }
 }

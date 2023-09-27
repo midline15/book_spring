@@ -3,6 +3,7 @@ package com.woori.bookspring.entity;
 import com.woori.bookspring.constant.OAuthType;
 import com.woori.bookspring.constant.Role;
 import com.woori.bookspring.constant.UserStatus;
+import com.woori.bookspring.dto.InsertForm;
 import com.woori.bookspring.dto.SignupForm;
 import com.woori.bookspring.dto.UserManageDto;
 import com.woori.bookspring.dto.UserUpdateDto;
@@ -65,18 +66,6 @@ public class User extends BaseEntity {
     @Builder.Default
     private List<Ticket> ticketList = new ArrayList<>();*/
 
-    public static User createUser(SignupForm dto) {
-        return User.builder()
-                .email(dto.getEmail())
-                .password(dto.getPassword())
-                .nickname(dto.getNickname())
-                .address(dto.getAddress())
-                .birth(dto.getBirth())
-                .phone(dto.getPhone())
-                .totalTicket(100)
-                .build();
-    }
-
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Inventory inventory;
 
@@ -89,6 +78,29 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<EpisodeUser> episodeUserList;
 
+    public static User createUser(SignupForm dto) {
+        return User.builder()
+                .email(dto.getEmail())
+                .password(dto.getPassword())
+                .nickname(dto.getNickname())
+                .address(dto.getAddress())
+                .birth(dto.getBirth())
+                .phone(dto.getPhone())
+                .role(Role.USER)
+                .totalTicket(100)
+                .build();
+    }
+    public static User createUser(InsertForm dto) {
+        return User.builder()
+                .email(dto.getEmail())
+                .password(dto.getPassword())
+                .nickname(dto.getNickname())
+                .address(dto.getAddress())
+                .birth(dto.getBirth())
+                .phone(dto.getPhone())
+                .role(Role.valueOf(dto.getRole()))
+                .build();
+    }
     public UserUpdateDto of() {
         return UserUpdateDto.builder()
                 .id(id)
@@ -111,7 +123,9 @@ public class User extends BaseEntity {
             this.userStatus = UserStatus.BLOCK;
         }else if (userStatus == UserStatus.BLOCK){
             this.userStatus = UserStatus.ACTIVE;
-        }else if(userStatus == UserStatus.DISABLE){
+        }else if(userStatus == UserStatus.DISABLE && this.userStatus == UserStatus.DISABLE){
+            this.userStatus = UserStatus.ACTIVE;
+        }else if(userStatus == UserStatus.DISABLE && this.userStatus == UserStatus.ACTIVE){
             this.userStatus = userStatus;
         }
     }

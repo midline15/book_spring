@@ -12,39 +12,40 @@
                 $("input[name=articleChkBox]").prop("checked", false);
             }
         }
-        function deleteAllArticles() {
-            if (confirm("정말 삭제하시겠습니까?")){
-                $("input[name=articleChkBox]:checked").each(function () {
-                    var articleId = $(this).val();
-                    deleteArticleById(articleId);
+        function deleteArticles() {
+            let articleType = [[${articleType}]]
+            var dataList = [];
+
+            $("input[name=articleChkBox]:checked").each(function () {
+                let articleId = $(this).val();
+                dataList.push({
+                    id: articleId
                 });
-            }
-        }
-        function deleteArticleById(articleId) {
-            let articleType = [[${list.articleType}]];
+                console.log(articleId)
+            });
+            var param = JSON.stringify({
+                articleDtoList: dataList
+            });
 
             $.ajax({
-                url: `/article/${articleType}/${articleId}`,
-                type: "DELETE",
+                url: `/user/article/${articleType}`,
+                type: "delete",
+                contentType: "application/json",
+                data: param,
                 cache: false,
                 success: function (result, status) {
                     console.log(result)
-                    location.reload(); // 페이지 리로드 예시
+                    alert("삭제완료");
+                    location.href = `/user/article/${articleType}`;
                 },
-                error: function (jqXHR, status, error) {
-                    console.log(error)
-                    if (jqXHR.status == '401') {
-                        alert('로그인 후 이용해주세요');
-                        location.href = '/user/login';
-                    } else {
-                        alert(jqXHR.responseJSON.message);
-                    }
-                }
             });
         }
     </script>
 </th:block>
 <th:block layout:fragment="content">
+    <h1 th:if="${articleType.equals('01')}">자유 게시판</h1>
+    <h1 th:if="${articleType.equals('02')}">리뷰 게시판</h1>
+    <h1 th:if="${articleType.equals('05')}">Q&A</h1>
     <div class="row">
         <div class="card card-margin search-form">
             <div class="card-body p-0">
@@ -96,10 +97,10 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="article : ${list.articleDtoList}">
+            <tr th:each="article : ${list}">
                 <td class="text-center align-middle"><input type="checkbox" name="articleChkBox" th:value="${article.id}"></td>
                 <td class="title"><a th:text="${article.title}"
-                                     th:href="@{/article/{articleType}/{article-id} (article-type = ${list.articleType}, article-id = ${article.id})}"></a></td>
+                                     th:href="@{/article/{articleType}/{article-id} (article-type = ${articleType}, article-id = ${article.id})}"></a></td>
                 <td class="user-id" th:text="${article.createdBy}"></td>
                 <td class="created-at">
                     <time th:text="${article.regTime}"></time>
@@ -107,7 +108,7 @@
             </tr>
             </tbody>
         </table>
-        <button type="button" class="btn btn-danger btn-lg" onclick="deleteAllArticles()">선택삭제</button>
+        <button type="button" class="btn btn-danger btn-lg" onclick="deleteArticles()">선택삭제</button>
     </div>
-
+    <th:block th:replace="~{fragments/pagination}"></th:block>
 </th:block>

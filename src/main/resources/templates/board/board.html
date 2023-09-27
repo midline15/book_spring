@@ -5,7 +5,7 @@
       layout:decorate="~{layouts/user_layout}">
 <main class="container" layout:fragment="content">
 
-    <h1 th:text="${list.articleType == '01'? '자유 게시판': '리뷰 게시판'}"></h1>
+    <h1 th:text="${articleType == '01'? '자유 게시판': '리뷰 게시판'}"></h1>
     <div class="row">
         <div class="card card-margin search-form">
             <div class="card-body p-0">
@@ -55,7 +55,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="article : ${list.articleDtoList}">
+            <tr th:each="article : ${list}">
                 <td class="title"><a th:text="${article.title}"
                                      th:href="@{/article/{article-type}/{article-id} (article-type=${list.articleType},article-id = ${article.id})}"></a></td>
                 <td class="user-id" th:text="${article.createdBy}"></td>
@@ -69,7 +69,7 @@
 
     <div class="row" sec:authorize="isAuthenticated()">
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-            <a class="btn btn-primary me-md-2" role="button" id="write-article" th:href="@{/article/{article-type}/new(article-type = ${list.articleType})}">글쓰기</a>
+            <a class="btn btn-primary me-md-2" role="button" id="write-article" th:href="@{/article/{article-type}/new(article-type = ${articleType})}">글쓰기</a>
         </div>
     </div>
 

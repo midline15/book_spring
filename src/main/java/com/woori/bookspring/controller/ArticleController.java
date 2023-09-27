@@ -1,7 +1,9 @@
 package com.woori.bookspring.controller;
 
 import com.woori.bookspring.constant.ArticleType;
-import com.woori.bookspring.dto.*;
+import com.woori.bookspring.dto.ArticleDto;
+import com.woori.bookspring.dto.ArticleFormDto;
+import com.woori.bookspring.dto.CommentDto;
 import com.woori.bookspring.service.ArticleService;
 import com.woori.bookspring.service.CommentService;
 import com.woori.bookspring.service.PaginationService;
@@ -17,8 +19,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Controller
@@ -36,17 +36,8 @@ public class ArticleController {
                                  @RequestParam(required = false) String searchValue) {
 
         Page<ArticleDto> articleList = articleService.getArticleList(pageable, ArticleType.getArticleType(articleType), searchType, searchValue);
-
-        int totalPage = articleList.getTotalPages();
-        ArticleListDto articleListDto = new ArticleListDto(articleType, articleList, totalPage);
-
-        PaginationService paging = new PaginationService();
-
-        model.addAttribute("list", articleListDto);
-        model.addAttribute("bar", paging.getPaginationBarNumbers(page, totalPage));
-        model.addAttribute("paging", paging);
-        model.addAttribute("searchType", searchType);
-        model.addAttribute("searchValue", searchValue);
+        model.addAttribute("articleType", articleType);
+        PaginationService.pagination(model, articleList, page, searchType, searchValue);
         if (articleType.equals("01") || articleType.equals("02")) {
             return "board/board";
         }
@@ -63,7 +54,7 @@ public class ArticleController {
     }
 
     @PostMapping("article/{article-type}") //글쓰기
-    public String createArticle(ArticleDto dto, Principal principal) {
+    public String createArticle(ArticleFormDto dto, Principal principal) {
         Long articleId = articleService.createArticle(dto, principal.getName());//principal.getName => email
         return "redirect:/article/{article-type}/" + articleId;
 

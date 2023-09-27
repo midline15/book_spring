@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/admin_layout}">
 <th:block layout:fragment="content">
     <div id="page-content-wrapper">
         <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
             <div class="container-fluid">
-                <h1 class="mt-4" th:if="${list.role == 'user'}">유저 관리</h1>
-                <h1 class="mt-4" th:if="${list.role == 'writer'}">작가 관리</h1>
-                <h1 class="mt-4" th:if="${list.role == 'admin'}">관리자 목록</h1>
+                <h1 class="mt-4" th:if="${role == 'user'}">유저 관리</h1>
+                <h1 class="mt-4" th:if="${role == 'writer'}">작가 관리</h1>
+                <h1 class="mt-4" th:if="${role == 'admin'}">관리자 목록</h1>
             </div>
         </nav>
         <!-- Page content-->
@@ -20,21 +21,21 @@
                         <th>ID</th>
                         <th>EMAIL</th>
                         <th>NICKNAME</th>
-                        <th:block th:if="${list.role == 'user'}">
-                            <th>상태</th>
+                        <th>상태</th>
+                        <th:block th:if="${role == 'user'}">
                             <th>탈퇴</th>
                         </th:block>
-                        <th:block th:unless="${list.role == 'user'}">
+                        <th:block th:unless="${role == 'user'}">
                             <th>삭제</th>
                         </th:block>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="user : ${list.userManageDtoList}">
+                    <tr th:each="user : ${list}">
                         <td>[[${user.id}]]</td>
                         <td>[[${user.email}]]</td>
                         <td>[[${user.nickname}]]</td>
-                        <th:block th:if="${list.role == 'user'}">
+                        <th:block th:if="${role == 'user'}">
                             <td>
                                 <input type="hidden" th:id="'userStatus_'+${user.id}" th:value="${user.userStatus}">[[${user.userStatus}]]
                                 <button th:if="${user.userStatus == 'ACTIVE'}" onclick="changeUserStatus(this)"
@@ -50,9 +51,25 @@
                                 </button>
                             </td>
                         </th:block>
-                        <th:block th:unless="${list.role == 'user'}">
+                        <th:block th:if="${role == 'writer'}">
                             <td>
-                                <button class="btn-danger" onclick="deleteUser(this)" th:data-id="${user.id}">삭제
+                                [[${user.userStatus}]]
+                            </td>
+                            <td sec:authorize="hasAnyAuthority('ADMIN', 'SUPER')">
+                                <button th:if="${user.userStatus == 'ACTIVE'}" class="btn-danger" onclick="disableUser(this)" th:data-id="${user.id}">비활성
+                                </button>
+                                <button th:if="${user.userStatus == 'DISABLE'}" class="btn-primary" onclick="changeUserStatus(this)" th:data-id="${user.id}">활성
+                                </button>
+                            </td>
+                        </th:block>
+                        <th:block th:if="${role == 'admin'}">
+                            <td>
+                                [[${user.userStatus}]]
+                            </td>
+                            <td sec:authorize="hasAnyAuthority('SUPER')">
+                                <button th:if="${user.userStatus == 'ACTIVE'}" class="btn-danger" onclick="disableUser(this)" th:data-id="${user.id}">비활성
+                                </button>
+                                <button th:if="${user.userStatus == 'DISABLE'}" class="btn-primary" onclick="changeUserStatus(this)" th:data-id="${user.id}">활성
                                 </button>
                             </td>
                         </th:block>
@@ -62,7 +79,12 @@
             </div>
         </div>
     </div>
-    <div class="row" th:unless="${list.role == 'user'}">
+    <div class="row" th:if="${role == 'writer'}" sec:authorize="hasAnyAuthority('ADMIN', 'SUPER')">
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <a class="btn btn-primary me-md-2" role="button" href="/admin/insert">등록</a>
+        </div>
+    </div>
+    <div class="row" th:if="${role == 'admin'}" sec:authorize="hasAnyAuthority('SUPER')">
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
             <a class="btn btn-primary me-md-2" role="button" href="/admin/insert">등록</a>
         </div>
@@ -91,6 +113,23 @@
             console.log(userId);
             $.ajax({
                 url: `/admin/user/${userId}`,
+                type: 'delete',
+                cache: false,
+                success: function (result) {
+                    console.log(result);
+                    location.reload();
+                }, error: function () {
+                    console.log("실패");
+                }
+            });
+        }
+
+        function disableUser(obj) {
+            let userId = obj.dataset.id;
+            let role = [[${role}]];
+            console.log(userId);
+            $.ajax({
+                url: `/admin/${role}/${userId}`,
                 type: 'delete',
                 cache: false,
                 success: function (result) {

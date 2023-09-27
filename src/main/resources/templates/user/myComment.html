@@ -35,120 +35,34 @@
             }
             getOrderTotalPrice();
         }
-
-        function updateUser(obj) {
-            var param = {
-                id: obj.dataset.id,
-                name: $("[name=name]").val(),
-                birth: $("[name=birth]").val(),
-                phone: $("[name=phone]").val(),
-                address: $("[name=address]").val(),
-            }
-
-            $.ajax({
-                url: /user/ + param.id,
-                type: "PATCH",
-                contentType: "application/json",
-                data: JSON.stringify(param),
-                cache: false,
-                success: function (result, status) {
-                    alert(result);
-                    location.href = "/"
-                },
-                error: function (jqXHR, status, error) {
-
-                    if (jqXHR.status == '401') {
-                        alert('로그인 후 이용해주세요');
-                        location.href = '/user/login';
-                    } else {
-                        alert(jqXHR.responseJSON.message);
-                    }
-
-                }
-            });
-        }
-
-        function deleteUser(obj) {
-            if (confirm("탈퇴하시겠습니까?")) {
-                $.ajax({
-                    url: /user/ + obj.dataset.id,
-                    type: "DELETE",
-                    cache: false,
-                    success: function (result, status) {
-                        alert(result);
-                        location.href = "/logout"
-                    },
-                    error: function (jqXHR, status, error) {
-
-                        if (jqXHR.status == '401') {
-                            alert('로그인 후 이용해주세요');
-                            location.href = '/user/login';
-                        } else {
-                            alert(jqXHR.responseJSON.message);
-                        }
-
-                    }
-                });
-            }
-        }
-
-        function orders() {
-
-            var dataList = [];
-
-            $("input[name=cartChkBox]:checked").each(function () {
-                let cartItemId = $(this).val();
-                dataList.push({
-                    id: cartItemId,
-                    bookId: $("#bookId_" + cartItemId).val(),
-                    price: $("#price_" + cartItemId).attr("data-price"),
-                    count: $("#count_" + cartItemId).val()
-                });
-            });
-
-            var param = JSON.stringify({
-                cartBookDtoList: dataList
-            });
-
-            $.ajax({
-                url: "/cart/order",
-                type: "POST",
-                contentType: "application/json",
-                data: param,
-                cache: false,
-                success: function (result, status) {
-                    alert("주문이 완료 되었습니다.");
-                    location.href = '/order';
-                },
-                error: function (jqXHR, status, error) {
-
-                    if (jqXHR.status == '401') {
-                        alert('로그인 후 이용해주세요');
-                        location.href = '/members/login';
-                    } else {
-                        alert(jqXHR.responseJSON.message);
-                    }
-
-                }
-            });
-        }
     </script>
 </th:block>
 <th:block layout:fragment="content">
+    <h1 th:if="${commentType.equals('comment')}">댓글</h1>
+    <h1 th:if="${commentType.equals('bookComment')}">Book 댓글</h1>
+    <h1 th:if="${commentType.equals('episodeComment')}">Ebook 댓글</h1>
     <div class="row">
         <table class="table" id="article-table">
             <thead>
             <tr>
-                <th class="title col-6"><a>댓글 번호</a></th>
-                <th class="user-id"><a>작성자</a></th>
-                <th class="created-at"><a>작성일</a></th>
+                <th>댓글 번호</th>
+                <th>작성자</th>
+                <th:block th:unless="${commentType.equals('comment')}">
+                    <th>도서명</th>
+                    <th>별점</th>
+                </th:block>
+                <th>작성일</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="comment : ${list}">
-                <td class="id"><a th:text="${comment.id}"></a></td>
-                <td class="user-id" th:text="${comment.email}"></td>
-                <td class="created-at">
+                <td><a th:text="${comment.id}"></a></td>
+                <td th:text="${comment.email}"></td>
+                <td th:if="${commentType.equals('bookComment')}" th:text="${comment.bookTitle}"></td>
+                <td th:if="${commentType.equals('episodeComment')}" th:text="|${comment.ebookTitle} - ${comment.episodeTitle}|">
+                </td>
+                <td th:unless="${commentType.equals('comment')}" th:text="${comment.score}"></td>
+                <td>
                     <time th:text="${comment.regTime}"></time>
                 </td>
             </tr>
@@ -156,4 +70,5 @@
         </table>
     </div>
 
+    <th:block th:replace="~{fragments/pagination}"></th:block>
 </th:block>

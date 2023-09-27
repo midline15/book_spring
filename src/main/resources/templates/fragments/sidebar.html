@@ -5,22 +5,21 @@
 <div class="border-end bg-white" id="sidebar-wrapper" th:fragment="sidebar">
     <div class="sidebar-heading border-bottom bg-light">마이페이지</div>
     <div class="list-group list-group-flush">
-        <a class="list-group-item list-group-item-action list-group-item-light p-3"
-           th:href="@{/user/{user-id}(user-id = ${#authentication.principal.user.id})}">회원정보</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/user">회원정보</a>
         <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/cart">장바구니</a>
         <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/order">주문내역</a>
         <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/inven">보관함</a>
         <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/like">좋아요</a>
-        <a class="nav-item dropdown" th:href="@{/user/{user-id}/article/01 (user-id = ${#authentication.principal.user.id})}">
+        <a class="nav-item dropdown">
             <a class="list-group-item list-group-item-action list-group-item-light p-3 dropdown-toggle"
                data-bs-toggle="dropdown" aria-expanded="false">내 글 관리</a>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item" th:href="@{/user/{user-id}/article/01 (user-id = ${#authentication.principal.user.id})}">자유게시판</a></li>
-                <li><a class="dropdown-item" th:href="@{/user/{user-id}/article/02 (user-id = ${#authentication.principal.user.id})}">리뷰게시판</a></li>
-                <li><a class="dropdown-item" th:href="@{/user/{user-id}/article/05 (user-id = ${#authentication.principal.user.id})}">Q&A</a></li>
-                <li><a class="dropdown-item" th:href="@{/user/{user-id}/comment (user-id = ${#authentication.principal.user.id})}">댓글</a></li>
-                <li><a class="dropdown-item" th:href="@{/user/{user-id}/book-comment (user-id = ${#authentication.principal.user.id})}">Book댓글</a></li>
-                <li><a class="dropdown-item" th:href="@{/user/{user-id}/episode-comment (user-id = ${#authentication.principal.user.id})}">Ebook댓글</a></li>
+                <li><a class="dropdown-item" href="/user/article/01">자유게시판</a></li>
+                <li><a class="dropdown-item" href="/user/article/02">리뷰게시판</a></li>
+                <li><a class="dropdown-item" href="/user/article/05">Q&A</a></li>
+                <li><a class="dropdown-item" href="/user/comment">댓글</a></li>
+                <li><a class="dropdown-item" href="/user/book-comment">Book댓글</a></li>
+                <li><a class="dropdown-item" href="/user/episode-comment">Episode댓글</a></li>
             </ul>
         </a>
         <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/ticket">이용권 내역</a>

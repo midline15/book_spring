@@ -44,6 +44,7 @@ public class OAuthAttribute {
 
     //ADMIN
     private static OAuthAttribute ofNaver (Map<String, Object> attributes) {
+        //noinspection unchecked
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
 
         return OAuthAttribute.builder()
@@ -58,8 +59,9 @@ public class OAuthAttribute {
 
     // USER
     private static OAuthAttribute ofKakao (Map<String, Object> attributes) {
-        Map<String, Object> response = (Map<String, Object>) attributes.get("kakao_account");
+        @SuppressWarnings("unchecked") Map<String, Object> response = (Map<String, Object>) attributes.get("kakao_account");
 
+        //noinspection unchecked
         return OAuthAttribute.builder()
                 .nickname(((Map<String, Object>)response.get("profile")).get("nickname").toString())
                 .email(response.get("email")+"_kakao")

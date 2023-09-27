@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignupForm {
+public class InsertForm {
 
     @Email(message = "이메일을 입력해 주세요.")
     private String email;
@@ -38,4 +38,7 @@ public class SignupForm {
 
     @NotBlank(message = "전화번호를 입력해 주세요.")
     private String phone;
+
+    @NotBlank(message = "체크해주세요")
+    private String role;
 }

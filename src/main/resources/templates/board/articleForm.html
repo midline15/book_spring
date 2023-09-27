@@ -9,8 +9,8 @@
     </header>
     <form id="article-form" th:action="@{/article/{article-type}(article-type = ${dto.articleType})}" method="post" th:object="${dto}">
 
-        <input type="hidden" id="articleType" th:value="${dto.articleType}">
-        <input type="hidden" id="articleId" th:value="${dto.id}">
+        <input type="hidden" name="articleType" th:value="${dto.articleType}">
+        <input type="hidden" name="articleId" th:value="${dto.id}">
         <div class="row mb-3 justify-content-md-center">
             <label for="title" class="col-sm-2 col-lg-1 col-form-label text-sm-end">제목</label>
             <div class="col-sm-8 col-lg-9">

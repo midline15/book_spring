@@ -11,6 +11,8 @@ import com.woori.bookspring.repository.EpisodeRepository;
 import com.woori.bookspring.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -42,12 +44,7 @@ public class EpisodeCommentService {
         episodeCommentRepository.save(episodeComment);
     }
 
-    @Transactional(readOnly = true)
-    public List<EpisodeComment> getEpisodeCommentList() { //e북 댓글 조회
-        return episodeCommentRepository.findAll();
-    }
-
-    public List<EpisodeCommentDto> getEpisodeCommentList(Long userId) {
-        return episodeCommentRepository.findByUserId(userId).stream().map(EpisodeComment::of).toList();
+    public Page<EpisodeCommentDto> getEpisodeCommentList(Pageable pageable, Long userId) {
+        return episodeCommentRepository.findByUserId(pageable, userId).map(EpisodeComment::of);
     }
 }
