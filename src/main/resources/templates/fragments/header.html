@@ -63,21 +63,22 @@
                 <div class="text-end">
                     <div sec:authorize="isAnonymous()">
                         <a class="btn btn-outline-light me-2" href="/user/login">Login</a>
-                        <a class="btn btn-outline-light me-2" href="/user/signup">Signup</a>
+                        <a class="btn btn-outline-light me-2" href="/signup">Signup</a>
                     </div>
                     <a sec:authorize="hasAnyAuthority('USER')" class="btn btn-outline-light me-2" href="/ticket">내 이용권 :
                         [[${#authentication.principal.user.totalTicket}]] 개</a>
                     <th:block sec:authorize="isAuthenticated()">
-                        <a th:if="${#authentication.principal.user.role == T(com.woori.bookspring.constant.Role).USER}"
+                        <a sec:authorize="hasAnyAuthority('USER')"
                            class="btn btn-outline-light me-2"
-                           th:href="@{/user/{user-id}(user-id = ${#authentication.principal.user.id})}">마이 페이지</a>
-                        <a th:if="${#authentication.principal.user.role == T(com.woori.bookspring.constant.Role).WRITER}"
+                           href="/user">마이 페이지</a>
+                        <a sec:authorize="hasAnyAuthority('WRITER')"
                            class="btn btn-outline-light me-2" th:href="@{/writer}">작가 페이지</a>
-                        <a th:if="${#authentication.principal.user.role == T(com.woori.bookspring.constant.Role).ADMIN}"
+                        <a sec:authorize="hasAnyAuthority('ADMIN', 'SUPER')"
                            class="btn btn-outline-light me-2" th:href="@{/admin/user}">관리자 페이지</a>
-                        <input type="button" class="btn btn-outline-light me-2"
-                               th:data-id="${#authentication.principal.user.oauth}" onclick="logout(this);"
+                        <input sec:authorize="!hasAnyAuthority('SUPER')" type="button" class="btn btn-outline-light me-2" th:data-id="${#authentication.principal.user.oauth}" onclick="logout(this);"
                                value="Logout">
+                        <a sec:authorize="hasAnyAuthority('SUPER')" type="button" class="btn btn-outline-light me-2"
+                           href="/logout">로그아웃</a>
                     </th:block>
                 </div>
             </div>
@@ -86,7 +87,7 @@
 
     <script th:inline="javascript">
         $(document).ready(() => {
-            if([[${errorMessage}]]){
+            if ([[${errorMessage}]]) {
                 alert("접근 권한이 없습니다.")
             }
         })

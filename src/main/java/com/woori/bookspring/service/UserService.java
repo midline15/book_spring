@@ -34,10 +34,16 @@ public class UserService {
         ticketRepository.save(ticket);
     }
 
+    public void createUser(InsertForm dto){
+        dto.setPassword(passwordEncoder.encode(dto.getPassword()));
+        User user = userRepository.save(User.createUser(dto));
+        Ticket ticket = Ticket.builder().amount(100).history("가입 축하 선물").user(user).build();
+        ticketRepository.save(ticket);
+    }
+
     @Transactional(readOnly = true)
-    public UserUpdateDto getUser(Long userId, String email) {
-        User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
-        validateUser(user.getEmail(), email);
+    public UserUpdateDto getUser(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
         return user.of();
     }
 
@@ -64,16 +70,6 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
         user.changeUserStatus(userStatus);
         return user.getUserStatus().toString();
-    }
-
-    public void createWriter(WriterDto writerDto) {
-        writerDto.setPassword(passwordEncoder.encode(writerDto.getPassword()));
-        userRepository.save(writerDto.toEntity());
-    }
-
-    public void createAdmin(AdminDto adminDto) {
-        adminDto.setPassword(passwordEncoder.encode(adminDto.getPassword()));
-        userRepository.save(adminDto.toEntity());
     }
 
     public boolean nicknameCheck(String nickname) {

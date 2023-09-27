@@ -1,7 +1,10 @@
 package com.woori.bookspring.service;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -14,8 +17,7 @@ public class PaginationService {
     private int currentPage;
 
     public List<Integer> getPaginationBarNumbers(int currentPageNumber, int totalPages) {
-        //int startNumber = Math.max(currentPageNumber - (BAR_LENGTH / 2), 1);
-        //int endNumber = Math.min(startNumber + BAR_LENGTH, totalPages+1);
+
         currentPage=currentPageNumber;
         endNumber = totalPages;
         int mod = totalPages % BAR_LENGTH;
@@ -29,5 +31,15 @@ public class PaginationService {
         return IntStream.range(startNumber, endNumber+1).boxed().toList();
     }
 
+
+
+    public static void pagination(Model model, Page<?> list, int page, String searchType, String searchValue){
+        PaginationService paging = new PaginationService();
+        model.addAttribute("list", list);
+        model.addAttribute("bar", paging.getPaginationBarNumbers(page, list.getTotalPages()));
+        model.addAttribute("paging", paging);
+        model.addAttribute("searchType", searchType);
+        model.addAttribute("searchValue", searchValue);
+    }
 }
 

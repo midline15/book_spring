@@ -26,9 +26,10 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
 
-    public Long createArticle(ArticleDto articleDto, String email) {
+    public Long createArticle(ArticleFormDto articleFormDto, String email) {
+        String error = "dlrpajsh";
         User user = userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
-        Article article = articleDto.toEntity(user);
+        Article article = articleFormDto.toEntity(user);
         return articleRepository.save(article).getId();
     }
 

@@ -32,10 +32,15 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/img/**").permitAll()
-                        .requestMatchers("/", "/book", "/ebook", "/user/**","/book/*","/ebook/*","/article/**").permitAll()
-                        .requestMatchers("/admin","/admin/**").hasAnyAuthority("ADMIN")
-                        .requestMatchers("/user","/user/**","/order","/order/**","/cart","/cart/**","/like","/like/**","/inven","/inven/**","/article/*/*/comment","/article/*/*/comment/**").hasAnyAuthority("USER")
-                        .requestMatchers("/writer","/writer/**").hasAnyAuthority("WRITER")
+                        .requestMatchers("/", "/book", "/ebook", "/user/login" ,"/book/*","/ebook/*","/article/*","/article/*/*").permitAll()
+                        .requestMatchers("/admin","/admin/**").hasAnyAuthority("ADMIN","SUPER")
+                        .requestMatchers("/user","/user/**",
+                                "/order","/order/**",
+                                "/cart","/cart/**",
+                                "/like","/like/**",
+                                "/inven","/inven/**",
+                                 "/article/*/new","/article/*/*/comment","/article/*/*/comment/**").hasAnyAuthority("USER","SUPER")
+                        .requestMatchers("/writer","/writer/**").hasAnyAuthority("WRITER","SUPER")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/user/login")
@@ -44,7 +49,8 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/", true))
                 .logout(out -> out
                         .logoutSuccessUrl("/")
-                        .logoutUrl("/logout"))
+                        .logoutUrl("/logout")
+                        .invalidateHttpSession(true))
                 .oauth2Login(oauth2 -> oauth2
                         .defaultSuccessUrl("/")
                         .userInfoEndpoint(userInfo -> userInfo
@@ -54,16 +60,11 @@ public class SecurityConfig {
         return http.build();
     }
 
+    //inMemory 기본 계정 생성
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth, PasswordEncoder passwordEncoder) throws Exception {
         auth.inMemoryAuthentication()
-                .withUser("admin@asdf").password(passwordEncoder.encode("asdf")).authorities("ADMIN");
-
-        auth.inMemoryAuthentication()
-                .withUser("writer").password(passwordEncoder.encode("asdf")).authorities("WRITER");
-
-        auth.inMemoryAuthentication()
-                .withUser("user").password(passwordEncoder.encode("asdf")).authorities("USER");
+                .withUser("admin").password(passwordEncoder.encode("asdf1234")).authorities("SUPER");
 
     }
 

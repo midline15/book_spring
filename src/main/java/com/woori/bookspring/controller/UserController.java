@@ -27,12 +27,12 @@ public class UserController {
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String clientId;
 
-    @GetMapping("user/signup")
+    @GetMapping("signup")
     public String signup(@ModelAttribute("dto") SignupForm dto) {
         return "user/signup";
     }
 
-    @PostMapping("user/signup")
+    @PostMapping("signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupForm dto, BindingResult bindingResult){
         if (bindingResult.hasErrors()){
             return new ResponseEntity<>(bindingResult.getAllErrors().get(0).getDefaultMessage(), HttpStatus.BAD_REQUEST);
@@ -41,13 +41,13 @@ public class UserController {
         return new ResponseEntity<>("회원가입 완료", HttpStatus.OK);
     }
 
-    @PostMapping("user/nicknameCheck")
+    @PostMapping("nicknameCheck")
     @ResponseBody
     public boolean nicknameCheck(@RequestParam String nickname) {
         return userService.nicknameCheck(nickname);
     }
 
-    @PostMapping("user/emailCheck")
+    @PostMapping("emailCheck")
     @ResponseBody
     public boolean emailCheck(@RequestParam String email) {
         return userService.emailCheck(email);
@@ -65,10 +65,10 @@ public class UserController {
         return "redirect:https://kauth.kakao.com/oauth/logout?client_id="+clientId+"&logout_redirect_uri="+logoutUri;
     }
 
-    @GetMapping("user/{user-id}")
-    public String getUser(@PathVariable("user-id") Long userId, Model model, Principal principal){
+    @GetMapping("user")
+    public String getUser(Model model, Principal principal){
 
-        UserUpdateDto userUpdateDto = userService.getUser(userId, principal.getName());
+        UserUpdateDto userUpdateDto = userService.getUser(principal.getName());
         model.addAttribute("user",userUpdateDto);
         return "user/userInfo";
     }

@@ -4,18 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-@Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArticleListDto {
+@Builder
+@Data
+public class ArticleDeleteDto {
 
-    private String articleType;
-    private Page<ArticleDto> articleDtoList;
-    private int totalPages;
+    private List<ArticleDto> articleDtoList;
 }
-

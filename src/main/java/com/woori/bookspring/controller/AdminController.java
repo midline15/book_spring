@@ -8,6 +8,7 @@ import com.woori.bookspring.entity.User;
 import com.woori.bookspring.service.ArticleService;
 import com.woori.bookspring.service.PaginationService;
 import com.woori.bookspring.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,8 +16,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,17 +42,8 @@ public class AdminController {
 
         Role userRole = Role.valueOf(role.toUpperCase());
         Page<UserManageDto> userManageDtoList = userService.getUserList(pageable, userRole);
-
-        int totalPage = userManageDtoList.getTotalPages();
-        UserListDto userListDto = new UserListDto(role, userManageDtoList, totalPage);
-
-        PaginationService paging = new PaginationService();
-
-        model.addAttribute("list", userListDto);
-        model.addAttribute("bar", paging.getPaginationBarNumbers(page, totalPage));
-        model.addAttribute("paging", paging);
-        model.addAttribute("searchType", searchType);
-        model.addAttribute("searchValue", searchValue);
+        model.addAttribute("role", role);
+        PaginationService.pagination(model, userManageDtoList, page, searchType, searchValue);
 
         return "admin/userList";
     }
@@ -66,27 +60,9 @@ public class AdminController {
         return new ResponseEntity<>("삭제", HttpStatus.OK);
     }
 
-    @PostMapping("admin/writer")
-    public String createWriter(WriterDto writerDto){
-        userService.createWriter(writerDto);
-        return "redirect:/admin/writer";
-    }
-
-    @DeleteMapping("admin/writer/{writer-id}")
-    public ResponseEntity<?> disableWriter(@PathVariable("writer-id") Long writerId){
-        userService.changeUserStatus(writerId, UserStatus.DISABLE);
-        return new ResponseEntity<>("완료", HttpStatus.OK);
-    }
-
-    @PostMapping("admin")
-    public String createAdmin(AdminDto adminDto){
-        userService.createAdmin(adminDto);
-        return "redirect:/admin";
-    }
-
-    @DeleteMapping("admin/{admin-id}")
-    public ResponseEntity<?> disableAdmin(@PathVariable("admin-id") Long adminId){
-        userService.changeUserStatus(adminId, UserStatus.DISABLE);
+    @DeleteMapping("admin/{role}/{user-id}")
+    public ResponseEntity<?> disableUser(@PathVariable("user-id") Long userId){
+        userService.changeUserStatus(userId, UserStatus.DISABLE);
         return new ResponseEntity<>("완료", HttpStatus.OK);
     }
 
@@ -99,21 +75,25 @@ public class AdminController {
             Model model){
 
         Page<ArticleDto> articleList = articleService.getArticleList(pageable.withPage(page-1), ArticleType.QUESTION, searchType, searchValue);
+        PaginationService.pagination(model, articleList, page, searchType, searchValue);
 
-        int totalPage = articleList.getTotalPages();
-
-        PaginationService paging = new PaginationService();
-
-        model.addAttribute("list", articleList);
-        model.addAttribute("bar", paging.getPaginationBarNumbers(page, totalPage));
-        model.addAttribute("paging", paging);
-        model.addAttribute("searchType", searchType);
-        model.addAttribute("searchValue", searchValue);
         return "admin/questionList";
     }
 
     @GetMapping("admin/insert")
-    public String insertUser(){
-        return "admin/insert";
+    public String insertUser(@ModelAttribute("dto") InsertForm dto){
+        return "user/signup";
+    }
+
+    @PostMapping("admin/insert")
+    public ResponseEntity<?> signup(@Valid @RequestBody InsertForm dto, BindingResult bindingResult, Authentication authentication){
+        if (bindingResult.hasErrors()){
+            return new ResponseEntity<>(bindingResult.getAllErrors().get(0).getDefaultMessage(), HttpStatus.BAD_REQUEST);
+        }
+        if(dto.getRole().equals("ADMIN") && !authentication.getAuthorities().toArray()[0].toString().equals("SUPER")) {
+            return new ResponseEntity<>("권한이 없습니다.", HttpStatus.FORBIDDEN);
+        }
+        userService.createUser(dto);
+        return new ResponseEntity<>("등록 완료", HttpStatus.OK);
     }
 }

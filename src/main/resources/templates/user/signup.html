@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/user_layout}">
 
@@ -10,13 +11,26 @@
         }
     </style>
     <header>
-        <h1>회원가입</h1>
+        <h1 sec:authorize="isAnonymous()">회원가입</h1>
+        <h1 sec:authorize="isAuthenticated()">계정 등록</h1>
     </header>
     <hr>
     <div class="container mt-3">
         <form method="post" th:object="${dto}">
 
             <table class="table">
+                <th:block sec:authorize="hasAnyAuthority('ADMIN', 'SUPER')">
+                    <div data-role="fieldcontain">
+                        <fieldset data-role="controlgroup">
+                            <th:block sec:authorize="hasAuthority('SUPER')">
+                                <input type="radio" name="role" id="radio-1" value="ADMIN" checked="checked" />
+                                <label for="radio-1" id="label-1">ADMIN</label>
+                            </th:block>
+                            <input type="radio" name="role" id="radio-2" value="WRITER" />
+                            <label for="radio-2" id="label-2">WRITER</label>
+                        </fieldset>
+                    </div>
+                </th:block>
                 <tr>
                     <th>
                         <label for="email">이메일 ID</label>
@@ -88,13 +102,41 @@
                 </tr>
             </table>
 
-            <button type="button" onclick="signup()" disabled id="btn-signup" class="btn btn-secondary">회원가입</button>
+            <button sec:authorize="isAnonymous()" type="button" onclick="signup()" disabled id="btn-signup" class="btn btn-secondary">회원가입</button>
+            <button sec:authorize="hasAnyAuthority('ADMIN', 'SUPER')" type="button" onclick="insert()" disabled id="btn-insert" class="btn btn-secondary">등록</button>
+            
         </form>
     </div>
     <script th:inline="javascript">
+        function insert(){
+
+            $.ajax({
+                url: '/admin/insert',
+                type: 'post',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    role: $("input[name=role]:checked").val(),
+                    email: $("#email").val(),
+                    password: $("#password").val(),
+                    passwordCheck: $("#passwordCheck").val(),
+                    nickname: $("#nickname").val(),
+                    birth: $("#birth").val(),
+                    address: $("#address").val(),
+                    phone: $("#phone").val(),
+                }),
+                success: function (data){
+                    alert(data);
+                    location.href = "/";
+                },
+                error: function (data){
+                    alert(data.responseText);
+                }
+            })
+        }
+        
         function signup(){
             $.ajax({
-                url: '/user/signup',
+                url: '/signup',
                 type: 'post',
                 contentType: 'application/json',
                 data: JSON.stringify({
@@ -118,8 +160,10 @@
         function btnAble() {
             if ($("#nicknameDoubleChk").val()==="true" && $("#emailDoubleChk").val()==="true" && $("#pwDoubleChk").val()==="true") {
                 $("#btn-signup").attr("disabled", false);
+                $("#btn-insert").attr("disabled", false);
             }else{
                 $("#btn-signup").attr("disabled", true);
+                $("#btn-insert").attr("disabled", true);
             }
         }
 
@@ -130,7 +174,7 @@
                 $("#nicknameDoubleChk").val("false");
             } else {
                 $.ajax({
-                    url: '/user/nicknameCheck',
+                    url: '/nicknameCheck',
                     type: 'post',
                     data: {nickname: nickname},
                     cache: false,
@@ -159,7 +203,7 @@
                 $("#emailDoubleChk").val("false");
             } else {
                 $.ajax({
-                    url: '/user/emailCheck',
+                    url: '/emailCheck',
                     type: 'post',
                     data: {email: email},
                     cache: false,
