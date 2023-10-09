@@ -36,7 +36,7 @@ public class Order extends BaseEntity {
     private int orderPrice;
 
     public int calculate() {
-        int orderPrice = 0;
+        orderPrice = 0;
         for (OrderBook orderBook : orderBookList) {
             orderPrice += orderBook.getTotalPrice();
         }
@@ -47,7 +47,7 @@ public class Order extends BaseEntity {
         return OrderDto.builder()
                 .id(id)
                 .orderBookDtoList(orderBookList.stream().map(OrderBook::of).toList())
-                .orderPrice(calculate())
+                .orderPrice(orderPrice)
                 .regTime(getRegTime())
                 .orderStatus(orderStatus)
                 .build();
@@ -59,11 +59,6 @@ public class Order extends BaseEntity {
                 .orderStatus(OrderStatus.ORDER)
                 .orderBookList(new ArrayList<OrderBook>())
                 .build();
-    }
-
-    public void addOrderBook(OrderBook orderBook) {
-        orderBookList.add(orderBook);
-        orderBook.setOrder(this);
     }
 
     public void cancel() {

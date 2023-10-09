@@ -25,7 +25,6 @@ public class OrderBook extends BaseEntity {
     @JoinColumn(name = "book_id")
     private Book book;
 
-    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
@@ -34,7 +33,8 @@ public class OrderBook extends BaseEntity {
     public OrderBookDto of(){
         return OrderBookDto.builder()
                 .bookId(book.getId())
-                .price(totalPrice)
+                .title(book.getTitle())
+                .totalPrice(totalPrice)
                 .count(count)
                 .build();
     }
@@ -42,7 +42,7 @@ public class OrderBook extends BaseEntity {
     public static OrderBook createOrderBook(OrderBookDto orderBookDto, Book book, Order order){
         return OrderBook.builder()
                 .count(orderBookDto.getCount())
-                .totalPrice(orderBookDto.getTotalPrice())
+                .totalPrice(book.getPrice() * orderBookDto.getCount())
                 .book(book)
                 .order(order) // 주문상품에 주문 정보를 연결
                 .build();

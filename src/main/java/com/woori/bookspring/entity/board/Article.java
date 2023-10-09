@@ -49,7 +49,6 @@ public class Article extends BaseEntity {
                 .commentDtoList(commentList.stream().map(Comment::of).toList())
                 .regTime(getRegTime())
                 .createdBy(getCreatedBy())
-                .commentDtoList(commentList.stream().map(Comment::of).toList())
                 .build();
     }
 

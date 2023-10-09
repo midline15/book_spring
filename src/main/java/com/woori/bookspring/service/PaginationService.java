@@ -1,9 +1,7 @@
 package com.woori.bookspring.service;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import java.util.List;

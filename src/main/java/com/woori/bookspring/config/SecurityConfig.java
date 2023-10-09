@@ -32,21 +32,21 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/img/**").permitAll()
-                        .requestMatchers("/", "/book", "/ebook", "/user/login" ,"/book/*","/ebook/*","/article/*","/article/*/*").permitAll()
+                        .requestMatchers("/", "/book", "/ebook", "/user/login" ,"/book/*","/ebook/*","/article/*","/article/*/*","/signup","/emailCheck", "/nicknameCheck","/login").permitAll()
                         .requestMatchers("/admin","/admin/**").hasAnyAuthority("ADMIN","SUPER")
                         .requestMatchers("/user","/user/**",
                                 "/order","/order/**",
                                 "/cart","/cart/**",
                                 "/like","/like/**",
                                 "/inven","/inven/**",
-                                 "/article/*/new","/article/*/*/comment","/article/*/*/comment/**").hasAnyAuthority("USER","SUPER")
+                                "/article/*/new","/article/*/*/comment","/article/*/*/comment/**").hasAnyAuthority("USER","SUPER")
                         .requestMatchers("/writer","/writer/**").hasAnyAuthority("WRITER","SUPER")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/user/login")
                         .loginProcessingUrl("/login")
                         .usernameParameter("email")
-                        .defaultSuccessUrl("/", true))
+                        .defaultSuccessUrl("/", true).permitAll())
                 .logout(out -> out
                         .logoutSuccessUrl("/")
                         .logoutUrl("/logout")
@@ -61,11 +61,11 @@ public class SecurityConfig {
     }
 
     //inMemory 기본 계정 생성
-    @Autowired
+    /*@Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth, PasswordEncoder passwordEncoder) throws Exception {
         auth.inMemoryAuthentication()
                 .withUser("admin").password(passwordEncoder.encode("asdf1234")).authorities("SUPER");
 
-    }
+    }*/
 
 }

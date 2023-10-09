@@ -21,7 +21,7 @@ public class CartBookDto {
         return OrderBookDto.builder()
                 .bookId(bookId)
                 .count(count)
-                .price(price*count)
+                .totalPrice(price*count)
                 .build();
     }
 }

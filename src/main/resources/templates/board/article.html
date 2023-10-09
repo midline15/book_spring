@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/user_layout}">
+      layout:decorate="~{layouts/main_layout}">
 
 <main layout:fragment="content" id="article-main" class="container">
     <input type="hidden" id="articleType" th:value="${article.articleType}">
@@ -60,7 +60,7 @@
                         <p th:text="${comment.regTime}"></p>
                         <div class="media-body">
                             <!-- 댓글 -->
-                            <h5 class="mt-0 mb-1">
+                            <h5 th:if="${#authentication.name == comment.email}" class="mt-0 mb-1">
                                 <small>
                                     <button class="btn btn-primary" type="button" data-bs-toggle="collapse" th:data-bs-target="'.multi-collapse-'+${comment.id}" aria-expanded="false">수정</button>
                                     <button class="btn btn-secondary" onclick="deleteComment(this)" th:data-id="${comment.id}">삭제</button>

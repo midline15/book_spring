@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/user_layout}">
+      layout:decorate="~{layouts/main_layout}">
 
 <div layout:fragment="content">
     <style>
@@ -213,6 +213,7 @@
                             $("#emailDoubleChk").val("true");
                             btnAble();
                         } else {
+                            console.log(data)
                             $(".successEmailChk").text("사용 중인 이메일 입니다 :p").css("color", "red");
                             $("#emailDoubleChk").val("false");
                             btnAble();

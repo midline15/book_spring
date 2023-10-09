@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/user_layout}">
+      layout:decorate="~{layouts/main_layout}">
 <meta charset="UTF-8">
 <th:block layout:fragment="script">
     <script th:inline="javascript">
@@ -28,22 +28,23 @@
                 let bookId = $("#bookId").val();
 
                 var data = {
-                    itemId: bookId,
+                    bookId: bookId,
                     count: $("#count").val()
                 };
                 fetch(`/order/${bookId}`, {
-                    method: "PATCH",
+                    method: "post",
                     body: JSON.stringify(data),
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 })
                     .then(response => {
-                        if(response.status === 403){
-                            return alert("사용자 아이디가 아닙니다.")
+                        console.log(response)
+                        if(response.status !== 200){
+                            location.href = response.url;
                         }
                         alert('주문 완료');
-                        location.href = `/order`
+                        location.href = '/order';
                     });
             }
         }

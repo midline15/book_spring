@@ -35,12 +35,15 @@ public class ArticleController {
                                  @RequestParam(required = false) String searchType,
                                  @RequestParam(required = false) String searchValue) {
 
-        Page<ArticleDto> articleList = articleService.getArticleList(pageable, ArticleType.getArticleType(articleType), searchType, searchValue);
+        Page<ArticleDto> articleList = articleService.getArticleList(pageable.withPage(page-1), ArticleType.getArticleType(articleType), searchType, searchValue);
         model.addAttribute("articleType", articleType);
         PaginationService.pagination(model, articleList, page, searchType, searchValue);
-        if (articleType.equals("01") || articleType.equals("02")) {
-            return "board/board";
-        }
+
+        model.addAttribute("layout", articleType.equals("01") || articleType.equals("02") ? "board_layout" : "help_layout");
+//        if (articleType.equals("01") || articleType.equals("02")) {
+//            model.addAttribute("layout", "user_layout");
+//            return "help/board";
+//        }
         return "help/board";
     }
 

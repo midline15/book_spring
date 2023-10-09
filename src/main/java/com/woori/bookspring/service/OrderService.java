@@ -13,6 +13,8 @@ import com.woori.bookspring.repository.OrderRepository;
 import com.woori.bookspring.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,8 +31,8 @@ public class OrderService {
     public final BookRepository bookRepository;
 
     @Transactional(readOnly = true) // 주문 내역 조회
-    public List<OrderDto> getOrderList(String email) {
-        return orderRepository.findByUser_Email(email).stream().map(Order::of).toList();
+    public Page<OrderDto> getOrderList(Pageable pageable, String email) {
+        return orderRepository.findByUser_Email(pageable, email).map(Order::of);
     }
 
     public Order createOrder(String email){
@@ -56,10 +58,7 @@ public class OrderService {
             book.sellBook(cartBookDto.getCount());
             createOrderBook(cartBookDto.toOrderBook(), book, order);
         });
-    }
-
-    public void deleteOrder(Long orderId){
-        orderRepository.deleteById(orderId);
+        order.calculate();
     }
 
     public void cancelOrder(Long orderId) {

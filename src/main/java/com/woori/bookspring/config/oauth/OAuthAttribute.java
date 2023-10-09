@@ -36,7 +36,7 @@ public class OAuthAttribute {
                 .nickname(attributes.get("name").toString())
                 .email(attributes.get("email")+"_google")
                 .password("google123")
-                .role(Role.WRITER)
+                .role(Role.USER)
                 .oauth(OAuthType.GOOGLE)
                 .attributes(attributes)
                 .build();

@@ -8,11 +8,7 @@ import lombok.Data;
 public class OrderBookDto {
 
     private Long bookId;
+    private String title;
     private int count;
-    private int price;
     private int totalPrice;
-    public int getTotalPrice(){
-        return count*price;
-    }
-
 }

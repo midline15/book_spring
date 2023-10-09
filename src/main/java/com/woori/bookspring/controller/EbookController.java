@@ -36,25 +36,21 @@ public class EbookController {
 
         Page<EbookFormDto> ebookList = ebookService.getEbookList(pageable.withPage(page - 1), searchType, searchValue);
 
-        int totalPage = ebookList.getTotalPages();
-
-        PaginationService paging = new PaginationService();
-
-        model.addAttribute("list", ebookList);
-        model.addAttribute("bar", paging.getPaginationBarNumbers(page, totalPage));
-        model.addAttribute("paging", paging);
-        model.addAttribute("searchType", searchType);
-        model.addAttribute("searchValue", searchValue);
+        PaginationService.pagination(model, ebookList, page, searchType, searchValue);
         return "ebook/ebookList";
     }
 
     @GetMapping("/ebook/{ebook-id}") //e북 id 단건 조회
     public String getEbook(@PathVariable("ebook-id") Long ebookId, Model model, Principal principal) {
-        EbookFormDto ebook = ebookService.getEbook(ebookId, principal.getName());
-        if(!principal.getName().isBlank()){
-            ebook.setLikeEbookId(likeService.getLikeEbook(ebookId, principal.getName()));
+        String email = "";
+        if (principal != null) email = principal.getName();
+
+        EbookFormDto ebook = ebookService.getEbook(ebookId, email);
+        if (!email.isBlank()) {
+            ebook.setLikeEbookId(likeService.getLikeEbook(ebookId, email));
         }
         model.addAttribute("ebook", ebook);
+
         return "ebook/ebook";
     }
 

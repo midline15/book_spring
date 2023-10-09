@@ -1,17 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/user_layout}">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en"
+      layout:decorate="~{layouts/main_layout}">
 <meta charset="UTF-8">
 <th:block layout:fragment="css">
     <style>
-        .mgb-15 {
-            margin-bottom: 15px;
-        }
-
-        .mgt-30 {
-            margin-top: 30px;
-        }
 
         .mgt-50 {
             margin-top: 50px;
@@ -60,12 +54,14 @@
                     <h3 name="totalPrice" id="totalPrice" class="font-weight-bold"></h3>
                 </div>
                 <div class="text-right">
-                    <form th:if="${ebook.likeEbookId == null}" th:action="@{/like/ebook/{ebook-id}(ebook-id = ${ebook.id})}" method="post">
+                    <form th:if="${ebook.likeEbookId == null}"
+                          th:action="@{/like/ebook/{ebook-id}(ebook-id = ${ebook.id})}" method="post">
                         <button type="submit" class="btn btn-light border border-primary btn-lg">좋아요</button>
                     </form>
                     <form th:if="${ebook.likeEbookId != null}">
                         <button type="button" class="btn btn-light border border-primary btn-lg">
-                            <span aria-hidden="true" th:data-id="${ebook.likeEbookId}" onclick="deleteEbook(this)">삭 제</span></button>
+                            <span aria-hidden="true" th:data-id="${ebook.likeEbookId}"
+                                  onclick="deleteEbook(this)">삭 제</span></button>
                     </form>
                 </div>
             </div>
@@ -73,23 +69,22 @@
     </div>
 
 
-    <a th:href="@{/writer/ebook/{ebook-id}/episode(ebook-id = ${ebook.id})}">에피소드 등록</a>
+    <a sec:authorize="hasAuthority('WRITER')"
+       th:href="@{/writer/ebook/{ebook-id}/episode(ebook-id = ${ebook.id})}">에피소드 등록</a>
     <div class="min-h-360pxr">
-        <div> 예 시 용</div>
-        <ul class=" flex"
-            style="flex-direction: column; background-color: var(--bg-a-20);"
-            th:each="episode : ${ebook.episodeList}">
+        <div>전체 : [[${ebook.episodeList.size()}]] </div>
+        <ul class=" flex" th:each="episode : ${ebook.episodeList}">
             <li class="list-child-item">
-                <div>
-                    <div class="relative flex py-8pxr bg-bg-a-20 px-15pxr">
-                        <div class="flex items-center">
-                            <div class="flex flex-col">
-                                <div><span th:text="${episode.title}"></span></div>
-                                <div><span th:text="${episode.regTime}"></span></div>
-                                <a th:href="@{/ebook/{ebook-id}/episode/{episode-id} (ebook-id = ${ebook.id}, episode-id=${episode.id})}"
-                                   th:if="${episode.buy}">보기</a>
-                                <button th:unless="${episode.buy}" th:data-id="${episode.id}" onclick="buyEpisode(this)">구매</button>
-                            </div>
+                <div class="relative flex py-8pxr bg-bg-a-20 px-15pxr">
+                    <div class="flex items-center">
+                        <div class="flex flex-col">
+                            <div><span th:text="${episode.title}"></span></div>
+                            <div><span th:text="${episode.regTime}"></span></div>
+                            <a th:href="@{/ebook/{ebook-id}/episode/{episode-id} (ebook-id = ${ebook.id}, episode-id=${episode.id})}"
+                               th:if="${episode.buy}">보기</a>
+                            <button th:unless="${episode.buy}" th:data-id="${episode.id}" onclick="buyEpisode(this)">
+                                구매
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -109,20 +104,21 @@
             })
                 .then(response => {
                     console.log(response)
-                    if(response.url.includes('login')){
+                    if (response.url.includes('login')) {
                         alert("로그인이 필요합니다.")
-                    }else{
-                    alert('구매 완료');
-                    fetch(`/inven/ebook/${ebookId}`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    })
-                        .then(() => {
-                            alert('보관함 추가 완료');
-                            location.replace(`/ebook/${ebookId}/episode/${episodeId}`);
-                        });}
+                    } else {
+                        alert('구매 완료');
+                        fetch(`/inven/ebook/${ebookId}`, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        })
+                            .then(() => {
+                                alert('보관함 추가 완료');
+                                location.replace(`/ebook/${ebookId}/episode/${episodeId}`);
+                            });
+                    }
                 })
         }
 

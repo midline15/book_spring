@@ -2,14 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      layout:decorate="~{layouts/help_layout}">
+      layout:decorate="~{|layouts/${layout}|}">
 <th:block layout:fragment="content">
     <div id="page-content-wrapper">
         <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
             <div class="container-fluid">
-                <h1 class="mt-4" th:if="${list.articleType == '03'}">공지사항</h1>
-                <h1 class="mt-4" th:if="${list.articleType == '04'}">이벤트</h1>
-                <h1 class="mt-4" th:if="${list.articleType == '05'}">Q&A</h1>
+                <h1 class="mt-4" th:if="${articleType == '01'}">자유게시판</h1>
+                <h1 class="mt-4" th:if="${articleType == '02'}">리뷰게시판</h1>
+                <h1 class="mt-4" th:if="${articleType == '03'}">공지사항</h1>
+                <h1 class="mt-4" th:if="${articleType == '04'}">이벤트</h1>
+                <h1 class="mt-4" th:if="${articleType == '05'}">Q&A</h1>
             </div>
         </nav>
         <!-- Page content-->
@@ -24,21 +26,53 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="notice : ${list.articleDtoList}">
-                        <td class="title"><a th:text="${notice.title}"
-                                             th:href="@{/article/{article-type}/{article-id} (article-type = ${list.articleType}, article-id = ${notice.id})}"></a></td>
-                        <td class="user-id" th:text="${notice.createdBy}"></td>
+                    <tr th:each="article : ${list}">
+                        <td class="title"><a th:text="${article.title}"
+                                             th:href="@{/article/{article-type}/{article-id} (article-type = ${articleType}, article-id = ${article.id})}"></a>
+                        </td>
+                        <td class="user-id" th:text="${article.createdBy}"></td>
                         <td class="created-at">
-                            <time th:text="${notice.regTime}"></time>
+                            <time th:text="${article.regTime}"></time>
                         </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
+            <form id="search-form">
+                <div class="col-12">
+                    <div class="row no-gutters">
+                        <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                            <label for="search-type" hidden>검색 유형</label>
+                            <select class="form-control" id="search-type" name="searchType">
+                                <option value="title">제목</option>
+                                <option value="content">본문</option>
+                                <option value="nickname">닉네임</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-8 col-md-6 col-sm-12 p-0">
+                            <label for="search-value" hidden>검색어</label>
+                            <input type="text" placeholder="검색어..." class="form-control" id="search-value"
+                                   name="searchValue">
+                        </div>
+                        <div class="col-lg-1 col-md-3 col-sm-12 p-0">
+                            <button type="submit" class="btn btn-base">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                     stroke-linecap="round" stroke-linejoin="round"
+                                     class="feather feather-search">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
             <th:block th:replace="~{fragments/pagination}"></th:block>
             <div class="row" sec:authorize="hasAnyAuthority('ADMIN')">
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <a class="btn btn-primary me-md-2" role="button" id="write-article" href="/article/03/new">글쓰기</a>
+                    <a class="btn btn-primary me-md-2" role="button"
+                       th:href="@{/article/{article-type}/new(article-type = ${articleType})}">글쓰기</a>
                 </div>
             </div>
         </div>
