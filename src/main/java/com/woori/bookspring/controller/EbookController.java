@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
@@ -61,9 +62,13 @@ public class EbookController {
     }
 
     @PostMapping("/writer/ebook") // 생성 2
-    public String createEbook(Model model, @Valid EbookFormDto ebookFormDto, BindingResult bindingResult, @RequestParam("imgFile") MultipartFile imgFile, Principal principal) {
+    public String createEbook(Model model, @Valid @ModelAttribute("ebook") EbookFormDto ebookFormDto, BindingResult bindingResult, @RequestParam("imgFile") MultipartFile imgFile, Principal principal, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "ebook/ebookForm";
+        }
+        if(imgFile.isEmpty()){
+            redirectAttributes.addFlashAttribute("ebook", ebookFormDto);
+            throw new RuntimeException("표지를 등록해주세요");
         }
         try {
             ebookService.createEbook(principal.getName(), ebookFormDto, imgFile);

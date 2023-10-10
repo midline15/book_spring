@@ -1,5 +1,6 @@
 package com.woori.bookspring.controller;
 
+import com.woori.bookspring.config.auth.UserDetailsImpl;
 import com.woori.bookspring.constant.ArticleType;
 import com.woori.bookspring.constant.Role;
 import com.woori.bookspring.constant.UserStatus;
@@ -90,7 +91,7 @@ public class AdminController {
         if (bindingResult.hasErrors()){
             return new ResponseEntity<>(bindingResult.getAllErrors().get(0).getDefaultMessage(), HttpStatus.BAD_REQUEST);
         }
-        if(dto.getRole().equals("ADMIN") && !authentication.getAuthorities().toArray()[0].toString().equals("SUPER")) {
+        if(dto.getRole().equals("ADMIN") && !((UserDetailsImpl)authentication.getPrincipal()).getUser().getRole().toString().equals("SUPER")) {
             return new ResponseEntity<>("권한이 없습니다.", HttpStatus.FORBIDDEN);
         }
         userService.createUser(dto);
