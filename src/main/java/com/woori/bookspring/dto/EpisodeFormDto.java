@@ -22,6 +22,7 @@ public class EpisodeFormDto {
     private Long id;
     private PermitStatus permitStatus;
     private Long ebookId;
+    private String ebookTitle;
     private LocalDateTime regTime;
     private boolean buy;
     private List<EpisodeCommentDto> episodeCommentDtoList;

@@ -84,4 +84,5 @@ public class UserController {
         userService.disableUser(userId, principal.getName());
         return new ResponseEntity<>("회원탈퇴 완료", HttpStatus.OK);
     }
+
 }

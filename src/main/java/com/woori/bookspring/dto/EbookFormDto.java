@@ -1,6 +1,7 @@
 package com.woori.bookspring.dto;
 
 import com.woori.bookspring.entity.Cover;
+import com.woori.bookspring.entity.User;
 import com.woori.bookspring.entity.ebook.Ebook;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +21,8 @@ public class EbookFormDto {
     private String intro;
     private String writerNickname;
     private int price;
+    private int totalSales;
+    private float avgScore;
     private Long coverId;
     private String url;
     private Cover cover;
@@ -28,13 +31,13 @@ public class EbookFormDto {
     private Long likeEbookId;
 
 
-    public Ebook toEntity(Cover cover){
+    public Ebook toEntity(User user, Cover cover){
         return Ebook.builder()
+                .user(user)
                 .title(title)
                 .intro(intro)
                 .cover(cover)
                 .price(price)
-                .avgScore(1)
                 .build();
     }
 }

@@ -55,6 +55,7 @@ public class Episode extends BaseEntity {
         return EpisodeFormDto.builder()
                 .id(id)
                 .ebookId(ebook.getId())
+                .ebookTitle(ebook.getTitle())
                 .title(title)
                 .content(content)
                 .episodeCommentDtoList(episodeCommentList.stream().map(EpisodeComment::of).toList())

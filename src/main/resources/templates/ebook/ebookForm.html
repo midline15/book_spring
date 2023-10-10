@@ -7,32 +7,23 @@
 <th:block layout:fragment="script">
 
     <script th:inline="javascript">
-        $(document).ready(function () {
-            var errorMessage = [[${errorMessage}]];
-            if (errorMessage != null) {
-                alert(errorMessage);
+        function updateEbook() {
+            if (confirm("Ebook을 수정하시겠습니까?")) {
+                let ebookId = [[${ebook.id}]]
+                var formData = new FormData();
+                formData.append("imgFile",document.querySelector("[name=imgFile]").files[0]);
+                formData.append("title", $("[name=title]").val())
+                formData.append("intro", $("[name=intro]").val())
+                formData.append("price", $("[name=price]").val())
+                fetch(`/writer/ebook/${ebookId}`, {
+                    method: "PATCH",
+                    body: formData,
+                }).then(() => {
+                    alert("수정완료");
+                    location.href = `/ebook/${ebookId}`;
+                })
             }
-
-            bindDomEvent();
-
-        });
-
-        function bindDomEvent() {
-            $(".custom-file-input").on("change", function () {
-                var fileName = $(this).val().split("\\").pop();  //이미지 파일명
-                var fileExt = fileName.substring(fileName.lastIndexOf(".") + 1); // 확장자 추출
-                fileExt = fileExt.toLowerCase(); //소문자 변환
-
-                if (fileExt != "jpg" && fileExt != "jpeg" && fileExt != "gif" && fileExt != "png" && fileExt != "bmp") {
-                    alert("이미지 파일만 등록이 가능합니다.");
-                    return;
-                }
-
-                $(this).siblings(".custom-file-label").html(fileName);
-            });
         }
-
-
     </script>
 
 </th:block>
@@ -57,7 +48,7 @@
 
 <div layout:fragment="content">
 
-    <form role="form" method="post" enctype="multipart/form-data">
+    <form role="form" action="/writer/ebook" method="post" enctype="multipart/form-data">
 
         <p class="h2">
             Ebook 등록
@@ -68,16 +59,9 @@
 
         <div class="input-group">
             <div class="input-group-prepend">
-                <span class="input-group-text">상품명</span>
+                <span class="input-group-text">제목</span>
             </div>
             <input type="text" class="form-control" placeholder="책 제목을 입력해주세요" name="title" th:field="${ebook.title}">
-        </div>
-
-        <div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text">작가 ID</span>
-            </div>
-            <input type="text" class="form-control" placeholder="을 입력해주세요" name="title" th:field="${ebook.title}">
         </div>
 
         <div class="input-group">
@@ -100,9 +84,13 @@
             </div>
         </div>
 
-        <button th:formaction="@{/admin/ebook}" type="submit" class="btn btn-primary">저장</button>
-
+        <th:block th:if="${ebook.id} == null">
+            <button type="submit" class="btn btn-primary">저장</button>
+        </th:block>
     </form>
+    <th:block th:unless="${ebook.id} == null">
+        <button class="btn btn-primary" onclick="updateEbook()">수정</button>
+    </th:block>
 
 </div>
 

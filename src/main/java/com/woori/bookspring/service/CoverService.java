@@ -16,7 +16,7 @@ import org.thymeleaf.util.StringUtils;
 @RequiredArgsConstructor
 public class CoverService {
 
-    @Value("C:/shop/cover")
+    @Value("${imgLocation}")
     private String imgLocation;
     private final BookRepository bookRepository;
     private final CoverRepository coverRepository;

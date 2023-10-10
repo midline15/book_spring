@@ -1,59 +1,38 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en"
       layout:decorate="~{layouts/main_layout}">
 
 <th:block layout:fragment="script">
 
     <script th:inline="javascript">
-        function updateEbook(obj) {
-
-            var ebookId = obj.dataset.id;
-
-            $.ajax({
-                url: "/admin/ebook/" + ebookId,
-                type: "GET",
-                cache: false,
-                success: function (result, status) {
-                    location.href = "/admin/ebook/"+ebookId;
-                },
-                error: function (jqXHR, status, error) {
-
-                    if (jqXHR.status == '401') {
-                        alert('로그인 후 이용해주세요');
-                        location.href = '/members/login';
-                    } else {
-                        alert(jqXHR.responseJSON.message);
-                    }
-
-                }
-            });
-        }
-
         function deleteEbook(obj) {
+            if (confirm("정말로 삭제하시겠습니까")){
+                var ebookId = obj.dataset.id;
+                var url = "/writer/ebook/" + ebookId;
 
-            var ebookId = obj.dataset.id;
-            var url = "/admin/ebook/" + ebookId;
+                $.ajax({
+                    url: url,
+                    type: "DELETE",
+                    cache: false,
+                    success: function (result, status) {
+                        alert("삭제완료");
+                        location.reload();
 
-            $.ajax({
-                url: url,
-                type: "DELETE",
-                cache: false,
-                success: function (result, status) {
-                    alert("삭제완료");
+                    },
+                    error: function (jqXHR, status, error) {
 
-                },
-                error: function (jqXHR, status, error) {
+                        if (jqXHR.status == '401') {
+                            alert('로그인 후 이용해주세요');
+                            location.href = '/user/login';
+                        } else {
+                            alert(jqXHR.responseJSON.message);
+                        }
 
-                    if (jqXHR.status == '401') {
-                        alert('로그인 후 이용해주세요');
-                        location.href = '/user/login';
-                    } else {
-                        alert(jqXHR.responseJSON.message);
                     }
-
-                }
-            });
+                });
+            };
         }
     </script>
 </th:block>
@@ -109,10 +88,10 @@
 </th:block>
 
 <div layout:fragment="content">
-
+    <h1 sec:authorize="hasAuthority('WRITER')">작가페이지</h1>
 
     <!-- 검색창 추가 -->
-    <div class="row">
+    <div class="row" sec:authorize="!hasAuthority('WRITER')">
         <div class="card card-margin search-form">
             <div class="card-body p-0">
                 <form id="search-form" th:action="@{/ebook}">
@@ -151,7 +130,6 @@
     </div>
 
 
-
     <div class="row">
         <th:block th:each="ebook : ${list}">
             <div class="col-md-4 margin">
@@ -170,9 +148,9 @@
                     </a>
                 </div>
 
-                <button type="button" class="close" aria-label="Close">
-                    <span aria-hidden="true" th:data-id="${ebook.id}" onclick="updateEbook(this)">수 정</span>
-                </button>
+                <a class="btn" th:href="@{/writer/ebook/{ebook-id}(ebook-id = ${ebook.id})}">
+                    수정
+                </a>
 
                 <button type="button" class="close" aria-label="Close">
                     <span aria-hidden="true" th:data-id="${ebook.id}" onclick="deleteEbook(this)">삭 제</span>
@@ -183,6 +161,6 @@
 
 
     <th:block th:replace="~{fragments/pagination}"></th:block>
-    <a href="/admin/ebook" class="btn btn-outline-secondary"> EBook 등 록</a>
+    <a href="/writer/ebook" class="btn btn-outline-secondary"> EBook 등 록</a>
 </div>
 </html>

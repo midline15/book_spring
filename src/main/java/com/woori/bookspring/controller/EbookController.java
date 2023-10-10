@@ -54,19 +54,19 @@ public class EbookController {
         return "ebook/ebook";
     }
 
-    @GetMapping("/admin/ebook") //생성 1
+    @GetMapping("/writer/ebook") //생성 1
     public String ebookForm(Model model) {
         model.addAttribute("ebook", new EbookFormDto());
         return "ebook/ebookForm";
     }
 
-    @PostMapping("/admin/ebook") // 생성 2
-    public String createEbook(Model model, @Valid EbookFormDto ebookFormDto, BindingResult bindingResult, @RequestParam("imgFile") MultipartFile imgFile) {
+    @PostMapping("/writer/ebook") // 생성 2
+    public String createEbook(Model model, @Valid EbookFormDto ebookFormDto, BindingResult bindingResult, @RequestParam("imgFile") MultipartFile imgFile, Principal principal) {
         if (bindingResult.hasErrors()) {
             return "ebook/ebookForm";
         }
         try {
-            ebookService.createEbook(ebookFormDto, imgFile);
+            ebookService.createEbook(principal.getName(), ebookFormDto, imgFile);
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Ebook 등록 중 에러가 발생 하였습니다.");
             return "ebook/ebookForm";
@@ -74,29 +74,37 @@ public class EbookController {
         return "redirect:/";
     }
 
-    @DeleteMapping("/admin/ebook/{ebook-id}") //e북 삭제
+    @DeleteMapping("/writer/ebook/{ebook-id}") //e북 삭제
     public @ResponseBody String deleteEbook(@PathVariable("ebook-id") Long ebookId) {
         ebookService.deleteEbook(ebookId);
         return "e북 삭제";
     }
 
-    @GetMapping("/admin/ebook/{ebook-id}") // 수정 1
+    @GetMapping("/writer/ebook/{ebook-id}") // 수정 1
     public String updateEbook(@PathVariable("ebook-id") Long ebookId, Model model, Principal principal) {
         EbookFormDto ebookFormDto = ebookService.getEbook(ebookId, principal.getName());
         model.addAttribute("ebook", ebookFormDto);
         return "ebook/ebookForm";
     }
 
-    @PatchMapping("/admin/ebook/{ebook-id}") //e북 수정 2
-    public ResponseEntity updateEbook(@PathVariable("ebook-id") Long ebookId, @RequestBody EbookFormDto updatedEbook, @RequestParam("imgFile") MultipartFile imgFile, Model model) {
+    @PatchMapping("/writer/ebook/{ebook-id}") //e북 수정 2
+    public ResponseEntity<?> updateEbook(@PathVariable("ebook-id") Long ebookId, @RequestBody EbookFormDto updatedEbook, @RequestParam("imgFile") MultipartFile imgFile, Model model) {
 
         try {
             ebookService.updateEbook(ebookId, updatedEbook, imgFile);
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "상품 수정 중 에러가 발생 하였습니다.");
             return new ResponseEntity<>("수정 실패", HttpStatus.BAD_REQUEST);
         }
 
         return new ResponseEntity<>("수정 완료", HttpStatus.OK);
+    }
+
+    @GetMapping("/writer")
+    public String writerPage(Model model,
+                             @PageableDefault(sort = "regTime", direction = Sort.Direction.DESC) Pageable pageable,
+                             @RequestParam(defaultValue = "1") int page, Principal principal){
+        Page<EbookFormDto> ebookList = ebookService.getEbookList(pageable.withPage(page - 1), "writer", principal.getName());
+        PaginationService.pagination(model, ebookList, page, "writer", principal.getName());
+        return "ebook/ebookList";
     }
 }

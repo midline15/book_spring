@@ -3,8 +3,10 @@ package com.woori.bookspring.service;
 import com.woori.bookspring.dto.EbookFormDto;
 import com.woori.bookspring.dto.EpisodeUserDto;
 import com.woori.bookspring.entity.Cover;
+import com.woori.bookspring.entity.User;
 import com.woori.bookspring.entity.ebook.Ebook;
 import com.woori.bookspring.repository.EbookRepository;
+import com.woori.bookspring.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,10 +28,12 @@ public class EbookService {
     private final EbookRepository ebookRepository;
     private final CoverService coverService;
     private final EpisodeService episodeService;
+    private final UserRepository userRepository;
 
-    public void createEbook(EbookFormDto ebookFormDto, MultipartFile imgFile) throws Exception {
+    public void createEbook(String email, EbookFormDto ebookFormDto, MultipartFile imgFile) throws Exception {
+        User user = userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
         Cover cover = coverService.saveCover(imgFile);
-        Ebook ebook = ebookFormDto.toEntity(cover);
+        Ebook ebook = ebookFormDto.toEntity(user, cover);
         ebookRepository.save(ebook);
     }
 
@@ -79,6 +83,8 @@ public class EbookService {
         }  else if ("rank".equals(type)) {
             pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("totalSales").descending());
             ebookList = ebookRepository.findAll(pageable);
+        }   else if ("writer".equals(type)) {
+            ebookList = ebookRepository.findByUser_EmailContaining(pageable, keyword);
         } else {
             ebookList = ebookRepository.findAll(pageable);
         }

@@ -77,7 +77,7 @@ public class BookController {
             bookService.createBook(bookFormDto, imgFile);
         } catch (Exception e){
             model.addAttribute("errorMessage", "상품 등록 중 에러가 발생하였습니다.");
-            return "/book/bookForm";
+            return "book/bookForm";
         }
         return "redirect:/book";
     }
@@ -116,7 +116,6 @@ public class BookController {
 
     @PatchMapping("/admin/book/{book-id}")
     public ResponseEntity<?> updateBook(@PathVariable("book-id") Long bookId, BookFormDto bookFormDto, @RequestParam("imgFile") MultipartFile imgFile, Model model) {
-
         try {
             bookService.updateBook(bookId, bookFormDto, imgFile);
         } catch (Exception e) {

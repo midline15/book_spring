@@ -14,7 +14,7 @@
         .repImgDiv {
             margin-right: 15px;
             height: auto;
-            width: 50%;
+            width: 100px;
         }
 
         .repImg {
@@ -35,10 +35,13 @@
 
     <div class="d-flex">
         <div class="repImgDiv">
-            <img th:src="${ebook.url}" class="rounded repImg" th:alt="${ebook.title}">
+            <img th:src="${ebook.url}" class="rounded repImg" width="200px" th:alt="${ebook.title}">
         </div>
         <div class="wd50">
             <div class="h4" th:text="${ebook.title}"></div>
+            <div class="h6" th:text="${ebook.writerNickname}"></div>
+            <div class="h6" th:text="|${ebook.totalSales}회|"></div>
+            <div class="h6" th:text="|${ebook.avgScore}점|"></div>
             <hr class="my-4">
 
             <div class="text-right">
@@ -48,11 +51,6 @@
                     </div>
                 </div>
                 <hr class="my-4">
-
-                <div class="text-right mgt-50">
-                    <h5>결제 금액</h5>
-                    <h3 name="totalPrice" id="totalPrice" class="font-weight-bold"></h3>
-                </div>
                 <div class="text-right">
                     <form th:if="${ebook.likeEbookId == null}"
                           th:action="@{/like/ebook/{ebook-id}(ebook-id = ${ebook.id})}" method="post">
@@ -61,13 +59,14 @@
                     <form th:if="${ebook.likeEbookId != null}">
                         <button type="button" class="btn btn-light border border-primary btn-lg">
                             <span aria-hidden="true" th:data-id="${ebook.likeEbookId}"
-                                  onclick="deleteEbook(this)">삭 제</span></button>
+                                  onclick="deleteEbook(this)">좋아요 취소</span></button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
+    <hr>
 
     <a sec:authorize="hasAuthority('WRITER')"
        th:href="@{/writer/ebook/{ebook-id}/episode(ebook-id = ${ebook.id})}">에피소드 등록</a>
@@ -82,7 +81,9 @@
                             <div><span th:text="${episode.regTime}"></span></div>
                             <a th:href="@{/ebook/{ebook-id}/episode/{episode-id} (ebook-id = ${ebook.id}, episode-id=${episode.id})}"
                                th:if="${episode.buy}">보기</a>
-                            <button th:unless="${episode.buy}" th:data-id="${episode.id}" onclick="buyEpisode(this)">
+                            <a th:href="@{/ebook/{ebook-id}/episode/{episode-id} (ebook-id = ${ebook.id}, episode-id=${episode.id})}"
+                               sec:authorize="hasAnyAuthority('WRITER', 'ADMIN')" th:if="${ebook.writerNickname.equals(#authentication.principal.user.nickname) || #authentication.authorities.equals('ADMIN')}">보기</a>
+                            <button sec:authorize="hasAuthority('USER')" th:unless="${episode.buy}" th:data-id="${episode.id}" onclick="buyEpisode(this)">
                                 구매
                             </button>
                         </div>

@@ -52,7 +52,7 @@ public class EpisodeController {
             model.addAttribute("errorMessage", "episode 등록 중 에러가 발생 하였습니다.");
             return "ebook/episodeForm";
         }
-        return "redirect:/";
+        return "redirect:/ebook/"+episodeFormDto.getEbookId();
 
     }
 

@@ -11,4 +11,5 @@ public interface EbookRepository extends JpaRepository<Ebook, Long> {
     Page<Ebook> findByTitleContaining(Pageable pageable, String searchValue);
     Page<Ebook> findByIntroContaining(Pageable pageable, String searchValue);
 
+    Page<Ebook> findByUser_EmailContaining(Pageable pageable, String keyword);
 }

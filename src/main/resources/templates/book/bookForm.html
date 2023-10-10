@@ -8,14 +8,13 @@
 
     <script th:inline="javascript">
 
-
         function updateBook() {
             if (confirm("Book을 수정하시겠습니까?")) {
                 let bookId = [[${book.id}]]
                 var formData = new FormData();
                 formData.append("imgFile",document.querySelector("[name=imgFile]").files[0]);
                 formData.append("title", $("[name=title]").val())
-                formData.append("coverId", $("[name=coverId]").val())
+                // formData.append("coverId", $("[name=coverId]").val())
                 formData.append("intro", $("[name=intro]").val())
                 formData.append("price", $("[name=price]").val())
                 formData.append("publisher", $("[name=publisher]").val())

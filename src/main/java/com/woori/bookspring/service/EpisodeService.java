@@ -1,6 +1,7 @@
 package com.woori.bookspring.service;
 
 import com.woori.bookspring.config.auth.UserDetailsImpl;
+import com.woori.bookspring.controller.exception.UserMissMatchException;
 import com.woori.bookspring.dto.EpisodeFormDto;
 import com.woori.bookspring.dto.EpisodeUserDto;
 import com.woori.bookspring.entity.Ticket;
@@ -27,29 +28,23 @@ public class EpisodeService {
     private final UserRepository userRepository;
     private final TicketRepository ticketRepository;
 
-    public void createEpisode(EpisodeFormDto episodeFormDto, Long ebookId) { //에피소드 생성
-        Ebook ebook = ebookRepository.findById(ebookId).get();
-        episodeRepository.save(Episode.createEpisode(episodeFormDto, ebook));
-    }
-
-
     @Transactional(readOnly = true)
     public EpisodeFormDto getEpisode(Long id) { //에피소드 조회, 검색
         return episodeRepository.findById(id).orElseThrow(EntityNotFoundException::new).of();
     }
 
     public void deleteEpisode(Long id) { //에피소드 삭제
+        Long userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser().getId();
+        Episode episode = episodeRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        if(!episode.getEbook().getUser().getId().equals(userId)){
+            throw new UserMissMatchException();
+        }
         episodeRepository.deleteById(id);
     }
 
     public void updateEpisode(EpisodeFormDto episodeFormDto) {
         Episode episode = episodeRepository.findById(episodeFormDto.getId()).orElseThrow(EntityNotFoundException::new);
         episode.updateEpisode(episodeFormDto);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Episode> getEpisodeList() { //e북 리스트,목록
-        return episodeRepository.findAll();
     }
 
     public void createEpisode(EpisodeFormDto episodeFormDto) {
