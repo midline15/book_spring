@@ -15,6 +15,6 @@ spring:
       ddl-auto: none
     database-platform: org.hibernate.dialect.MySQLDialect
 
-uploadPath: file:///home/ec2-user/book_spring
-imgLocation: /home/ec2-user/book_spring/cover
+uploadPath: file:////home/ec2-user/book_spring
+imgLocation: file:////home/ec2-user/book_spring/cover
 logout_redirect_uri: http://aws-v2-env.eba-muq2teph.ap-northeast-2.elasticbeanstalk.com/

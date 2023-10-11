@@ -60,6 +60,7 @@ public class Episode extends BaseEntity {
                 .content(content)
                 .episodeCommentDtoList(episodeCommentList.stream().map(EpisodeComment::of).toList())
                 .regTime(getRegTime())
+                .writerNickname(ebook.getUser().getNickname())
                 .build();
     }
 

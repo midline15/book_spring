@@ -134,11 +134,12 @@ public class User extends BaseEntity {
         totalTicket += amount;
     }
 
-    public void useTicket(int amount) {
+    public boolean useTicket(int amount) {
         if (totalTicket < amount){
-            throw new RuntimeException("이용권이 부족합니다.");
+            return false;
         }
         totalTicket -= amount;
+        return true;
     }
 
     public UserManageDto forManage() {

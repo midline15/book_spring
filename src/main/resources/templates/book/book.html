@@ -269,7 +269,7 @@
         </div>
         <div class="form-group">
             <label for="score">별점:</label>
-            <input type="number" name="score" class="form-control" min="1" max="5" />
+            <input type="number" id="score" name="score" class="form-control" min="1" max="5" />
         </div>
         <button type="submit" class="btn btn-primary">댓글 작성</button>
     </form>
@@ -283,7 +283,7 @@
                 <p th:text="${comment.content}"></p>
                 <div class="media-body">
                     <!-- 댓글 -->
-                    <h5 class="mt-0 mb-1">
+                    <h5 th:if="${#authentication.name == comment.email}" class="mt-0 mb-1">
                         <small>
                             <button class="btn btn-primary" type="button" data-bs-toggle="collapse" th:data-bs-target="'.multi-collapse-'+${comment.id}" aria-expanded="false">수정</button>
                             <button class="btn btn-secondary" onclick="deleteComment(this)" th:data-id="${comment.id}">삭제</button>

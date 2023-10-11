@@ -26,6 +26,7 @@ public class EpisodeFormDto {
     private LocalDateTime regTime;
     private boolean buy;
     private List<EpisodeCommentDto> episodeCommentDtoList;
+    private String writerNickname;
 
     public Episode toEntity() {
         return Episode.builder()

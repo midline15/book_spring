@@ -29,6 +29,10 @@ public class EpisodeController {
     //에피소드 단건 조회
     @GetMapping("/ebook/{ebook-id}/episode/{episode-id}")
     public String getEpisode(@PathVariable("episode-id") Long episodeId, Model model) {
+        System.out.println(episodeService.checkBuy(episodeId));
+        if(!episodeService.checkBuy(episodeId)){
+            throw new RuntimeException("구매 후 이용해 주세요.");
+        }
         EpisodeFormDto episode = episodeService.getEpisode(episodeId);
         model.addAttribute("episode", episode);
         return "ebook/episode";
@@ -86,7 +90,10 @@ public class EpisodeController {
 
     @PostMapping("/ebook/{ebook-id}/episode/{episode-id}")
     public ResponseEntity<?> buyEpisode(@PathVariable("episode-id") Long episodeId, Principal principal){
-        episodeService.buyEpisode(episodeId, principal.getName());
+        if(!episodeService.buyEpisode(episodeId, principal.getName())) {
+            throw new RuntimeException("이용권이 부족합니다.");
+        }
+
         return new ResponseEntity<>("구매 완료", HttpStatus.OK);
     }
 

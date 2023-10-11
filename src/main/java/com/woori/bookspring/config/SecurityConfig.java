@@ -30,6 +30,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .exceptionHandling(handler -> handler.accessDeniedHandler(new AccessDeniedHandlerImpl()))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/img/**").permitAll()
                         .requestMatchers("/", "/book", "/ebook", "/user/login" ,"/book/*","/ebook/*","/article/*","/article/*/*","/signup","/emailCheck", "/nicknameCheck","/login").permitAll()
@@ -55,8 +56,7 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/")
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(oAuth2UserService)))
-                .csrf(csrf -> csrf.disable())
-                .exceptionHandling(handler -> handler.accessDeniedHandler(new AccessDeniedHandlerImpl()));
+                .csrf(csrf -> csrf.disable());
         return http.build();
     }
 

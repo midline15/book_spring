@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Transactional
 @RequiredArgsConstructor
@@ -57,16 +58,25 @@ public class EpisodeService {
         return episodeUserRepository.findByUser_EmailAndEpisode_EbookId(email, ebookId).stream().map(EpisodeUser::of).toList();
     }
 
-    public void buyEpisode(Long episodeId, String email) {
+    public boolean buyEpisode(Long episodeId, String email) {
         Episode episode = episodeRepository.findById(episodeId).orElseThrow(EntityNotFoundException::new);
         User user = userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
 
         Ebook ebook = episode.getEbook();
-        user.useTicket(ebook.getPrice());
+
+        if(!user.useTicket(ebook.getPrice())){
+            return false;
+        }
         ebook.sellEpisode();
 
         ticketRepository.save(Ticket.useTicket(episode, user));
         episodeUserRepository.save(EpisodeUser.createEpisodeUser(episode, user));
         ((UserDetailsImpl)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).updateUser(user);
+        return true;
+    }
+
+    public boolean checkBuy(Long id) {
+        User user = ((UserDetailsImpl)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
+        return episodeUserRepository.findByEpisodeIdAndUser_Email(id, user.getEmail()).isPresent();
     }
 }

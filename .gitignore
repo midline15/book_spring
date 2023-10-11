@@ -1,4 +1,5 @@
 application-oauth.yml
+application-oauth2.yml
 HELP.md
 .gradle
 build/

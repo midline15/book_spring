@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en"
       layout:decorate="~{layouts/main_layout}">
 
 <div layout:fragment="content" style="margin-left:25%;margin-right:25%">
@@ -12,10 +13,11 @@
         <h4 th:text="${episode.title}">Episode 제목</h4>
         <p th:text="${episode.content}">Episode 내용</p>
     </div>
-
-    <a th:href="@{/writer/ebook/{ebook-id}/episode/{episode-id}/update (ebook-id = ${episode.ebookId}, episode-id = ${episode.id})}">수정</a>
-    <button id="delete-btn" onclick="deleteEpisode()">삭제</button>
-
+    <th:block sec:authorize="hasAnyAuthority('WRITER','ADMIN','SUPER')"
+              th:if="${episode.writerNickname == #authentication.principal.user.nickname || principal.authorities.contains('ADMIN') || principal.authorities.contains('SUPER')}">
+        <a th:href="@{/writer/ebook/{ebook-id}/episode/{episode-id}/update (ebook-id = ${episode.ebookId}, episode-id = ${episode.id})}">수정</a>
+        <button id="delete-btn" onclick="deleteEpisode()">삭제</button>
+    </th:block>
 
 
     <div class="row g-5">
@@ -30,7 +32,7 @@
                 </div>
                 <div class="form-group">
                     <label for="score">별점:</label>
-                    <input type="number" name="score" class="form-control" min="1" max="5" />
+                    <input type="number" id="score" name="score" class="form-control" min="1" max="5"/>
                 </div>
                 <input type="hidden" name="email" th:value="${#authentication.name}">
 
@@ -45,23 +47,32 @@
                         <p th:text="${comment.regTime}"></p>
                         <div class="media-body">
                             <!-- 댓글 -->
-                            <h5 class="mt-0 mb-1">
+                            <h5 th:if="${#authentication.name == comment.email}" class="mt-0 mb-1">
                                 <small>
-                                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" th:data-bs-target="'.multi-collapse-'+${comment.id}" aria-expanded="false">수정</button>
-                                    <button class="btn btn-secondary" onclick="deleteComment(this)" th:data-id="${comment.id}">삭제</button>
+                                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                            th:data-bs-target="'.multi-collapse-'+${comment.id}" aria-expanded="false">
+                                        수정
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="deleteComment(this)"
+                                            th:data-id="${comment.id}">삭제
+                                    </button>
                                 </small>
                             </h5>
                             <!-- 보기 모드 -->
-                            <p class="collapse show" th:classappend="'multi-collapse-'+${comment.id}">[[${comment.content}]]</p>
+                            <p class="collapse show" th:classappend="'multi-collapse-'+${comment.id}">
+                                [[${comment.content}]]</p>
                             <!-- 수정 모드 -->
                             <form class="collapse" th:classappend="'multi-collapse-'+${comment.id}">
                                 <div class="form-group">
-                                    <textarea class="form-control" id="comment-content" rows="3">[[${comment.content}]]</textarea>
+                                    <textarea class="form-control" id="comment-content"
+                                              rows="3">[[${comment.content}]]</textarea>
                                 </div>
                                 <input type="hidden" id="comment-id" th:value="${comment.id}">
                                 <input type="hidden" id="comment-email" th:value="${comment.email}">
 
-                                <button type="button" class="btn btn-info comment-update-btn" onclick="updateComment(this)">수정 완료</button>
+                                <button type="button" class="btn btn-info comment-update-btn"
+                                        onclick="updateComment(this)">수정 완료
+                                </button>
                             </form>
                         </div>
                     </li>

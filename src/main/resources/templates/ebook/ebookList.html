@@ -147,20 +147,21 @@
                         </div>
                     </a>
                 </div>
+                <th:block sec:authorize="hasAnyAuthority('WRITER','ADMIN','SUPER')" th:if="${ebook.writerNickname == #authentication.principal.user.nickname || principal.authorities.contains('ADMIN') || principal.authorities.contains('SUPER')}">
+                    <a class="btn" th:href="@{/writer/ebook/{ebook-id}(ebook-id = ${ebook.id})}">
+                        수정
+                    </a>
 
-                <a class="btn" th:href="@{/writer/ebook/{ebook-id}(ebook-id = ${ebook.id})}">
-                    수정
-                </a>
-
-                <button type="button" class="close" aria-label="Close">
-                    <span aria-hidden="true" th:data-id="${ebook.id}" onclick="deleteEbook(this)">삭 제</span>
-                </button>
+                    <button type="button" class="close" aria-label="Close">
+                        <span aria-hidden="true" th:data-id="${ebook.id}" onclick="deleteEbook(this)">삭 제</span>
+                    </button>
+                </th:block>
             </div>
         </th:block>
     </div>
 
 
     <th:block th:replace="~{fragments/pagination}"></th:block>
-    <a href="/writer/ebook" class="btn btn-outline-secondary"> EBook 등 록</a>
+    <a sec:authorize="hasAnyAuthority('WRITER', 'ADMIN', 'SUPER')" href="/writer/ebook" class="btn btn-outline-secondary"> EBook 등 록</a>
 </div>
 </html>

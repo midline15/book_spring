@@ -1,11 +1,8 @@
 package com.woori.bookspring.controller.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @ControllerAdvice
@@ -15,6 +12,9 @@ public class CustomExceptionHandler {
     public String globalExceptionHandler(Exception e, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         String referer = request.getHeader("Referer");
-        return "redirect:"+ referer;
+        if (referer != null) {
+            return "redirect:" + referer;
+        }
+        return "redirect:/";
     }
 }
